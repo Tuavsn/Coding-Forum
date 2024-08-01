@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: studentcodehub
+  jwt:
+    rsa:
+      private-key: classpath:cert/private.pem
+      public-key: classpath:cert/public.pem
+    expires-time: 7
+  cookie:
+    expires-time: 7
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
