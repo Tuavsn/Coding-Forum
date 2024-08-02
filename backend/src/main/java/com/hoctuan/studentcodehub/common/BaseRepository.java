@@ -5,11 +5,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface BaseRepository<Model extends BaseEntity, ID extends UUID> extends JpaRepository<Model, ID> {
+@NoRepositoryBean
+@Transactional
+public interface BaseRepository<Model extends BaseEntity,
+        ID extends UUID> extends JpaRepository<Model, ID> {
     @Override
     @Query("select x from #{#entityName} x where x.isDeleted = false")
     List<Model> findAll();
@@ -25,6 +31,6 @@ public interface BaseRepository<Model extends BaseEntity, ID extends UUID> exten
     @Modifying
     void restoreById(ID id);
 
-    @Query("select x from #{#entityName} x where x.isDeleted = false and cast(x.id as string) like :search")
-    Page<Model> findAll(Pageable pageable, String search);
+    @Query("select x from #{#entityName} x where x.isDeleted = false and cast(BIN_TO_UUID(x.id) as string) like :search")
+    Page<Model> findAll(Pageable pageable, @Param("search") String search);
 }

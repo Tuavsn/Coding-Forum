@@ -1,20 +1,27 @@
 package com.hoctuan.studentcodehub.model.dto.user;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
-import com.hoctuan.studentcodehub.constant.AccountGender;
+import com.hoctuan.studentcodehub.constant.*;
+import com.hoctuan.studentcodehub.model.entity.account.Device;
+import com.hoctuan.studentcodehub.model.entity.account.UserFollow;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class UserResponseDTO extends BaseResponseDTO {
-    private String username;
+    private String email;
 
-    private String password;
+    private String username;
 
     private String avatar;
 
@@ -23,4 +30,16 @@ public class UserResponseDTO extends BaseResponseDTO {
     private String phone;
 
     private String address;
+
+    private AccountRole role;
+
+    private AccountAchievement achievement;
+
+    private AccountStatus status = AccountStatus.INACTIVE;
+
+    private AuthProvider authProvider;
+
+    private Set<Device> devices = new HashSet<>();
+
+    private Set<UserFollow> followers = new HashSet<>();
 }

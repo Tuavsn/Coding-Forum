@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @SuperBuilder
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
@@ -36,7 +37,7 @@ public abstract class BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @Override
     public boolean equals(Object obj) {

@@ -36,7 +36,7 @@ public class TokenServiceImpl implements TokenService {
                 .issuedAt(now)
                 .expiresAt(expiresAt)
                 .subject(user.getId().toString())
-                .claim("role", user.getRole().getRole())
+                .claim("role", user.getRole())
                 .build();
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

@@ -9,11 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class UserRequestDTO extends BaseRequestDTO {
     @NotBlank(message = "Bạn chưa nhập Email")
     @Email(message = "Email không đúng định dạng")

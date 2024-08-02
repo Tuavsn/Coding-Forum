@@ -1,4 +1,12 @@
 package com.hoctuan.studentcodehub.common;
 
-public class BaseController {
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
+
+public class BaseController<Model extends BaseEntity,
+        ResponseDTO extends BaseResponseDTO,
+        RequestDTO extends BaseRequestDTO,
+        ID extends UUID> {
+    private BaseService<ResponseDTO, RequestDTO, ID> baseService;
 }

@@ -1,17 +1,49 @@
 spring:
   application:
-    name: studentcodehub
+    name: ${SPRING_APPLICATION_NAME}
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    properties:
+      hibernate:
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+  datasource:
+    url: ${SPRING_DATA_SOURCE_URL}
+    username: ${SPRING_DATA_SOURCE_USERNAME}
+    password: ${SPRING_DATA_SOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATA_SOURCE_DRIVER_CLASSNAME}
   jwt:
     rsa:
-      private-key: classpath:cert/private.pem
-      public-key: classpath:cert/public.pem
-    expires-time: 7
+      private-key: ${PRIVATE_KEY}
+      public-key: ${PUBLIC_KEY}
+    expires-time: ${EXPIRES_TIME}
   cookie:
-    expires-time: 7
+    expires-time: ${EXPIRES_TIME}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
 
 server:
-  port: 8080
+  port: ${SPRING_APPLICATION_PORT:8080}
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+client:
+  url: ${CLIENT_URL}
+
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+
+logging:
+  level:
+    root: DEBUG
+
+bcrypt:
+  log-rounds: 10

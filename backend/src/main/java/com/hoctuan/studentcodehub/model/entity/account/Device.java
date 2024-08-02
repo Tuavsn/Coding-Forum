@@ -16,14 +16,16 @@ import java.time.LocalDateTime;
 @Setter
 @SuperBuilder
 public class Device extends BaseEntity {
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String token;
 
     @Column(nullable = false)
     private boolean isRevoked = false;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String info;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String ip;
 
     private LocalDateTime expireAt;
