@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
-public class MessgeRequestDTO extends BaseRequestDTO {
+public class MessageRequestDTO extends BaseRequestDTO {
     private User source;
 
     private User target;
