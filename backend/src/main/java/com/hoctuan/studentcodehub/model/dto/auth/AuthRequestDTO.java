@@ -21,6 +21,9 @@ public class AuthRequestDTO extends BaseRequestDTO {
     @Size(max = 50, message = "Email quá dài" )
     private String email;
 
+    @Size(max = 100, message = "Username quá dài")
+    private String username;
+
     @NotBlank(message = "Bạn chưa nhập mật khẩu")
     private String password;
 }

@@ -1,22 +1,29 @@
-package com.hoctuan.studentcodehub.model.dto.auth;
+package com.hoctuan.studentcodehub.model.dto.device;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
-import com.hoctuan.studentcodehub.constant.AccountRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @SuperBuilder
-public class AuthResponseDTO extends BaseResponseDTO {
-    private String username;
+public class DeviceResponseDTO extends BaseResponseDTO {
+    private String info;
 
-    private AccountRole role;
+    private String ip;
 
     private String token;
+
+    private LocalDateTime expireAt;
+
+    private LocalDateTime lastLoginTime;
+
+    private boolean isRevoked;
 }

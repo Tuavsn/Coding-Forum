@@ -26,9 +26,11 @@ public abstract class BaseEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
-    private String createdBy;
+    @Column(nullable = false, updatable = false)
+    private String createdBy = "System";
 
-    private String updatedBy;
+    @Column(nullable = false)
+    private String updatedBy = "System";
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -37,6 +39,7 @@ public abstract class BaseEntity implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
     private Boolean isDeleted = false;
 
     @Override

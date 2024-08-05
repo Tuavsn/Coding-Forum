@@ -7,5 +7,4 @@ import com.hoctuan.studentcodehub.model.dto.user.UserResponseDTO;
 import java.util.UUID;
 
 public interface UserService extends BaseService<UserResponseDTO, UserRequestDTO, UUID> {
-
 }

@@ -38,7 +38,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(columnDefinition = "LONGTEXT")
     private String avatar;
 
-    @Column(nullable = false)
     private AccountGender gender;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -59,7 +58,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private AuthProvider authProvider;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Device> devices = new HashSet<>();
 

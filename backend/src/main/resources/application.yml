@@ -37,9 +37,17 @@ server:
 client:
   url: ${CLIENT_URL}
 
-#springdoc:
-#  swagger-ui:
-#    path: /swagger-ui.html
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+open:
+  api:
+    title: StudentCodeHub API Document
+    version: 0.0.1
+    description: StudentCodeHub API Document
+    local-server-url: ${OPEN_API_LOCAL_SERVER_URL}
+    host-server-url: ${OPEN_API_HOST_SERVER_URL}
 
 logging:
   level:

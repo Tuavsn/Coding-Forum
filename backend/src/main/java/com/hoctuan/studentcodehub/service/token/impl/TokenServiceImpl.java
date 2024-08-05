@@ -1,8 +1,10 @@
 package com.hoctuan.studentcodehub.service.token.impl;
 
 import com.hoctuan.studentcodehub.config.AppConstant;
+import com.hoctuan.studentcodehub.constant.AccountRole;
 import com.hoctuan.studentcodehub.model.entity.account.User;
-import com.hoctuan.studentcodehub.service.account.AuthService;
+import com.hoctuan.studentcodehub.service.account.DeviceService;
+import com.hoctuan.studentcodehub.service.common.AuthContext;
 import com.hoctuan.studentcodehub.service.token.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import com.google.common.hash.Hashing;
 
@@ -24,30 +26,35 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private JwtEncoder jwtEncoder;
     @Autowired
-    private AuthService authService;
+    private AuthContext authContext;
+    @Autowired
+    private DeviceService deviceService;
 
     @Override
     public String buildToken(User user, HttpServletRequest request) {
-        Instant now = Instant.now();
-        Instant expiresAt = now.plus(appConstant.getExpiresTime(), ChronoUnit.DAYS);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expiresAt = now.plusDays(appConstant.getExpiresTime());
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
-                .issuedAt(now)
-                .expiresAt(expiresAt)
+                .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
+                .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
                 .subject(user.getId().toString())
                 .claim("role", user.getRole())
                 .build();
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
+        deviceService.add(user.getId().toString(), hashString(token), request, expiresAt, now);
+
         return token;
     }
 
     @Override
     public boolean validateToken(String token) {
-        User user = authService.getUserAuthenticated();
+        User user = authContext.getUserAuthenticated();
         if(user == null) { return false; }
+        if(!user.getRole().equals(AccountRole.USER)) { return true; }
         return user.getDevices().stream().anyMatch(
                 d -> d.getToken().equals(hashString(token))
         );

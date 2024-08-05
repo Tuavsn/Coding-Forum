@@ -16,8 +16,12 @@ import java.util.UUID;
 @SuperBuilder
 public abstract class BaseResponseDTO {
     private UUID id;
+
     private String createdBy;
+
     private String updatedBy;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 }

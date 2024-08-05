@@ -3,23 +3,26 @@ package com.hoctuan.studentcodehub.service.account.impl;
 import com.hoctuan.studentcodehub.config.AppConstant;
 import com.hoctuan.studentcodehub.exception.CustomException;
 import com.hoctuan.studentcodehub.exception.NotFoundException;
+import com.hoctuan.studentcodehub.model.dto.device.DeviceResponseDTO;
 import com.hoctuan.studentcodehub.model.entity.account.Device;
 import com.hoctuan.studentcodehub.model.entity.account.User;
+import com.hoctuan.studentcodehub.model.mapper.DeviceMapper;
 import com.hoctuan.studentcodehub.repository.account.DeviceRepository;
 import com.hoctuan.studentcodehub.repository.account.UserRepository;
-import com.hoctuan.studentcodehub.service.account.AuthService;
 import com.hoctuan.studentcodehub.service.account.DeviceService;
-import com.hoctuan.studentcodehub.service.token.TokenService;
+import com.hoctuan.studentcodehub.service.common.AuthContext;
 import jakarta.servlet.http.HttpServletRequest;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua_parser.Client;
 import ua_parser.Parser;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -32,9 +35,18 @@ public class DeviceServiceImpl implements DeviceService {
     @Autowired
     private DeviceRepository deviceRepository;
     @Autowired
-    private AuthService authService;
+    private AuthContext authContext;
     @Autowired
     private AppConstant appConstant;
+    @Autowired
+    private DeviceMapper deviceMapper;
+
+    @Override
+    public Page<DeviceResponseDTO> getAllByUserId(Pageable pageable) {
+        User user = authContext.getUserAuthenticated();
+
+        return deviceMapper.toDTO(deviceRepository.findByUserId(user.getId(), pageable));
+    }
 
     @Override
     @Transactional
@@ -50,26 +62,32 @@ public class DeviceServiceImpl implements DeviceService {
         Device existingDevice = findExistingDevice(user.getDevices(), info, ip);
 
         if(existingDevice == null) {
-            existingDevice = Device.builder()
-                    .id(UUID.randomUUID())
+            Device savedDevice = deviceRepository.save(Device.builder()
+                    .user(user)
                     .token(token)
                     .info(info)
-                    .ip(BCrypt.hashpw(ip, BCrypt.gensalt(appConstant.getLogRounds())))
+                    .ip(ip)
                     .expireAt(expireAt)
                     .lastLoginTime(lastLoginTime)
-                    .build();
-            user.getDevices().add(existingDevice);
+                    .isDeleted(false)
+                    .createdBy("System")
+                    .updatedBy("System")
+                    .build()
+            );
+            user.getDevices().add(savedDevice);
         } else {
             existingDevice.setToken(token);
             existingDevice.setExpireAt(expireAt);
             existingDevice.setLastLoginTime(lastLoginTime);
         }
+
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void revoke(String deviceId, HttpServletRequest request) {
-        User user = authService.getUserAuthenticated();
+        User user = authContext.getUserAuthenticated();
 
         Device device = user.getDevices().stream().filter(
                 d -> d.getId().equals(UUID.fromString(deviceId))
@@ -79,7 +97,7 @@ public class DeviceServiceImpl implements DeviceService {
 
         String ip = extractIp(request);
 
-        if(Objects.equals(device.getInfo(), info) && BCrypt.checkpw(device.getIp(), ip)) {
+        if(Objects.equals(device.getInfo(), info) && Objects.equals(device.getIp(), ip)) {
             throw new CustomException("Không thể xoá thiết bị hiện tại", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -112,12 +130,49 @@ public class DeviceServiceImpl implements DeviceService {
             clientIp = request.getRemoteAddr();
         }
 
-        return clientIp;
+        try {
+            return convertIpv6ToIpv4(clientIp);
+        } catch (UnknownHostException e) {
+            return clientIp;
+        }
     }
+
+    private static String convertIpv6ToIpv4(String ipv6) throws UnknownHostException {
+        // Loopback IPV6 (Localhost)
+        if ("0:0:0:0:0:0:0:1".equals(ipv6) || "::1".equals(ipv6)) {
+            return "127.0.0.1";
+        }
+
+        InetAddress address = InetAddress.getByName(ipv6);
+        // Kiểm tra nếu địa chỉ IPv6 là địa chỉ IPv4-mapped
+        if (address instanceof java.net.Inet6Address) {
+            byte[] bytes = address.getAddress();
+            if (bytes.length == 16) {
+                // Kiểm tra prefix 80 bits đầu là zero (IPv4-mapped)
+                for (int i = 0; i < 10; i++) {
+                    if (bytes[i] != 0) {
+                        return ipv6; // Không phải IPv4-mapped address
+                    }
+                }
+                // Kiểm tra 16 bits tiếp theo là 0xFFFF (IPv4-mapped)
+                if (bytes[10] == (byte) 0xFF && bytes[11] == (byte) 0xFF) {
+                    // Chuyển đổi phần còn lại thành IPv4
+                    int ipv4Part1 = bytes[12] & 0xFF;
+                    int ipv4Part2 = bytes[13] & 0xFF;
+                    int ipv4Part3 = bytes[14] & 0xFF;
+                    int ipv4Part4 = bytes[15] & 0xFF;
+                    return String.format("%d.%d.%d.%d", ipv4Part1, ipv4Part2, ipv4Part3, ipv4Part4);
+                }
+            }
+        }
+
+        return ipv6; // Trả về địa chỉ gốc nếu không thể chuyển đổi
+    }
+
 
     private Device findExistingDevice(Set<Device> devices, String info, String ip) {
         return devices.stream().filter(
-                device -> Objects.equals(device.getInfo(), info) && BCrypt.checkpw(ip, device.getIp())
+                device -> Objects.equals(device.getInfo(), info) && Objects.equals(ip, device.getIp())
         ).findFirst().orElse(null);
     }
 }

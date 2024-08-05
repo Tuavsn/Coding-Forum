@@ -62,10 +62,10 @@ public class BaseController<Model extends BaseEntity,
         ResponseDTO data = baseService.save(DTO);
         return new ResponseEntity<>(
                 BaseResponse.builder()
-                    .message("Tạo thành công")
-                    .data(data)
-                    .status(HttpStatus.CREATED.value())
-                    .build()
+                        .message("Tạo thành công")
+                        .data(data)
+                        .status(HttpStatus.CREATED.value())
+                        .build()
                 , HttpStatus.CREATED);
     }
 

@@ -11,8 +11,10 @@ import lombok.*;
 public class BaseResponse {
     @JsonProperty("Message")
     private String message;
+
     @JsonProperty("Status")
     private int status;
+
     @JsonProperty("Data")
     private Object data;
 }

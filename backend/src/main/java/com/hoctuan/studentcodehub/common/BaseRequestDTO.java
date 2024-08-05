@@ -15,5 +15,4 @@ import java.util.UUID;
 @SuperBuilder
 public abstract class BaseRequestDTO {
     private UUID id;
-    private boolean isDeleted;
 }

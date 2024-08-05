@@ -15,5 +15,4 @@ public class UserServiceImpl extends BaseServiceImpl<
         UserResponseDTO,
         UserRequestDTO,
         UUID> implements UserService {
-
 }

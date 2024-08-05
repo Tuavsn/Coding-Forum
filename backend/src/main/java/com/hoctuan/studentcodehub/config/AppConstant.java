@@ -10,6 +10,17 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 @Data
 public class AppConstant {
+    @Value("${open.api.title}")
+    private String title;
+    @Value("${open.api.version}")
+    private String version;
+    @Value("${open.api.description}")
+    private String description;
+    @Value("${open.api.local-server-url}")
+    private String localServerUrl;
+    @Value("${open.api.host-server-url}")
+    private String hostServerUrl;
+
     @Value("${client.url}")
     private String clientUrl;
 
