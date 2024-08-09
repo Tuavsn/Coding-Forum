@@ -1,7 +1,6 @@
 package com.hoctuan.studentcodehub.model.dto.post;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
-import com.hoctuan.studentcodehub.model.entity.post.Category;
 import com.hoctuan.studentcodehub.model.entity.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +18,6 @@ import java.util.Set;
 @SuperBuilder
 public class TopicResponseDTO extends BaseResponseDTO {
     private String name;
-
-    private Category category;
 
     private Set<Post> posts = new HashSet<>();
 }
