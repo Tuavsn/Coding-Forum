@@ -1,7 +1,7 @@
-import { HomeOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { BankOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Empty } from "antd";
 
-export default function AboutPage() {
+export default function GroupPage() {
     return (
         <div>
             <Breadcrumb
@@ -18,8 +18,8 @@ export default function AboutPage() {
                     {
                         title: (
                             <>
-                                <InfoCircleOutlined />
-                                <span>Thông tin</span>
+                                <BankOutlined />
+                                <span>Nhóm</span>
                             </>
                         )
                     }

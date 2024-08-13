@@ -1,3 +1,7 @@
 export default function DashboardPage() {
-    return <div>Dashboard</div>
+    return (
+        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+            Dashboard
+        </main>
+    )
 }

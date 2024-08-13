@@ -1,7 +1,7 @@
-import { HomeOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { BellOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Empty } from "antd";
 
-export default function AboutPage() {
+export default function NotifyPage() {
     return (
         <div>
             <Breadcrumb
@@ -18,8 +18,8 @@ export default function AboutPage() {
                     {
                         title: (
                             <>
-                                <InfoCircleOutlined />
-                                <span>Thông tin</span>
+                                <BellOutlined />
+                                <span>Thông báo</span>
                             </>
                         )
                     }
