@@ -21,4 +21,9 @@ public class AuthContextImpl implements AuthContext {
         return userRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
     }
+
+    @Override
+    public void clearUserAuthenticated() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 }

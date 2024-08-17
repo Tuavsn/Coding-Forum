@@ -12,6 +12,7 @@ import com.hoctuan.studentcodehub.model.dto.auth.AuthResponseDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
 import com.hoctuan.studentcodehub.repository.account.UserRepository;
 import com.hoctuan.studentcodehub.service.account.AuthService;
+import com.hoctuan.studentcodehub.service.common.AuthContext;
 import com.hoctuan.studentcodehub.service.token.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private AuthContext authContext;
 
     @Override
     @Transactional
@@ -101,12 +104,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public AuthResponseDTO getInfo() {
+        User user = authContext.getUserAuthenticated();
+        return AuthResponseDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .createdBy(user.getCreatedBy())
+                .updatedBy(user.getUpdatedBy())
+                .build();
+    }
+
+    @Override
     public AuthResponseDTO forgotPassword(AuthRequestDTO authRequestDTO, HttpServletRequest request) {
         return null;
     }
 
     @Override
-    public void logout(String token) {
-
+    public void logout() {
+        authContext.clearUserAuthenticated();
     }
 }

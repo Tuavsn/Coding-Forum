@@ -8,10 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
@@ -42,6 +40,31 @@ public class AuthController {
                 BaseResponse.builder()
                         .message("Đăng ký thành công")
                         .data(authService.register(authRequestDTO, request))
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @GetMapping("/info")
+    public ResponseEntity<BaseResponse> getInfo() {
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy thông tin thành công")
+                        .data(authService.getInfo())
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse> logout() {
+        authService.logout();
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Đăng xuất thành công")
+                        .data(null)
                         .status(HttpStatus.OK.value())
                         .build()
                 , HttpStatus.OK);

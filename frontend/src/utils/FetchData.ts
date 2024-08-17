@@ -1,0 +1,59 @@
+const server_url = process.env.NEXT_PUBLIC_BASE_API_URL
+
+export const getData = async(url: string, token: string) => {
+    const result = await fetch(`${server_url}/${url}`, {
+        method: 'GET',
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    return result.json();
+}
+
+export const postData = async(url: string, post: object, token?: string) => {
+    const result = await fetch(`${server_url}/${url}`, {
+        method: 'POST',
+        headers: { 
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(post)
+    })
+    return result.json();
+}
+
+export const putData = async(url: string, put: object, token: string) => {
+    const result = await fetch(`${server_url}/${url}`, {
+        method: 'PUT',
+        headers: { 
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(put)
+    })
+    return result.json();
+}
+
+export const patchData = async(url: string, patch: object, token: string) => {
+    const result = await fetch(`${server_url}/${url}`, {
+        method: 'PATCH',
+        headers: { 
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(patch)
+    })
+    return result.json();
+}
+
+export const deleteData = async(url: string, token: string) => {
+    const result = await fetch(`${server_url}/${url}`, {
+        method: 'DELETE',
+        headers: { 
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    return result.json();
+}

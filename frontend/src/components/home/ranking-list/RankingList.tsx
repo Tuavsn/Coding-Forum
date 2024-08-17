@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const dataSource =
 {
-    title: "Bảng xếp hạng",
+    title: "Top 100",
     tableData: [
         {
             key: '1',

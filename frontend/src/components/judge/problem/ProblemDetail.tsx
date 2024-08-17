@@ -46,7 +46,7 @@ export default function ProblemDetail({problem}: {problem: Problem}) {
                 <Button size="large" type="primary" loading={submitLoading} disabled={runLoading} onClick={handleSetSubmitLoading}><CloudServerOutlined /><p>Submit</p></Button>
                 <LanguageMenu />
             </Flex>
-            <Flex gap={6}>
+            <Flex gap={4}>
                 <div className="h-[800px] w-[40%] drop-shadow">
                     <Card title={`Bài tập: ${problem.header}`} className="h-full w-full rounded-none overflow-y-scroll scrollbar-thin" >
                         <p>{problem.description}</p>

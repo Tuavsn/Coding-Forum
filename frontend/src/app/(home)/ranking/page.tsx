@@ -29,7 +29,7 @@ export default function RankingPage() {
                 ]}
             />
             <RankingWelcomeCard />
-            <Divider orientation="left">Xếp hạng người dùng</Divider>
+            <Divider orientation="left">Bảng xếp hạng</Divider>
             <div className="mt-2">
                 <RankingList />
             </div>
