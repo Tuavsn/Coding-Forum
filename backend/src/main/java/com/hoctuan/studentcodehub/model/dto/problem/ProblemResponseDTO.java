@@ -2,6 +2,7 @@ package com.hoctuan.studentcodehub.model.dto.problem;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
 import com.hoctuan.studentcodehub.constant.ProblemType;
+import com.hoctuan.studentcodehub.model.dto.user.UserResponseDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
 import com.hoctuan.studentcodehub.model.entity.problem.ProblemComment;
 import com.hoctuan.studentcodehub.model.entity.problem.ProblemSubmission;
@@ -33,7 +34,7 @@ public class ProblemResponseDTO extends BaseResponseDTO {
 
     private String testCases;
 
-    private User author;
+    private UserResponseDTO author;
 
     private double totalScore;
 

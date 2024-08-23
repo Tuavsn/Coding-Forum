@@ -4,6 +4,8 @@ import com.hoctuan.studentcodehub.common.BaseServiceImpl;
 import com.hoctuan.studentcodehub.model.dto.chat.MessageRequestDTO;
 import com.hoctuan.studentcodehub.model.dto.chat.MessageResponseDTO;
 import com.hoctuan.studentcodehub.model.entity.chat.Message;
+import com.hoctuan.studentcodehub.model.mapper.MessageMapper;
+import com.hoctuan.studentcodehub.repository.chat.MessageRepository;
 import com.hoctuan.studentcodehub.service.chat.MessageService;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +17,12 @@ public class MessageServiceImpl extends BaseServiceImpl<
         MessageResponseDTO,
         MessageRequestDTO,
         UUID> implements MessageService {
+    private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
+
+    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper) {
+        super(messageRepository, messageMapper);
+        this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
+    }
 }

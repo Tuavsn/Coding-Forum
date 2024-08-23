@@ -1,43 +1,10 @@
 'use client'
 
+import { formatDate, stringToSlug, truncateWords } from "@/libs/utils";
 import { ClockCircleOutlined, DislikeOutlined, HeartOutlined, LikeOutlined, MessageOutlined, RightCircleOutlined, SmileOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Image, List, Space } from "antd";
 import Link from "next/link";
 import React from "react";
-
-function stringToSlug(str: string) {
-   // Chuyển tất cả các ký tự thành chữ thường
-   str = str.toLowerCase();
-
-   // Thay thế các ký tự đặc biệt tiếng Việt
-   str = str.replace(/đ/g, 'd');
-
-   // Loại bỏ dấu tiếng Việt
-   str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-   // Thay thế các ký tự không phải chữ cái hoặc số bằng dấu gạch ngang
-   str = str.replace(/[^a-z0-9\s-]/g, '');
-
-   // Thay thế khoảng trắng hoặc dấu gạch ngang liên tiếp bằng một dấu gạch ngang
-   str = str.trim().replace(/\s+/g, '-').replace(/-+/g, '-');
-
-   return str;
-}
-
-interface User {
-    username: string;
-    avatar: string;
-}
-
-interface Post {
-    id: string;
-    user: User;
-    header: string;
-    totalComment: string;
-    description: string;
-    postImage: string[];
-    createAt: string;
-}
 
 interface postList {
     posts: Post[];
@@ -74,11 +41,13 @@ export default function PostList({posts, topicSlug}: postList) {
                         <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
                     ]}
                     extra={
-                        <Image 
-                            width={300}
-                            alt="logo"
-                            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" 
-                        />
+                        item.postImage && (
+                            <Image 
+                                width={300}
+                                alt={item.postImage[0]?.image}
+                                src={item.postImage[0]?.image}
+                            />
+                        )
                     }
                 >
                     <List.Item.Meta
@@ -87,11 +56,11 @@ export default function PostList({posts, topicSlug}: postList) {
                         description={(
                             <>
                                 <strong className="mr-6"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
-                                <strong><ClockCircleOutlined /> {item.createAt}</strong>
+                                <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
                             </>
                         )}
                     />
-                    {item.description}
+                    {truncateWords(item.content, 100)}
                 </List.Item>
             )}
         />

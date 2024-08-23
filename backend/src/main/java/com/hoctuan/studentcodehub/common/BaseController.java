@@ -15,7 +15,11 @@ public class BaseController<Model extends BaseEntity,
         ResponseDTO extends BaseResponseDTO,
         RequestDTO extends BaseRequestDTO,
         ID extends UUID> {
-    private BaseService<ResponseDTO, RequestDTO, ID> baseService;
+    private final BaseService<ResponseDTO, RequestDTO, ID> baseService;
+
+    public BaseController(BaseService<ResponseDTO, RequestDTO, ID> baseService) {
+        this.baseService = baseService;
+    }
 
     @GetMapping
     public ResponseEntity<BaseResponse> findAll() {

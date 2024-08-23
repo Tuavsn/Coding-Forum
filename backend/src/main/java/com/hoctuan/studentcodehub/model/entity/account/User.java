@@ -9,13 +9,8 @@ import lombok.experimental.SuperBuilder;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -65,26 +60,4 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Post> posts = new HashSet<>();
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() { return true; }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() { return status == AccountStatus.ACTIVE; }
-
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() { return true; }
-
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() { return true; }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
-    }
-
 }

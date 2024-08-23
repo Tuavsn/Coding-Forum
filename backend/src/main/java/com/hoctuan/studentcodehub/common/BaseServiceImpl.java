@@ -12,8 +12,16 @@ public abstract class BaseServiceImpl<Model extends BaseEntity,
         ResponseDTO extends BaseResponseDTO,
         RequestDTO extends BaseRequestDTO,
         ID extends UUID> implements BaseService<ResponseDTO, RequestDTO, ID> {
-    private BaseRepository<Model, ID> repository;
-    private BaseMapper<Model, ResponseDTO, RequestDTO> mapper;
+    private final BaseRepository<Model, ID> repository;
+    private final BaseMapper<Model, ResponseDTO, RequestDTO> mapper;
+
+    public BaseServiceImpl(
+            BaseRepository<Model, ID> repository,
+            BaseMapper<Model, ResponseDTO, RequestDTO> mapper
+    ) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     @Override
     public List<ResponseDTO> findAll() {

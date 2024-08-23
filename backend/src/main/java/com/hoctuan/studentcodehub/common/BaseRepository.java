@@ -17,10 +17,10 @@ import java.util.UUID;
 public interface BaseRepository<Model extends BaseEntity,
         ID extends UUID> extends JpaRepository<Model, ID> {
     @Override
-    @Query("select x from #{#entityName} x where x.isDeleted = false")
+    @Query("select x from #{#entityName} x where x.isDeleted = false order by x.createdAt desc")
     List<Model> findAll();
 
-    @Query("select x from #{#entityName} x")
+    @Query("select x from #{#entityName} x order by x.createdAt desc")
     List<Model> findAllWithSoftDeleted();
 
     @Query("update #{#entityName} x set x.isDeleted = true where x.id = :id")
@@ -31,6 +31,6 @@ public interface BaseRepository<Model extends BaseEntity,
     @Modifying
     void restoreById(ID id);
 
-    @Query("select x from #{#entityName} x where x.isDeleted = false and cast(BIN_TO_UUID(x.id) as string) like :search")
+    @Query("select x from #{#entityName} x where x.isDeleted = false and cast(BIN_TO_UUID(x.id) as string) like :search order by x.createdAt desc")
     Page<Model> findAll(Pageable pageable, @Param("search") String search);
 }

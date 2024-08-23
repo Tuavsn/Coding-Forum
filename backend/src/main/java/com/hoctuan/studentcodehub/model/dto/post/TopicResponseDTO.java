@@ -1,7 +1,6 @@
 package com.hoctuan.studentcodehub.model.dto.post;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
-import com.hoctuan.studentcodehub.model.entity.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +18,5 @@ import java.util.Set;
 public class TopicResponseDTO extends BaseResponseDTO {
     private String name;
 
-    private Set<Post> posts = new HashSet<>();
+    private Set<PostResponseDTO> posts = new HashSet<>();
 }

@@ -9,9 +9,9 @@ public interface AuthService {
 
     public AuthResponseDTO register(AuthRequestDTO authRequestDTO, HttpServletRequest request);
 
-    public AuthResponseDTO getInfo();
-
     public AuthResponseDTO forgotPassword(AuthRequestDTO authRequestDTO, HttpServletRequest request);
+
+    public AuthResponseDTO getInfo();
 
     public void logout();
 }

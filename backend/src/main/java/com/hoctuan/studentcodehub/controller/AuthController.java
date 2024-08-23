@@ -45,19 +45,6 @@ public class AuthController {
                 , HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @GetMapping("/info")
-    public ResponseEntity<BaseResponse> getInfo() {
-        return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy thông tin thành công")
-                        .data(authService.getInfo())
-                        .status(HttpStatus.OK.value())
-                        .build()
-                , HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse> logout() {
         authService.logout();
@@ -65,6 +52,18 @@ public class AuthController {
                 BaseResponse.builder()
                         .message("Đăng xuất thành công")
                         .data(null)
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @GetMapping("/profile")
+    public ResponseEntity<BaseResponse> getProfile() {
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy thông tin thành công")
+                        .data(authService.getInfo())
                         .status(HttpStatus.OK.value())
                         .build()
                 , HttpStatus.OK);

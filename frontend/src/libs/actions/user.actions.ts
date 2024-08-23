@@ -2,6 +2,7 @@ import { getData, postData } from "@/utils/FetchData"
 
 export const login = async ({ email, password} : UserLogin) => {
     const result = await postData('api/auth/login', {email, password})
+    sessionStorage.setItem('username', result.Data.username)
     sessionStorage.setItem('userToken', result.Data.token)
     return result.Data;
 }
@@ -11,6 +12,7 @@ export const logout = async () => {
     if(token) {
         const result = await postData('api/auth/logout', {}, token ? token : '')
         sessionStorage.removeItem('userToken')
+        sessionStorage.removeItem('username')
         return result.Data
     } else {
         return null;

@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Button, Menu, MenuProps } from "antd";
+import { Badge, Menu, MenuProps } from "antd";
 import { 
     HomeOutlined, 
     CodeOutlined, 
@@ -15,16 +15,12 @@ import Link from "next/link";
 import { FloatButton } from "antd";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getInfo, logout } from "@/libs/actions/user.actions";
+import { logout } from "@/libs/actions/user.actions";
 import { useQuery } from "react-query";
-import Loading from "../loading/Loading";
-import { useRouter } from "next/navigation";
 
 type MenuItem = Required<MenuProps>['items'][number]
 
 export default function Header() {
-
-    const router = useRouter()
 
     const path = usePathname()
 
@@ -34,18 +30,15 @@ export default function Header() {
 
     const [openNotify, setOpenNotify] = useState<'default' | 'primary'>('default')
 
-    const [user, setUser] = useState<User | null>(null)
-
-    const { data, error, isError, isLoading } = useQuery({
-        queryKey: ['userInfo'],
-        queryFn: () => getInfo().then((result) => setUser(result))
-    })
+    const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
 
     const handleLogout = async () => {
         await logout().then(() => {
-            setUser(null)
+            setUsername(null)
         })
-    }   
+    }
+
+    useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
 
     const handleSetCurrentKey:MenuProps['onClick'] = (e) => {
         setCurrentKey(e.key)
@@ -103,10 +96,10 @@ export default function Header() {
             icon: <InfoCircleOutlined />
         },
         {
-            label: user ? user.username : "Tài khoản",
+            label: username ? username : "Tài khoản",
             key: "account",
             icon: <UserOutlined />,
-            children: user ? [
+            children: username ? [
                 { label: "Hồ Sơ", key: "profile" },
                 { label: <button onClick={handleLogout}>Đăng Xuất</button>, key: "logout", danger: true}
             ] : [
@@ -118,7 +111,7 @@ export default function Header() {
     useEffect(() => {
         setCurrentKey(path.split('/')[1])
     },[path])
-    
+
     return (
         <>
             <Menu 

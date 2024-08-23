@@ -11,8 +11,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/chat")
-public class ChatController extends BaseController<Message,
-        MessageResponseDTO,
-        MessageRequestDTO,
-        UUID> {
+public class ChatController {
 }
+
+//public class ChatController extends BaseController<Message,
+//        MessageResponseDTO,
+//        MessageRequestDTO,
+//        UUID> {
+//}
+//

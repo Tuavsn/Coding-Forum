@@ -2,6 +2,7 @@ package com.hoctuan.studentcodehub.model.dto.post;
 
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
 import com.hoctuan.studentcodehub.constant.PostStatus;
+import com.hoctuan.studentcodehub.model.dto.user.UserResponseDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
 import com.hoctuan.studentcodehub.model.entity.post.PostComment;
 import com.hoctuan.studentcodehub.model.entity.post.PostImage;
@@ -20,7 +21,7 @@ import java.util.List;
 @Setter
 @SuperBuilder
 public class PostResponseDTO extends BaseResponseDTO {
-    private User user;
+    private UserResponseDTO user;
 
     private String header;
 

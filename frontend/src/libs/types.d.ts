@@ -99,3 +99,37 @@ declare type UserLogin = {
     email: string;
     password: string;
 }
+
+declare type Topic = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    name: string;
+    posts: Post[]
+}
+
+declare type PostImage = {
+    image: string;
+}
+
+declare type PostComment = {
+    user: User;
+    content: string;
+}
+
+declare type Post = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    user: User;
+    header: string;
+    content: string;
+    status: PostStatus;
+    postImage: PostImage[];
+    postComment: [];
+    postReactions: [];
+}

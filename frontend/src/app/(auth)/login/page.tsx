@@ -1,5 +1,6 @@
 'use client'
 
+import Loading from "@/components/common/loading/Loading"
 import { login } from "@/libs/actions/user.actions"
 import { message } from "antd"
 import { useRouter } from "next/navigation"
@@ -7,6 +8,8 @@ import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
 export default function LoginPage() {
+
+    const [isLoading, setIsloading] = useState(true)
 
     const queryClient = useQueryClient()
 
@@ -34,7 +37,7 @@ export default function LoginPage() {
 
     const mutation = useMutation(() => login({email: email, password: password}), {
         onSuccess: () => {
-            queryClient.invalidateQueries('userInfo')
+            queryClient.invalidateQueries('getUsername')
             router.push('/home')
         }
     })
@@ -53,11 +56,16 @@ export default function LoginPage() {
     }
 
     useEffect(() => {
-        const token = sessionStorage.getItem('userToken')
-        if(token != null) {
+        if(sessionStorage.getItem('userToken') != null) {
             router.push('/home')
+        } else {
+            setIsloading(false)
         }
     }, [])
+
+    if(isLoading) {
+        return (<Loading />)
+    }
 
     return <>
         {contextHolder}

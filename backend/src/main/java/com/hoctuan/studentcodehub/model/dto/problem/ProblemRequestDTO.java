@@ -2,6 +2,7 @@ package com.hoctuan.studentcodehub.model.dto.problem;
 
 import com.hoctuan.studentcodehub.common.BaseRequestDTO;
 import com.hoctuan.studentcodehub.constant.ProblemType;
+import com.hoctuan.studentcodehub.model.dto.user.UserRequestDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class ProblemRequestDTO extends BaseRequestDTO {
 
     private String testCases;
 
-    private User author;
+    private UserRequestDTO author;
 
     private double totalScore;
 }

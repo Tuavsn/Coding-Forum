@@ -1,8 +1,15 @@
 'use client'
 
-import { ClockCircleOutlined, DislikeOutlined, HeartOutlined, LikeOutlined, PlusOutlined, SendOutlined, SmileOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Input, Button, List, Space, Form, Upload, Card } from "antd";
-import TextArea from "antd/es/input/TextArea";
+import { 
+    ClockCircleOutlined,
+    DislikeOutlined,
+    HeartOutlined,
+    LikeOutlined,
+    PlusOutlined,
+    SmileOutlined,
+    UserOutlined 
+} from "@ant-design/icons";
+import { Avatar, Input, Button, List, Space, Form, Upload, Card, Divider } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -64,22 +71,8 @@ export default function Comment() {
 
     return (
         <>
-            <Form 
-                layout="vertical"
-            >
-                <Form.Item label="Ảnh" valuePropName="file">
-                    <Upload action="/upload.do" listType="picture-card">
-                        <button style={{ border: 0, background: 'none' }} type="button">
-                            <PlusOutlined />
-                            <div style={{ marginTop: 8 }}>Upload</div>
-                        </button>
-                    </Upload>
-                </Form.Item>
-                <Form.Item label="Nội dung">
-                    <TextArea rows={5} cols={4}/>
-                </Form.Item>
-                <Button size="large" type="primary" loading={loading} onClick={handleSetLoading}><SendOutlined /> Gửi bình luận</Button>
-            </Form>
+            <Divider orientation="left"><p>{exampleData.comment.length} Bình luận</p></Divider>
+            <Button type="primary" loading={loading} onClick={handleSetLoading}><PlusOutlined /> Thêm bình luận</Button>
             <List
                 size="large"
                 className="my-6"
@@ -91,27 +84,24 @@ export default function Comment() {
                 }}
                 dataSource={exampleData.comment} 
                 renderItem={(item) => (
-                    <List.Item style={{padding: 0}}>
-                        <Card
-                            className="my-4"
-                            actions={[
-                                <IconText icon={HeartOutlined} text="222" key="list-vertical-message" />,
-                                <IconText icon={SmileOutlined} text="242" key="list-vertical-message" />,
-                                <IconText icon={LikeOutlined} text="333" key="list-vertical-message" />,
-                                <IconText icon={DislikeOutlined} text="232" key="list-vertical-message" />,
-                            ]}
-                        >
-                            <List.Item.Meta
-                                avatar={<Avatar shape="square" size={70} src={item.user.avatar} />}
-                                description={(
-                                    <>
-                                        <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
-                                        <strong className="text-sm"><ClockCircleOutlined /> {item.createAt}</strong>
-                                        <p className="text-base text-black">{item.content}</p>
-                                    </>
-                                )}
-                            />
-                        </Card>
+                    <List.Item className="my-16 p-0"  
+                        actions={[
+                            <IconText icon={HeartOutlined} text="222" key="list-vertical-message" />,
+                            <IconText icon={SmileOutlined} text="242" key="list-vertical-message" />,
+                            <IconText icon={LikeOutlined} text="333" key="list-vertical-message" />,
+                            <IconText icon={DislikeOutlined} text="232" key="list-vertical-message" />,
+                        ]}
+                    >
+                        <List.Item.Meta
+                            avatar={<Avatar shape="square" size={60} src={item.user.avatar} />}
+                            description={(
+                                <>
+                                    <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
+                                    <strong className="text-sm"><ClockCircleOutlined /> {item.createAt}</strong>
+                                    <p className="text-black">{item.content}</p>
+                                </>
+                            )}
+                        />
                     </List.Item>
                 )}
             />

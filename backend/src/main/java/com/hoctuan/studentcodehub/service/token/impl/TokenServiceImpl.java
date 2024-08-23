@@ -8,9 +8,8 @@ import com.hoctuan.studentcodehub.service.common.AuthContext;
 import com.hoctuan.studentcodehub.service.token.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -29,6 +28,9 @@ public class TokenServiceImpl implements TokenService {
     private AuthContext authContext;
     @Autowired
     private DeviceService deviceService;
+    @Qualifier("jwtDecoder")
+    @Autowired
+    private JwtDecoder jwtDecoder;
 
     @Override
     public String buildToken(User user, HttpServletRequest request) {
@@ -40,7 +42,7 @@ public class TokenServiceImpl implements TokenService {
                 .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
                 .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
                 .subject(user.getId().toString())
-                .claim("role", user.getRole())
+                .claim("ROLE", user.getRole())
                 .build();
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
