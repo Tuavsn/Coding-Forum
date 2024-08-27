@@ -18,8 +18,8 @@ public class TopicServiceImpl extends BaseServiceImpl<
         TopicRequestDTO,
         UUID
         > implements TopicService {
-    private final TopicRepository topicRepository;
-    private final TopicMapper topicMapper;
+    private TopicRepository topicRepository;
+    private TopicMapper topicMapper;
 
     public TopicServiceImpl(TopicRepository topicRepository, TopicMapper topicMapper) {
         super(topicRepository, topicMapper);

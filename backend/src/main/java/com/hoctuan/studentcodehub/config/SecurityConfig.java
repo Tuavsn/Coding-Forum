@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +40,13 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api/auth/**",
             "/api/oauth2/**",
-            "/oauth2/**"
+            "/oauth2/**",
+    };
+
+    private String[] getWhiteList = {
+            "/api/topic/**",
+            "/api/post/**",
+            "/api/comment/**"
     };
 
 
@@ -58,6 +65,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(whiteList).permitAll();
+                    auth.requestMatchers(HttpMethod.GET, getWhiteList).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(auth -> {

@@ -8,25 +8,17 @@ export const login = async ({ email, password} : UserLogin) => {
 }
 
 export const logout = async () => {
-    const token = sessionStorage.getItem('userToken');
-    if(token) {
-        const result = await postData('api/auth/logout', {}, token ? token : '')
-        sessionStorage.removeItem('userToken')
-        sessionStorage.removeItem('username')
-        return result.Data
-    } else {
-        return null;
-    }
+    const token = sessionStorage.getItem('userToken') || undefined;
+    const result = await postData('api/auth/logout', {}, token)
+    sessionStorage.removeItem('userToken')
+    sessionStorage.removeItem('username')
+    return result.Data
 }
 
 export const getInfo = async () => {
-    const token = sessionStorage.getItem('userToken');
-    if(token) {
-        const result = await getData('api/auth/info', token ? token : '' );
-        return result.Data;
-    } else {
-        return null;
-    }
+    const token = sessionStorage.getItem('userToken') || undefined;
+    const result = await getData('api/auth/info', token );
+    return result.Data;
 }
 
 // export const getUserInfo = async 

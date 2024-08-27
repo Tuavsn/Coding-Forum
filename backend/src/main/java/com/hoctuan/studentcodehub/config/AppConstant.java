@@ -33,4 +33,11 @@ public class AppConstant {
 
     @Value("${bcrypt.log-rounds}")
     private Integer logRounds;
+
+    @Value("${spring.cloudinary.cloud-name")
+    private String cloudName;
+    @Value("${spring.cloudinary.api-key}")
+    private String apiKey;
+    @Value("${spring.cloudinary.api-secret")
+    private String apiSecret;
 }

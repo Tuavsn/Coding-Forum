@@ -114,11 +114,6 @@ declare type PostImage = {
     image: string;
 }
 
-declare type PostComment = {
-    user: User;
-    content: string;
-}
-
 declare type Post = {
     id: string;
     createdBy: Date;
@@ -130,6 +125,16 @@ declare type Post = {
     content: string;
     status: PostStatus;
     postImage: PostImage[];
-    postComment: [];
+    postComment: PostComment[];
     postReactions: [];
+}
+
+declare type PostComment = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    user: User;
+    content: string;
 }

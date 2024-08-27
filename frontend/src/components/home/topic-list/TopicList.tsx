@@ -5,7 +5,6 @@ import React from "react";
 import PostList from "../post-list/PostList";
 import { useQuery } from "react-query";
 import { getTopic } from "@/libs/actions/post.acttion";
-import { stringToSlug } from "@/libs/utils";
 
 export default function TopicList() {
 
@@ -17,7 +16,7 @@ export default function TopicList() {
             key: topic.id,
             label: topic.name,
             children: (
-                <PostList posts={topic.posts} topicSlug={stringToSlug(topic.name)} />
+                <PostList posts={topic.posts} topic={topic} />
             )
             })
         )}

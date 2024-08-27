@@ -3,9 +3,6 @@ package com.hoctuan.studentcodehub.model.dto.post;
 import com.hoctuan.studentcodehub.common.BaseResponseDTO;
 import com.hoctuan.studentcodehub.constant.PostStatus;
 import com.hoctuan.studentcodehub.model.dto.user.UserResponseDTO;
-import com.hoctuan.studentcodehub.model.entity.account.User;
-import com.hoctuan.studentcodehub.model.entity.post.PostComment;
-import com.hoctuan.studentcodehub.model.entity.post.PostImage;
 import com.hoctuan.studentcodehub.model.entity.post.PostReaction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +26,9 @@ public class PostResponseDTO extends BaseResponseDTO {
 
     private PostStatus status;
 
-    private List<PostImage> postImage;
+    private List<PostImageDTO> postImage;
 
-    private List<PostComment> postComment;
+    private List<PostCommentResponseDTO> postComment;
 
     private List<PostReaction> postReactions;
 }

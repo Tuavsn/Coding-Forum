@@ -1,5 +1,6 @@
 'use client'
 
+import Comment from "@/components/common/comment/Comment";
 import Loading from "@/components/common/loading/Loading";
 import { getPostDetail } from "@/libs/actions/post.acttion";
 import { formatDate } from "@/libs/utils";
@@ -38,40 +39,45 @@ export default function PostDetail() {
 
     return (
         data && (
-            <Card
-                className="w-full"
-                actions={[
-                    <IconText icon={HeartOutlined} text="222" key="list-vertical-message" />,
-                    <IconText icon={SmileOutlined} text="242" key="list-vertical-message" />,
-                    <IconText icon={LikeOutlined} text="333" key="list-vertical-message" />,
-                    <IconText icon={DislikeOutlined} text="232" key="list-vertical-message" />,
-                    <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
-                ]}
-            >
-                <Meta
-                    avatar={<Avatar shape="square" size={60} src={data.user.avatar} />}
-                    title={
-                        <div>
-                            <p className="text-xl">{data.header}</p>
-                            <p className="text-base text-slate-400 mt-1">
-                                <Link href="/user"><UserOutlined /> {data.user.username}</Link>
-                                <ClockCircleOutlined className="ml-4" /> {formatDate(data.createdAt.toString())}
-                            </p>
-                        </div>
-                    }
-                />
-                <Divider />
-                {data.postImage && (
-                    <Carousel arrows style={{backgroundColor: "black"}}>
-                        {data.postImage.map((image, index) => (
-                            <Image key={index} src={image.image} alt={image.image} />
-                        ))}
-                    </Carousel>
-                )}
-                <Typography className="mt-2">
-                    {data.content}
-                </Typography>
-            </Card>
+            <>
+                <Card
+                    className="w-full"
+                    actions={[
+                        <IconText icon={HeartOutlined} text="222" key="list-vertical-message" />,
+                        <IconText icon={SmileOutlined} text="242" key="list-vertical-message" />,
+                        <IconText icon={LikeOutlined} text="333" key="list-vertical-message" />,
+                        <IconText icon={DislikeOutlined} text="232" key="list-vertical-message" />,
+                        <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                    ]}
+                >
+                    <Meta
+                        avatar={<Avatar shape="square" size={60} src={data.user.avatar} />}
+                        title={
+                            <div>
+                                <p className="text-xl">{data.header}</p>
+                                <p className="text-sm text-slate-400 mt-1">
+                                    <Link href="/user"><UserOutlined /> {data.user.username}</Link>
+                                    <ClockCircleOutlined className="ml-4" /> {formatDate(data.createdAt.toString())}
+                                </p>
+                            </div>
+                        }
+                    />
+                    <Divider />
+                    {data.postImage && (
+                        <Carousel arrows style={{backgroundColor: "black"}}>
+                            {data.postImage.map((image, index) => (
+                                <Image key={index} src={image.image} alt={image.image} />
+                            ))}
+                        </Carousel>
+                    )}
+                    <Typography className="mt-2">
+                        <div dangerouslySetInnerHTML={{ __html:data.content }} />
+                    </Typography>
+                </Card>
+                <Card className="my-6">
+                    <Comment post={data}/>
+                </Card>
+            </>
         )
     )
 }

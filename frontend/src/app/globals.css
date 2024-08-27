@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.ck-editor__editable {
+  min-height: 400px;
+}

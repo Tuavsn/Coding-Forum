@@ -1,5 +1,7 @@
 'use client'
 
+import { createComment } from "@/libs/actions/post.acttion";
+import { formatDate } from "@/libs/utils";
 import { 
     ClockCircleOutlined,
     DislikeOutlined,
@@ -9,9 +11,12 @@ import {
     SmileOutlined,
     UserOutlined 
 } from "@ant-design/icons";
-import { Avatar, Input, Button, List, Space, Form, Upload, Card, Divider } from "antd";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col } from "antd";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -20,91 +25,135 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     </Space>
 );
 
+export default function Comment({post}:{post: Post}) {
+    const queryClient = useQueryClient()
 
-const exampleData = {
-    comment: [
-        {
-            user: {
-                username: "admin1",
-                avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-            },
-            content: "Nice content",
-            createAt: '19/8/2024 10:23 am'
-        },
-        {
-            user: {
-                username: "admin1",
-                avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-            },
-            content: "Nice content",
-            createAt: '19/8/2024 10:23 am'
-        },
-        {
-            user: {
-                username: "admin1",
-                avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-            },
-            content: "Nice content",
-            createAt: '19/8/2024 10:23 am'
-        },
-        {
-            user: {
-                username: "admin1",
-                avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-            },
-            content: "Nice content",
-            createAt: '19/8/2024 10:23 am'
-        },
-    ]
-}
+    const sortedComment = [...post.postComment].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-export default function Comment() {
+    const [openDrawer, setOpenDrawer] = useState(false)
+
     const [loading, setLoading] = useState(false)
 
-    const handleSetLoading = () => {
-        setLoading(true)
+    const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
 
-        setTimeout(() => {
+    const [commentContent, setCommentContent] = useState('')
+
+    useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
+
+    const mutation = useMutation(createComment, {
+        onMutate: () => {
+            setLoading(true)
+        },
+
+        onSuccess: () => {
             setLoading(false)
-        }, 3000);
+            setOpenDrawer(false)
+            queryClient.invalidateQueries('getPostDetail')
+            setCommentContent('')
+        }
+    })
+
+    const showDrawer = () => {
+        setOpenDrawer(true);
+    };
+    
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+        setCommentContent('')
+    };
+
+    const handleSetLoading = () => {
+        mutation.mutate({
+            post: {
+                id: post.id
+            },
+            content: commentContent
+        })
     }
 
     return (
         <>
-            <Divider orientation="left"><p>{exampleData.comment.length} Bình luận</p></Divider>
-            <Button type="primary" loading={loading} onClick={handleSetLoading}><PlusOutlined /> Thêm bình luận</Button>
+            <Divider orientation="left"><p>{sortedComment.length} Bình luận</p></Divider>
+            {
+                username && (
+                    <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm bình luận</Button>
+                )
+            }
             <List
                 size="large"
-                className="my-6"
                 bordered={false}
+                className="my-6"
                 split={false}
                 itemLayout="vertical" 
                 pagination={{
                     pageSize: 5
                 }}
-                dataSource={exampleData.comment} 
+                dataSource={sortedComment} 
                 renderItem={(item) => (
-                    <List.Item className="my-16 p-0"  
+                    <List.Item className="mb-10 p-0"  
                         actions={[
-                            <IconText icon={HeartOutlined} text="222" key="list-vertical-message" />,
-                            <IconText icon={SmileOutlined} text="242" key="list-vertical-message" />,
-                            <IconText icon={LikeOutlined} text="333" key="list-vertical-message" />,
-                            <IconText icon={DislikeOutlined} text="232" key="list-vertical-message" />,
+                            <Button className="border-none" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
+                            <Button className="border-none" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
+                            <Button className="border-none" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
+                            <Button className="border-none" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
                         ]}
                     >
                         <List.Item.Meta
-                            avatar={<Avatar shape="square" size={60} src={item.user.avatar} />}
+                            avatar={<Avatar shape="square" size={60} src={item.user?.avatar} />}
                             description={(
                                 <>
                                     <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
-                                    <strong className="text-sm"><ClockCircleOutlined /> {item.createAt}</strong>
-                                    <p className="text-black">{item.content}</p>
+                                    <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
+                                    <p className="text-sm text-black" dangerouslySetInnerHTML={{ __html:item.content }} />
                                 </>
                             )}
                         />
                     </List.Item>
                 )}
             />
+
+            <Drawer
+                title="Thêm bình luận mới"
+                width={720}
+                onClose={closeDrawer}
+                open={openDrawer}
+                styles={{
+                body: {
+                    paddingBottom: 80,
+                },
+                }}
+                extra={
+                <Space>
+                    <Button onClick={closeDrawer}>Hủy</Button>
+                    <Button onClick={handleSetLoading} type="primary" loading={loading}>
+                        Thêm
+                    </Button>
+                </Space>
+                }
+            >
+                <Form layout="vertical" hideRequiredMark>
+                    <Row gutter={16}>
+                        <Col span={24}>
+                        <Form.Item
+                            name="content"
+                            label="Nội dung"
+                            rules={[
+                            {
+                                required: true,
+                                message: 'Nhập nội dung bình luận',
+                            },
+                            ]}
+                        >
+                            <CKEditor
+                                editor={ ClassicEditor }
+                                data={commentContent}
+                                onChange={(event, editor) => setCommentContent(editor.getData())}
+                            />
+                        </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Drawer>
         </>
     )
 }

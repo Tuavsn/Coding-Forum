@@ -29,13 +29,3 @@ export const formatDate = (isoString: string): string => {
   
     return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
-
-export const truncateWords = (input: string, wordLimit: number): string => {
-    const words = input.split(' ');
-  
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(' ') + '........';
-    }
-  
-    return input;
-}

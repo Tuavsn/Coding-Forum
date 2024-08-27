@@ -8,21 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @SuperBuilder
-public class PostRequestDTO extends BaseRequestDTO {
-    private TopicRequestDTO topic;
+public class PostCommentRequestDTO extends BaseRequestDTO {
+    private PostRequestDTO post;
 
     private UserRequestDTO user;
 
-    private String header;
-
     private String content;
-
-    private List<PostImageDTO> postImage;
 }

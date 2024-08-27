@@ -17,8 +17,8 @@ public class MessageServiceImpl extends BaseServiceImpl<
         MessageResponseDTO,
         MessageRequestDTO,
         UUID> implements MessageService {
-    private final MessageRepository messageRepository;
-    private final MessageMapper messageMapper;
+    private MessageRepository messageRepository;
+    private MessageMapper messageMapper;
 
     public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper) {
         super(messageRepository, messageMapper);

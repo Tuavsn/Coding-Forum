@@ -17,8 +17,8 @@ public class NotifyServiceImpl extends BaseServiceImpl<
         NotifyResponseDTO,
         NotifyRequestDTO,
         UUID> implements NotifyService {
-    private final NotifyRepository notifyRepository;
-    private final NotifyMapper notifyMapper;
+    private NotifyRepository notifyRepository;
+    private NotifyMapper notifyMapper;
 
     public NotifyServiceImpl(NotifyRepository notifyRepository, NotifyMapper notifyMapper) {
         super(notifyRepository, notifyMapper);

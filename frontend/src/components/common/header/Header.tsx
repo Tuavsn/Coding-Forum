@@ -16,7 +16,7 @@ import { FloatButton } from "antd";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { logout } from "@/libs/actions/user.actions";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -32,9 +32,12 @@ export default function Header() {
 
     const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
 
+    const queryClient = useQueryClient()
+
     const handleLogout = async () => {
         await logout().then(() => {
             setUsername(null)
+            queryClient.invalidateQueries('getUsername')
         })
     }
 

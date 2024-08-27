@@ -17,8 +17,8 @@ public class GroupServiceImpl extends BaseServiceImpl<
         GroupResponseDTO,
         GroupRequestDTO,
         UUID> implements GroupService {
-    private final GroupRepository groupRepository;
-    private final GroupMapper groupMapper;
+    private GroupRepository groupRepository;
+    private GroupMapper groupMapper;
 
     public GroupServiceImpl(GroupRepository groupRepository, GroupMapper groupMapper) {
         super(groupRepository, groupMapper);
