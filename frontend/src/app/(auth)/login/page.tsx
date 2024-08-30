@@ -8,18 +8,15 @@ import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
 export default function LoginPage() {
+    const queryClient = useQueryClient()
+    
+    const router = useRouter()
 
     const [isLoading, setIsloading] = useState(true)
-
-    const queryClient = useQueryClient()
-
-    const router = useRouter()
 
     const [email, setEmail] = useState<string>('')
 
     const [password, setPassword] = useState<string>('')
-
-    const [messageApi, contextHolder] = message.useMessage();
 
     const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value)
@@ -35,26 +32,39 @@ export default function LoginPage() {
         return emailRegex.test(email);
     }
 
-    const mutation = useMutation(() => login({email: email, password: password}), {
-        onSuccess: () => {
-            queryClient.invalidateQueries('getUsername')
-            router.push('/home')
-        }
+    const loginMutation = useMutation(() => login({email: email, password: password}), {
+        onMutate: () => {
+            setIsloading(true)
+        },
+
+        onSuccess: (data) => {
+            console.log(sessionStorage.getItem('username'))
+            queryClient.invalidateQueries(['getUsername'], { refetchType: 'all' })
+            message.success(data.Message)
+            setIsloading(false)
+            // router.push('/home')
+        },
+
+        onError: (error) => {
+            setIsloading(false)
+            if (error instanceof Error) {
+                message.error(error.message);
+            } else {
+                message.error('Có lỗi xảy ra');
+            }
+        },
     })
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         if(isValidEmail(email)) {
-            mutation.mutate()
+            loginMutation.mutate()
         } else {
-            messageApi.open({
-                type: 'error',
-                content: 'Email không hợp lệ',
-                duration: 5,
-            });
+            message.error("Email không hợp lệ")
         }
     }
 
+    // Login route guard
     useEffect(() => {
         if(sessionStorage.getItem('userToken') != null) {
             router.push('/home')
@@ -68,7 +78,6 @@ export default function LoginPage() {
     }
 
     return <>
-        {contextHolder}
         <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
             <h1 className="text-center text-4xl font-medium">Đăng nhập</h1>
             <div className="my-5">

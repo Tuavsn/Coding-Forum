@@ -1,11 +1,12 @@
 'use client'
 
-import { createPost } from "@/libs/actions/post.acttion";
+import { uploadImage } from "@/libs/actions/image.action";
+import { createPost, deletePost } from "@/libs/actions/post.acttion";
 import { formatDate, stringToSlug } from "@/libs/utils";
-import { ClockCircleOutlined, DislikeOutlined, HeartOutlined, LikeOutlined, MessageOutlined, PlusOutlined, RightCircleOutlined, SmileOutlined, UserOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, DislikeOutlined, HeartOutlined, LikeOutlined, MessageOutlined, PlusOutlined, RightCircleOutlined, SettingOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, Card, Col, Divider, Drawer, Form, Image, Input, List, Row, Space } from "antd";
+import { Avatar, Button, Card, Col, Divider, Drawer, Form, Image, Input, List, message, Popconfirm, Row, Space, Upload } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -32,25 +33,45 @@ export default function PostList({posts, topic}: postList) {
 
     const [openDrawer, setOpenDrawer] = useState(false)
 
-    const [loading, setLoading] = useState(false)
+    const [postCreateLoading, setPostCreateLoading] = useState(false)
+
+    const [postDeleteLoading, setPostDeleteLoading] = useState(false)
 
     const [postHeader, setPostHeader] = useState('')
 
     const [postContent, setPostContent] = useState('')
 
+    const [upload, setUpload] = useState([])
+
+    const [postImage, setPostImage] = useState('')
+
     useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
 
-    const mutation = useMutation(createPost, {
+    const postCreateMutation = useMutation(createPost, {
         onMutate: () => {
-            setLoading(true)
+            setPostCreateLoading(true)
         },
 
-        onSuccess: () => {
-            setLoading(false)
+        onSuccess: (data) => {
+            setPostCreateLoading(false)
             setOpenDrawer(false)
             queryClient.invalidateQueries('getTopic')
             setPostHeader('')
             setPostContent('')
+            setPostImage('')
+            message.success(data.Message)
+        }
+    })
+
+    const postDeleteMutation = useMutation(deletePost, {
+        onMutate: () => {
+            setPostDeleteLoading(true)
+        },
+
+        onSuccess: (data) => {
+            setPostDeleteLoading(false)
+            queryClient.invalidateQueries('getTopic')
+            message.success(data.Message)
         }
     })
 
@@ -62,30 +83,45 @@ export default function PostList({posts, topic}: postList) {
         setOpenDrawer(false);
         setPostHeader('')
         setPostContent('')
+        setPostImage('')
     };
 
-    const handleSetLoading = () => {
-        mutation.mutate({
+    const handleFileChange = async(selectedFile: File) => {
+        const formData = new FormData()
+        formData.append('file', selectedFile)
+        formData.append('upload_preset', 'studentcodehub_preset');
+        setPostImage(await uploadImage(formData)) 
+    };
+
+    const handleDeletePost = (id: string) => {
+        postDeleteMutation.mutate(id)
+    }
+
+    const handleCreatePost = () => {
+        postCreateMutation.mutate({
             topic: {
                 id: topic.id
             },
             header: postHeader,
-            content: postContent
+            content: postContent,
+            postImage: [
+                {image: postImage}
+            ]
         })
     }
 
     return (
         <>
+            {
+                username && (
+                    <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm Post mới</Button>
+                )
+            }
+            <Divider orientation="left"><p>{sortedPost.length} Bài Post</p></Divider>
             <Card>
-                {
-                    username && (
-                        <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm Post mới</Button>
-                    )
-                }
-                <Divider orientation="left"><p>{sortedPost.length} Bài Post</p></Divider>
                 <List
                     size="large"
-                    className="my-6"
+                    className="my-2"
                     bordered={false}
                     split={false}
                     itemLayout="vertical" 
@@ -97,16 +133,28 @@ export default function PostList({posts, topic}: postList) {
                         <List.Item
                             className="px-0"
                             actions={[
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={MessageOutlined} text="244"/></Button>
+                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
+                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
+                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
+                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
+                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={MessageOutlined} text="244"/></Button>,
+                                <Popconfirm 
+                                    title="Tuỳ chọn"
+                                    onConfirm={() => handleDeletePost(item.id)}
+                                    // onCancel={cancel}
+                                    okText="Xoá"
+                                    cancelText="Chỉnh sửa"
+                                    key="list-vertical-message"
+                                >
+                                    <Button className="border-none px-2"><IconText icon={SettingOutlined} text=""/></Button>
+                                </Popconfirm>
                             ]}
                             extra={
                                 item.postImage && (
                                     <Image 
                                         width={300}
+                                        height={300}
+                                        style={{objectFit: "contain"}}
                                         alt={item.postImage[0]?.image}
                                         src={item.postImage[0]?.image}
                                     />
@@ -130,7 +178,7 @@ export default function PostList({posts, topic}: postList) {
             </Card>
 
             <Drawer
-                title="Thêm bình luận mới"
+                title="Thêm bài Post mới"
                 width={720}
                 onClose={closeDrawer}
                 open={openDrawer}
@@ -142,7 +190,7 @@ export default function PostList({posts, topic}: postList) {
                 extra={
                 <Space>
                     <Button onClick={closeDrawer}>Hủy</Button>
-                    <Button onClick={handleSetLoading} type="primary" loading={loading}>
+                    <Button onClick={handleCreatePost} type="primary" loading={postCreateLoading}>
                         Thêm
                     </Button>
                 </Space>
@@ -175,6 +223,23 @@ export default function PostList({posts, topic}: postList) {
                                     onChange={(event, editor) => setPostContent(editor.getData())}
                                     data={postContent}
                                 />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={16}>
+                        <Col span={22}>
+                            <Form.Item
+                                label="Hình ảnh"
+                                rules={[
+                                {
+                                    required: true,
+                                    message: 'Upload ảnh bài viết',
+                                },
+                                ]}
+                            >
+                                <Upload beforeUpload={handleFileChange} maxCount={1}>
+                                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                                </Upload>
                             </Form.Item>
                         </Col>
                     </Row>

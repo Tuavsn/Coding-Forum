@@ -1,7 +1,7 @@
 import TopicList from "@/components/home/topic-list/TopicList";
 import WelcomeCard from "@/components/home/wellcome-card/WelcomeCard";
 import { HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Divider } from "antd";
+import { Breadcrumb } from "antd";
 
 export default function HomePage() {
     return (
@@ -20,11 +20,9 @@ export default function HomePage() {
                 ]}
             />
             <WelcomeCard />
-            <Divider orientation="left">Post mới</Divider>
-            <div className="mt-2">
+            <div>
                 <TopicList />
             </div>
-            <></>
         </div>
     )
 }

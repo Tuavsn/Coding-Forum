@@ -10,6 +10,7 @@ spring:
     properties:
       hibernate:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+    show-sql: false
   datasource:
     url: ${SPRING_DATA_SOURCE_URL}
     username: ${SPRING_DATA_SOURCE_USERNAME}

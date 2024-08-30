@@ -2,9 +2,12 @@ import { getData, postData } from "@/utils/FetchData"
 
 export const login = async ({ email, password} : UserLogin) => {
     const result = await postData('api/auth/login', {email, password})
+    if (!(result.Status == '200')) {
+        throw new Error(`${result.Message}`);
+    }
     sessionStorage.setItem('username', result.Data.username)
     sessionStorage.setItem('userToken', result.Data.token)
-    return result.Data;
+    return result;
 }
 
 export const logout = async () => {
@@ -12,7 +15,7 @@ export const logout = async () => {
     const result = await postData('api/auth/logout', {}, token)
     sessionStorage.removeItem('userToken')
     sessionStorage.removeItem('username')
-    return result.Data
+    return result
 }
 
 export const getInfo = async () => {

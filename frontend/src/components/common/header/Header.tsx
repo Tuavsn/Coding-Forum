@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Menu, MenuProps } from "antd";
+import { Badge, Menu, MenuProps, message } from "antd";
 import { 
     HomeOutlined, 
     CodeOutlined, 
@@ -21,6 +21,7 @@ import { useQuery, useQueryClient } from "react-query";
 type MenuItem = Required<MenuProps>['items'][number]
 
 export default function Header() {
+    const queryClient = useQueryClient()
 
     const path = usePathname()
 
@@ -32,16 +33,15 @@ export default function Header() {
 
     const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
 
-    const queryClient = useQueryClient()
+    useQuery({queryKey: ['getUsername'], queryFn: () => setUsername(sessionStorage.getItem('username'))})
 
     const handleLogout = async () => {
         await logout().then(() => {
-            setUsername(null)
-            queryClient.invalidateQueries('getUsername')
+            // setUsername(null)
+            queryClient.invalidateQueries({queryKey: ['getUsername']})
+            message.success("Đăng xuất thành công")
         })
     }
-
-    useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
 
     const handleSetCurrentKey:MenuProps['onClick'] = (e) => {
         setCurrentKey(e.key)

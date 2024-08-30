@@ -64,7 +64,7 @@ export default function PostDetail() {
                     />
                     <Divider />
                     {data.postImage && (
-                        <Carousel arrows style={{backgroundColor: "black"}}>
+                        <Carousel style={{backgroundColor: "black"}}>
                             {data.postImage.map((image, index) => (
                                 <Image key={index} src={image.image} alt={image.image} />
                             ))}
@@ -74,9 +74,7 @@ export default function PostDetail() {
                         <div dangerouslySetInnerHTML={{ __html:data.content }} />
                     </Typography>
                 </Card>
-                <Card className="my-6">
-                    <Comment post={data}/>
-                </Card>
+                <Comment post={data}/>
             </>
         )
     )

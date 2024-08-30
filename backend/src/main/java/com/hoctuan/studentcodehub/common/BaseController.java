@@ -89,15 +89,15 @@ public class BaseController<Model extends BaseEntity,
                 , HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable ID id) {
         baseService.delete(id);
         return new ResponseEntity<>(
                 BaseResponse.builder()
                         .message("Xoá thành công")
                         .data(null)
-                        .status(HttpStatus.NO_CONTENT.value())
+                        .status(HttpStatus.ACCEPTED.value())
                         .build()
-                , HttpStatus.NO_CONTENT);
+                , HttpStatus.ACCEPTED);
     }
 }

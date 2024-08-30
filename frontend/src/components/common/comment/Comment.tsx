@@ -13,9 +13,9 @@ import {
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col } from "antd";
+import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card } from "antd";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
@@ -40,16 +40,17 @@ export default function Comment({post}:{post: Post}) {
 
     useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
 
-    const mutation = useMutation(createComment, {
+    const createCommentMutation = useMutation(createComment, {
         onMutate: () => {
             setLoading(true)
         },
 
-        onSuccess: () => {
+        onSuccess: (data) => {
             setLoading(false)
             setOpenDrawer(false)
-            queryClient.invalidateQueries('getPostDetail')
             setCommentContent('')
+            queryClient.invalidateQueries('getPostDetail')
+            message.success(data.Message)
         }
     })
 
@@ -63,7 +64,7 @@ export default function Comment({post}:{post: Post}) {
     };
 
     const handleSetLoading = () => {
-        mutation.mutate({
+        createCommentMutation.mutate({
             post: {
                 id: post.id
             },
@@ -79,38 +80,41 @@ export default function Comment({post}:{post: Post}) {
                     <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm bình luận</Button>
                 )
             }
-            <List
-                size="large"
-                bordered={false}
-                className="my-6"
-                split={false}
-                itemLayout="vertical" 
-                pagination={{
-                    pageSize: 5
-                }}
-                dataSource={sortedComment} 
-                renderItem={(item) => (
-                    <List.Item className="mb-10 p-0"  
-                        actions={[
-                            <Button className="border-none" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
-                            <Button className="border-none" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
-                            <Button className="border-none" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
-                            <Button className="border-none" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
-                        ]}
-                    >
-                        <List.Item.Meta
-                            avatar={<Avatar shape="square" size={60} src={item.user?.avatar} />}
-                            description={(
-                                <>
-                                    <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
-                                    <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                    <p className="text-sm text-black" dangerouslySetInnerHTML={{ __html:item.content }} />
-                                </>
-                            )}
-                        />
-                    </List.Item>
-                )}
-            />
+            
+            <Card className="my-6">
+                <List
+                    size="large"
+                    bordered={false}
+                    className="my-8"
+                    split={false}
+                    itemLayout="vertical" 
+                    pagination={{
+                        pageSize: 5
+                    }}
+                    dataSource={sortedComment} 
+                    renderItem={(item) => (
+                        <List.Item className="mb-10 p-0"  
+                            actions={[
+                                <Button className="border-none" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
+                                <Button className="border-none" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
+                                <Button className="border-none" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
+                                <Button className="border-none" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
+                            ]}
+                        >
+                            <List.Item.Meta
+                                avatar={<Avatar shape="square" size={60} src={item.user?.avatar} />}
+                                description={(
+                                    <>
+                                        <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
+                                        <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
+                                        <p className="text-sm text-black" dangerouslySetInnerHTML={{ __html:item.content }} />
+                                    </>
+                                )}
+                            />
+                        </List.Item>
+                    )}
+                />
+            </Card>
 
             <Drawer
                 title="Thêm bình luận mới"

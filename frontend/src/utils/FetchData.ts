@@ -25,7 +25,7 @@ export const postData = async(url: string, post: object, token?: string) => {
     return result.json();
 }
 
-export const putData = async(url: string, put: object, token: string) => {
+export const putData = async(url: string, put: object, token?: string) => {
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -38,7 +38,7 @@ export const putData = async(url: string, put: object, token: string) => {
     return result.json();
 }
 
-export const patchData = async(url: string, patch: object, token: string) => {
+export const patchData = async(url: string, patch: object, token?: string) => {
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -51,7 +51,7 @@ export const patchData = async(url: string, patch: object, token: string) => {
     return result.json();
 }
 
-export const deleteData = async(url: string, token: string) => {
+export const deleteData = async(url: string, token?: string) => {
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })

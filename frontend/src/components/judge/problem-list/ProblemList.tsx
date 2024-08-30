@@ -1,6 +1,6 @@
 'use client'
 
-import { List, Space, Tabs, Tag } from "antd";
+import { Card, List, Space, Tabs, Tag } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import React from "react";
 import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined } from "@ant-design/icons";
@@ -483,32 +483,35 @@ export default function ProblemList() {
             key: index.toString(),
             label: topic.name,
             children: (
-                <List
-                    size="large"
-                    className="mb-8"
-                    bordered
-                    split={false}
-                    itemLayout="vertical" 
-                    pagination={{
-                        pageSize: 10
-                    }}
-                    dataSource={topic.posts} 
-                    renderItem={(item) => (
-                        <List.Item
-                            actions={[
-                                <Tag key='1' color={getTopicColor(topic.name)}>{topic.name}</Tag>,
-                                <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />,
-                                <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
-                            ]}
-                        >
-                            <List.Item.Meta
-                                title={<Link href={`/problem/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
-                                description={<strong><ClockCircleOutlined /> {item.createAt}</strong>}
-                            />
-                            {item.description}
-                        </List.Item>
-                    )}
-                />
+                <Card>
+                    <List
+                        size="large"
+                        className="mb-8"
+                        bordered={false}
+                        split={false}
+                        itemLayout="vertical" 
+                        pagination={{
+                            pageSize: 10
+                        }}
+                        dataSource={topic.posts} 
+                        renderItem={(item) => (
+                            <List.Item
+                                className="px-0"
+                                actions={[
+                                    <Tag key='1' color={getTopicColor(topic.name)}>{topic.name}</Tag>,
+                                    <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />,
+                                    <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                                ]}
+                            >
+                                <List.Item.Meta
+                                    title={<Link href={`/problem/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
+                                    description={<strong><ClockCircleOutlined /> {item.createAt}</strong>}
+                                />
+                                {item.description}
+                            </List.Item>
+                        )}
+                    />
+                </Card>
             )
         }))}>
         </Tabs>
