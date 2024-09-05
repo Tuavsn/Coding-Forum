@@ -369,16 +369,7 @@ export default function PostList({posts, topic}: postList) {
                                     {fileList.length >= 8 ? null : uploadButton}
                                 </Upload>
                                 {previewImage && (
-                                    <img
-                                        alt='none'
-                                        wrapperStyle={{display: 'none'}}
-                                        preview={{
-                                            visible: previewOpen,
-                                            onVisibleChange: (visible) => setPreviewOpen(visible),
-                                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                                        }}
-                                        src={previewImage}
-                                    />
+                                    <img src={previewImage} width={100} alt="preview" />
                                 )}
                             </Form.Item>
                         </Col>

@@ -332,15 +332,7 @@ export default function PostDetail() {
                                         {fileList.length >= 8 ? null : uploadButton}
                                     </Upload>
                                     {previewImage && (
-                                        <img
-                                            wrapperStyle={{display: 'none'}}
-                                            preview={{
-                                                visible: previewOpen,
-                                                onVisibleChange: (visible) => setPreviewOpen(visible),
-                                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                                            }}
-                                            src={previewImage}
-                                        />
+                                        <img src={previewImage} alt="preview"/>
                                     )}
                                 </Form.Item>
                             </Col>
