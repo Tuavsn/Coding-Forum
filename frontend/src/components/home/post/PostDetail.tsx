@@ -186,6 +186,7 @@ export default function PostDetail() {
 
         setPostImage(postImages);
     }
+    
 
     if(isLoading) {
         return (<Loading />)

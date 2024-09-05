@@ -2,10 +2,16 @@
 
 import { Divider, Tabs } from "antd";
 import React from "react";
-import PostList from "../post-list/PostList";
 import { useQuery } from "react-query";
 import { getTopic } from "@/libs/actions/post.acttion";
 import { Topic } from "@/libs/types";
+import dynamic from "next/dynamic";
+
+const PostList = dynamic(
+    () => {
+        return import("../post-list/PostList")
+    }, {ssr: false}
+)
 
 export default function TopicList() {
 

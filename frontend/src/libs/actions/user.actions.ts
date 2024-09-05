@@ -19,17 +19,12 @@ export const register = async({email, username, password} : UserRegist) => {
 }
 
 export const logout = async () => {
-    const token = sessionStorage.getItem('userToken') || undefined;
-    const result = await postData('api/auth/logout', {}, token)
+    const result = await postData('api/auth/logout', {})
     sessionStorage.removeItem('userToken')
     return result
 }
 
 export const getInfo = async () => {
-    const token = sessionStorage.getItem('userToken') || undefined;
-    const result = await getData('api/auth/profile', token );
+    const result = await getData('api/auth/profile');
     return result.Data;
 }
-
-// export const getUserInfo = async 
-

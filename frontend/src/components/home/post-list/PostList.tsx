@@ -207,7 +207,7 @@ export default function PostList({posts, topic}: postList) {
 
         setPostImage(postImages);
     }
-
+    
     return (
         <>
             {
