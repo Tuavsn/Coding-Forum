@@ -1,15 +1,18 @@
 'use client'
 
-import { uploadImage } from "@/libs/actions/image.action";
-import { createPost, deletePost } from "@/libs/actions/post.acttion";
-import { formatDate, stringToSlug } from "@/libs/utils";
-import { ClockCircleOutlined, DislikeOutlined, HeartOutlined, LikeOutlined, MessageOutlined, PlusOutlined, RightCircleOutlined, SettingOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { uploadButton } from "@/components/common/upload/UploadButton";
+import { AuthContext } from "@/context/AuthContextProvider";
+import { createPost, deletePost, dislikePost, likePost, updatePost } from "@/libs/actions/post.acttion";
+import { ReactionType } from "@/libs/enum";
+import { FileType, Post, PostImage, Topic } from "@/libs/types";
+import { formatDate, getBase64, stringToSlug } from "@/libs/utils";
+import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, HeartOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined, PlusOutlined, RightCircleOutlined, SettingOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, Card, Col, Divider, Drawer, Form, Image, Input, List, message, Popconfirm, Row, Space, Upload } from "antd";
+import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Space, Upload, UploadFile, UploadProps } from "antd";
 import Link from "next/link";
-import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import React, { useContext, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 
 interface postList {
     posts: Post[];
@@ -25,28 +28,35 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 
 
 export default function PostList({posts, topic}: postList) {
+    const {auth, setAuth} = useContext(AuthContext)
+
     const queryClient = useQueryClient()
 
     const sortedPost = [...posts].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
 
     const [openDrawer, setOpenDrawer] = useState(false)
 
     const [postCreateLoading, setPostCreateLoading] = useState(false)
 
+    const [postUpdateLoading, setPostUpdateLoading] = useState(false)
+
     const [postDeleteLoading, setPostDeleteLoading] = useState(false)
+
+    const [postId, setPostId] = useState('')
 
     const [postHeader, setPostHeader] = useState('')
 
     const [postContent, setPostContent] = useState('')
+    
+    const [postImage, setPostImage] = useState<PostImage[]>([])
 
-    const [upload, setUpload] = useState([])
+    const [previewOpen, setPreviewOpen] = useState(false)
 
-    const [postImage, setPostImage] = useState('')
+    const [previewImage, setPreviewImage] = useState('')
 
-    useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
+    const [fileList, setFileList] = useState<UploadFile[]>([])
 
+    // create Post
     const postCreateMutation = useMutation(createPost, {
         onMutate: () => {
             setPostCreateLoading(true)
@@ -58,11 +68,66 @@ export default function PostList({posts, topic}: postList) {
             queryClient.invalidateQueries('getTopic')
             setPostHeader('')
             setPostContent('')
-            setPostImage('')
+            setPostImage([])
+            setFileList([])
             message.success(data.Message)
         }
     })
 
+    const handleCreatePost = () => {
+        postCreateMutation.mutate({
+            topicId: topic.id,
+            newPost: {
+                header: postHeader,
+                content: postContent,
+                postImage: postImage
+            }
+        })
+    }
+
+    const showCreatePostDrawer = () => {
+        setOpenDrawer(true);
+    };
+
+    // update Post
+    const postUpdateMutation = useMutation(updatePost, {
+        onMutate: () => {
+            setPostUpdateLoading(true)
+        },
+
+        onSuccess: (data) => {
+            setPostUpdateLoading(false)
+            setOpenDrawer(false)
+            queryClient.invalidateQueries('getTopic')
+            setPostId('')
+            setPostHeader('')
+            setPostContent('')
+            setPostImage([])
+            setFileList([])
+            message.success(data.Message)
+        }
+    })
+
+    const handleUpdatePost = () => {
+        postUpdateMutation.mutate({
+            topicId: topic.id,
+            postId: postId,
+            newPost: {
+                header: postHeader,
+                content: postContent,
+                postImage: postImage
+            }
+        })
+    }
+
+    const showUpdatePostDrawer = (post:Post) => {
+        setOpenDrawer(true);
+        setPostId(post.id)
+        setPostHeader(post.header)
+        setPostContent(post.content)
+    }
+
+    // delete Post
     const postDeleteMutation = useMutation(deletePost, {
         onMutate: () => {
             setPostDeleteLoading(true)
@@ -75,46 +140,79 @@ export default function PostList({posts, topic}: postList) {
         }
     })
 
-    const showDrawer = () => {
-        setOpenDrawer(true);
-    };
-    
-    const closeDrawer = () => {
-        setOpenDrawer(false);
-        setPostHeader('')
-        setPostContent('')
-        setPostImage('')
-    };
-
-    const handleFileChange = async(selectedFile: File) => {
-        const formData = new FormData()
-        formData.append('file', selectedFile)
-        formData.append('upload_preset', 'studentcodehub_preset');
-        setPostImage(await uploadImage(formData)) 
-    };
-
     const handleDeletePost = (id: string) => {
         postDeleteMutation.mutate(id)
     }
 
-    const handleCreatePost = () => {
-        postCreateMutation.mutate({
-            topic: {
-                id: topic.id
-            },
-            header: postHeader,
-            content: postContent,
-            postImage: [
-                {image: postImage}
-            ]
-        })
+    // like Post
+    const postLikeMutation = useMutation(likePost, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries('getTopic')
+            message.success(data.Message)
+        }
+    })
+
+    const handleLikePost = (id: string) => {
+        auth ? postLikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+    }
+
+    // dislike Post
+    const postDislikeMutation = useMutation(dislikePost, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries('getTopic')
+            message.success(data.Message)
+        }
+    })
+
+    const handleDislikePost = (id: string) => {
+        auth ? postDislikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+    }
+
+    // common
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+        setPostHeader('')
+        setPostContent('')
+        setPostImage([])
+    }
+
+    const handlePreview = async (file: UploadFile) => {
+        if (!file.url && !file.preview) {
+          file.preview = await getBase64(file.originFileObj as FileType)
+        }
+    
+        setPreviewImage(file.url || (file.preview as string))
+        setPreviewOpen(true)
+    }
+
+    const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
+        const updatedFileList = await Promise.all(
+            newFileList.map(async (file) => {
+              if (file.originFileObj && !file.url && !file.preview) {
+                const base64 = await getBase64(file.originFileObj as FileType)
+                return {
+                  ...file,
+                  url: base64,
+                }
+              }
+              return file
+            })
+        )
+
+        setFileList(updatedFileList)
+
+        const postImages = updatedFileList.map((file) => ({
+            image: file.url as string
+        }))
+
+        setPostImage(postImages);
     }
 
     return (
         <>
             {
-                username && (
-                    <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm Post mới</Button>
+                auth && (
+                    <Button type="primary" onClick={showCreatePostDrawer}><PlusOutlined /> Thêm Post mới</Button>
                 )
             }
             <Divider orientation="left"><p>{sortedPost.length} Bài Post</p></Divider>
@@ -131,30 +229,49 @@ export default function PostList({posts, topic}: postList) {
                     dataSource={sortedPost} 
                     renderItem={(item) => (
                         <List.Item
-                            className="px-0"
+                            className="px-0 items-center"
                             actions={[
-                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
-                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
-                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
-                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
-                                <Button className="border-none px-2" key="list-vertical-message"><IconText icon={MessageOutlined} text="244"/></Button>,
-                                <Popconfirm 
-                                    title="Tuỳ chọn"
-                                    onConfirm={() => handleDeletePost(item.id)}
-                                    // onCancel={cancel}
-                                    okText="Xoá"
-                                    cancelText="Chỉnh sửa"
-                                    key="list-vertical-message"
+                                <Button 
+                                    className="border-none px-2 shadow-none" key="list-vertical-message"
+                                    onClick={() => handleLikePost(item.id)}
                                 >
-                                    <Button className="border-none px-2"><IconText icon={SettingOutlined} text=""/></Button>
-                                </Popconfirm>
+                                    <IconText 
+                                        icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.LIKE && reaction.user.id === auth?.id)) ? LikeFilled : LikeOutlined} 
+                                        text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.LIKE).length.toString()}
+                                    />
+                                </Button>,
+                                <Button 
+                                    className="border-none px-2 shadow-none" key="list-vertical-message"
+                                    onClick={() => handleDislikePost(item.id)}
+                                >
+                                    <IconText 
+                                        icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.DISLIKE && reaction.user.id === auth?.id)) ? DislikeFilled : DislikeOutlined} 
+                                        text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.DISLIKE).length.toString()}
+                                    />
+                                </Button>,
+                                <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                    <IconText 
+                                        icon={item.postComment.some((comment) => comment.user.id === auth?.id) ? MessageFilled : MessageOutlined} 
+                                        text={item.postComment.length.toString()}
+                                    />
+                                </Button>,
+                                auth?.username == item.user.username ? (
+                                    <Popconfirm 
+                                        title="Tuỳ chọn"
+                                        onConfirm={() => handleDeletePost(item.id)}
+                                        onCancel={() => showUpdatePostDrawer(item)}
+                                        okText="Xoá"
+                                        cancelText="Chỉnh sửa"
+                                        key="list-vertical-message"
+                                    >
+                                        <Button className="border-none px-2 shadow-none"><IconText icon={SettingOutlined} text=""/></Button>
+                                    </Popconfirm>
+                                ) : <></>
                             ]}
                             extra={
                                 item.postImage && (
-                                    <Image 
-                                        width={300}
-                                        height={300}
-                                        style={{objectFit: "contain"}}
+                                    <img 
+                                        style={{objectFit: "contain", width: "300px", height: "150px"}}
                                         alt={item.postImage[0]?.image}
                                         src={item.postImage[0]?.image}
                                     />
@@ -162,8 +279,8 @@ export default function PostList({posts, topic}: postList) {
                             }
                         >
                             <List.Item.Meta
-                                avatar={<Avatar shape="square" size={60} src={item.user.avatar} />}
-                                title={<Link href={`/post/${stringToSlug(topic.name)}}/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
+                                avatar={<Avatar shape="square" size={60} src={item.user.avatar}/>}
+                                title={<Link href={`/post/${stringToSlug(topic.name)}}/${stringToSlug(item.header)}?id=${item.id}&topic=${topic.id}`}><strong>{item.header}</strong></Link>}
                                 description={(
                                     <>
                                         <strong className="mr-6"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
@@ -178,7 +295,6 @@ export default function PostList({posts, topic}: postList) {
             </Card>
 
             <Drawer
-                title="Thêm bài Post mới"
                 width={720}
                 onClose={closeDrawer}
                 open={openDrawer}
@@ -190,9 +306,15 @@ export default function PostList({posts, topic}: postList) {
                 extra={
                 <Space>
                     <Button onClick={closeDrawer}>Hủy</Button>
-                    <Button onClick={handleCreatePost} type="primary" loading={postCreateLoading}>
-                        Thêm
-                    </Button>
+                    {postId === '' ? (
+                        <Button onClick={handleCreatePost} type="primary" loading={postCreateLoading}>
+                            Thêm
+                        </Button>
+                    ) : (
+                        <Button onClick={handleUpdatePost} type="primary" loading={postUpdateLoading}>
+                            Cập nhật
+                        </Button>
+                    )}
                 </Space>
                 }
             >
@@ -237,9 +359,27 @@ export default function PostList({posts, topic}: postList) {
                                 },
                                 ]}
                             >
-                                <Upload beforeUpload={handleFileChange} maxCount={1}>
-                                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                                <Upload
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                    onPreview={handlePreview}
+                                    onChange={handleChange}
+                                    beforeUpload={() => false}
+                                >
+                                    {fileList.length >= 8 ? null : uploadButton}
                                 </Upload>
+                                {previewImage && (
+                                    <img
+                                        alt='none'
+                                        wrapperStyle={{display: 'none'}}
+                                        preview={{
+                                            visible: previewOpen,
+                                            onVisibleChange: (visible) => setPreviewOpen(visible),
+                                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                        }}
+                                        src={previewImage}
+                                    />
+                                )}
                             </Form.Item>
                         </Col>
                     </Row>

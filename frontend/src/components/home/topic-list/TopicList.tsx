@@ -5,6 +5,7 @@ import React from "react";
 import PostList from "../post-list/PostList";
 import { useQuery } from "react-query";
 import { getTopic } from "@/libs/actions/post.acttion";
+import { Topic } from "@/libs/types";
 
 export default function TopicList() {
 

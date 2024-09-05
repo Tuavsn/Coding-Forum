@@ -1,14 +1,12 @@
 package com.hoctuan.studentcodehub.constant;
 
-public enum PostReactionType {
+public enum ReactionType {
     LIKE("Thích"),
-    LOVE("Thả tim"),
-    SMILE("Thả haha"),
     DISLIKE("Không thích");
 
     private final String displayName;
 
-    PostReactionType(String displayName) {
+    ReactionType(String displayName) {
         this.displayName = displayName;
     }
 

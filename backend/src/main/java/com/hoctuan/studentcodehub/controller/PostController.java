@@ -1,13 +1,10 @@
 package com.hoctuan.studentcodehub.controller;
 
-import com.hoctuan.studentcodehub.common.BaseController;
 import com.hoctuan.studentcodehub.common.BaseResponse;
-import com.hoctuan.studentcodehub.model.dto.post.PostCommentRequestDTO;
-import com.hoctuan.studentcodehub.model.dto.post.PostCommentResponseDTO;
-import com.hoctuan.studentcodehub.model.dto.post.PostRequestDTO;
-import com.hoctuan.studentcodehub.model.dto.post.PostResponseDTO;
-import com.hoctuan.studentcodehub.model.entity.post.Post;
+import com.hoctuan.studentcodehub.model.dto.post.*;
+import com.hoctuan.studentcodehub.service.post.CommentReactionService;
 import com.hoctuan.studentcodehub.service.post.PostCommentService;
+import com.hoctuan.studentcodehub.service.post.PostReactionService;
 import com.hoctuan.studentcodehub.service.post.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +15,53 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/post")
-public class PostController extends BaseController<
-        Post,
-        PostResponseDTO,
-        PostRequestDTO,
-        UUID> {
+@RequestMapping("api")
+public class PostController {
+    @Autowired
     private PostService postService;
     @Autowired
     private PostCommentService postCommentService;
+    @Autowired
+    private PostReactionService postReactionService;
+    @Autowired
+    private CommentReactionService commentReactionService;
 
-    public PostController(PostService postService) {
-        super(postService);
-        this.postService = postService;
+    @GetMapping("/post/{id}")
+    public ResponseEntity<BaseResponse> findById(
+            @PathVariable UUID id
+    ) {
+        PostResponseDTO data = postService.getById(id);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy thông tin thành công")
+                        .data(data)
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
     }
 
-    @PostMapping("/create-comment")
-    public ResponseEntity<BaseResponse> createComment(
-            @Valid @RequestBody PostCommentRequestDTO postCommentRequestDTO
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<BaseResponse> delete(
+            @PathVariable UUID postId
     ) {
-        postCommentRequestDTO.setId(null);
-        PostCommentResponseDTO data = postCommentService.save(postCommentRequestDTO);
+        postService.delete(postId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Xoá thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/topic/{topicId}/post")
+    public ResponseEntity<BaseResponse> create(
+            @PathVariable UUID topicId,
+            @Valid @RequestBody PostRequestDTO DTO
+    ) {
+        DTO.setId(null);
+        DTO.setTopic(TopicRequestDTO.builder().id(topicId).build());
+        PostResponseDTO data = postService.save(DTO);
         return new ResponseEntity<>(
                 BaseResponse.builder()
                         .message("Tạo thành công")
@@ -46,5 +69,128 @@ public class PostController extends BaseController<
                         .status(HttpStatus.CREATED.value())
                         .build()
                 , HttpStatus.CREATED);
+    }
+
+    @PutMapping("/topic/{topicId}/post/{postId}")
+    public ResponseEntity<BaseResponse> update(
+            @PathVariable UUID topicId,
+            @PathVariable UUID postId,
+            @Valid @RequestBody PostRequestDTO DTO
+    ) {
+        DTO.setId(postId);
+        DTO.setTopic(TopicRequestDTO.builder().id(topicId).build());
+        PostResponseDTO data = postService.save(DTO);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Cập nhật thành công")
+                        .data(data)
+                        .status(HttpStatus.CREATED.value())
+                        .build()
+                , HttpStatus.CREATED);
+    }
+
+    @PostMapping("/post/{postId}/comment")
+    public ResponseEntity<BaseResponse> createComment(
+            @PathVariable UUID postId,
+            @Valid @RequestBody PostCommentRequestDTO DTO
+    ) {
+        DTO.setId(null);
+        DTO.setPost(PostRequestDTO.builder().id(postId).build());
+        PostCommentResponseDTO data = postCommentService.save(DTO);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Tạo thành công")
+                        .data(data)
+                        .status(HttpStatus.CREATED.value())
+                        .build()
+                , HttpStatus.CREATED);
+    }
+
+    @PutMapping("/post/{postId}/comment/{commentId}")
+    public ResponseEntity<BaseResponse> updateComment(
+            @PathVariable UUID postId,
+            @PathVariable UUID commentId,
+            @Valid @RequestBody PostCommentRequestDTO DTO
+    ) {
+        DTO.setId(commentId);
+        DTO.setPost(PostRequestDTO.builder().id(postId).build());
+        PostCommentResponseDTO data = postCommentService.save(DTO);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Cập nhật thành công")
+                        .data(data)
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
+    }
+
+    @DeleteMapping("/post/comment/{commentId}")
+    public ResponseEntity<BaseResponse> deleteComment(
+            @PathVariable UUID commentId
+    ) {
+        postCommentService.delete(commentId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Xoá thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/post/{postId}/like")
+    public ResponseEntity<BaseResponse> likePost(
+            @PathVariable UUID postId
+    ) {
+        postReactionService.likePost(postId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Like thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/post/{postId}/dislike")
+    public ResponseEntity<BaseResponse> unlikePost(
+            @PathVariable UUID postId
+    ) {
+        postReactionService.dislikePost(postId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Dislike thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/post/comment/{commentId}/like")
+    public ResponseEntity<BaseResponse> likeComment(
+            @PathVariable UUID commentId
+    ) {
+        commentReactionService.likeComment(commentId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Like thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/post/comment/{commentId}/dislike")
+    public ResponseEntity<BaseResponse> unlikeComment(
+            @PathVariable UUID commentId
+    ) {
+        commentReactionService.dislikeComment(commentId);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Dislike thành công")
+                        .data(null)
+                        .status(HttpStatus.ACCEPTED.value())
+                        .build()
+                , HttpStatus.ACCEPTED);
     }
 }

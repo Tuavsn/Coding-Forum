@@ -36,7 +36,7 @@ public abstract class BaseServiceImpl<Model extends BaseEntity,
     public ResponseDTO save(RequestDTO dto) {
         ID id = (ID)dto.getId();
         if (id != null && !repository.existsById(id)) {
-            throw new NotFoundException("ID not found");
+            throw new NotFoundException("Id không tìm thấy");
         }
         return this.forceSave(dto);
     };
@@ -50,14 +50,14 @@ public abstract class BaseServiceImpl<Model extends BaseEntity,
     @Transactional
     public void delete(ID id) {
         if(!repository.existsById(id)) {
-            throw new NotFoundException("ID not found");
+            throw new NotFoundException("Id không tìm thấy");
         }
         repository.deleteById(id);
     };
 
     public ResponseDTO getById(ID id) {
         Model model = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("ID not found"));
+                .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
         return mapper.toDTO(model);
     };
 }

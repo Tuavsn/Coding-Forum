@@ -88,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
                 .role(AccountRole.USER)
                 .achievement(AccountAchievement.BEGINNER)
                 .isDeleted(false)
+                .avatar("https://res.cloudinary.com/ds75yhrpy/image/upload/v1725270804/9187604_kpfskc.png")
                 .createdBy("System")
                 .updatedBy("System")
                 .build());

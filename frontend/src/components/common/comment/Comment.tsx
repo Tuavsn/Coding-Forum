@@ -1,22 +1,26 @@
 'use client'
 
-import { createComment } from "@/libs/actions/post.acttion";
+import { AuthContext } from "@/context/AuthContextProvider";
+import { createComment, deleteComment, dislikeComment, likeComment, updateComment } from "@/libs/actions/post.acttion";
+import { ReactionType } from "@/libs/enum";
+import { Post, PostComment } from "@/libs/types";
 import { formatDate } from "@/libs/utils";
 import { 
     ClockCircleOutlined,
+    DislikeFilled,
     DislikeOutlined,
-    HeartOutlined,
+    LikeFilled,
     LikeOutlined,
     PlusOutlined,
-    SmileOutlined,
+    SettingOutlined,
     UserOutlined 
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card } from "antd";
+import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card, Popconfirm } from "antd";
 import Link from "next/link";
-import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import React, { useContext, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -26,27 +30,32 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 export default function Comment({post}:{post: Post}) {
+    const {auth, setAuth} = useContext(AuthContext)
+
     const queryClient = useQueryClient()
 
     const sortedComment = [...post.postComment].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     const [openDrawer, setOpenDrawer] = useState(false)
 
-    const [loading, setLoading] = useState(false)
+    const [createCommentLoading, setCreateCommentLoading] = useState(false)
 
-    const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
+    const [updateCommentLoading, setUpdateCommentLoading] = useState(false)
 
+    const [deleteCommentLoading, setDeleteCommetLoading] = useState(false)
+
+    const [commentId, setCommentId] = useState('')
+    
     const [commentContent, setCommentContent] = useState('')
 
-    useQuery('getUsername', () => setUsername(sessionStorage.getItem('username')))
-
+    // create Comment
     const createCommentMutation = useMutation(createComment, {
         onMutate: () => {
-            setLoading(true)
+            setCreateCommentLoading(true)
         },
 
         onSuccess: (data) => {
-            setLoading(false)
+            setCreateCommentLoading(false)
             setOpenDrawer(false)
             setCommentContent('')
             queryClient.invalidateQueries('getPostDetail')
@@ -54,30 +63,107 @@ export default function Comment({post}:{post: Post}) {
         }
     })
 
-    const showDrawer = () => {
+    const handleCreateComment = () => {
+        createCommentMutation.mutate({
+            postId: post.id,
+            newComment: {
+                content: commentContent
+            }
+        })
+    }
+
+    const showCreateCommentDrawer = () => {
         setOpenDrawer(true);
-    };
+    }
+
+    // update Comment
+    const updateCommentMutation = useMutation(updateComment, {
+        onMutate: () => {
+            setUpdateCommentLoading(true)
+        },
+
+        onSuccess: (data) => {
+            setUpdateCommentLoading(false)
+            setOpenDrawer(false)
+            setCommentId('')
+            setCommentContent('')
+            queryClient.invalidateQueries('getPostDetail')
+            message.success(data.Message)
+        }
+    })
+
+    const handleUpdateComment = () => {
+        updateCommentMutation.mutate({
+            postId: post.id, 
+            commentId: commentId,
+            newComment: {
+                content: commentContent
+            }
+        })
+    }
+
+    const showUpdateCommentDrawer = (comment: PostComment) => {
+        setOpenDrawer(true)
+        setCommentId(comment.id)
+        setCommentContent(comment.content)
+    }
+
+    // delete Comment
+
+    const deleteCommentMutation = useMutation(deleteComment, {
+        onMutate: () => {
+            setDeleteCommetLoading(true)
+        },
+
+        onSuccess: (data) => {
+            setDeleteCommetLoading(false)
+            setCommentContent('')
+            setOpenDrawer(false)
+            queryClient.invalidateQueries('getPostDetail')
+            message.success(data.Message)
+        }
+    })
+
+    const handleDeleteComment = (commentId: string) => {
+        deleteCommentMutation.mutate(commentId)
+    }
+
+    // like Comment
+    const commentLikeMutation = useMutation(likeComment, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries('getPostDetail')
+            message.success(data.Message)
+        }
+    })
+
+    const handleLikeComment = (id: string) => {
+        auth ? commentLikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+    }
+
+    // dislike Comment
+    const commentDislikeMutation = useMutation(dislikeComment, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries('getPostDetail')
+            message.success(data.Message)
+        }
+    })
+
+    const handleDislikeComment = (id: string) => {
+        auth ? commentDislikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+    }
     
+    // common
     const closeDrawer = () => {
         setOpenDrawer(false);
         setCommentContent('')
-    };
-
-    const handleSetLoading = () => {
-        createCommentMutation.mutate({
-            post: {
-                id: post.id
-            },
-            content: commentContent
-        })
     }
 
     return (
         <>
             <Divider orientation="left"><p>{sortedComment.length} Bình luận</p></Divider>
             {
-                username && (
-                    <Button type="primary" onClick={showDrawer}><PlusOutlined /> Thêm bình luận</Button>
+                auth && (
+                    <Button type="primary" onClick={showCreateCommentDrawer}><PlusOutlined /> Thêm bình luận</Button>
                 )
             }
             
@@ -95,10 +181,36 @@ export default function Comment({post}:{post: Post}) {
                     renderItem={(item) => (
                         <List.Item className="mb-10 p-0"  
                             actions={[
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={HeartOutlined} text="222"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={SmileOutlined} text="242"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={LikeOutlined} text="333"/></Button>,
-                                <Button className="border-none" key="list-vertical-message"><IconText icon={DislikeOutlined} text="232"/></Button>,
+                                <Button 
+                                    className="border-none shadow-none" key="list-vertical-message"
+                                    onClick={() => handleLikeComment(item.id)}
+                                >
+                                    <IconText
+                                        icon={item.commentReactions.some((reaction => reaction.reactionType === ReactionType.LIKE && reaction.user.id === auth?.id)) ? LikeFilled : LikeOutlined} 
+                                        text={item.commentReactions.filter((reaction) => reaction.reactionType === ReactionType.LIKE).length.toString()}
+                                    />
+                                </Button>,
+                                <Button 
+                                    className="border-none shadow-none" key="list-vertical-message"
+                                    onClick={() => handleDislikeComment(item.id)}
+                                >
+                                    <IconText
+                                        icon={item.commentReactions.some((reaction => reaction.reactionType === ReactionType.DISLIKE && reaction.user.id === auth?.id)) ? DislikeFilled : DislikeOutlined} 
+                                        text={item.commentReactions.filter((reaction) => reaction.reactionType === ReactionType.DISLIKE).length.toString()}
+                                    />
+                                </Button>,
+                                auth?.username == item.user.username ? (
+                                    <Popconfirm 
+                                        title="Tuỳ chọn"
+                                        onConfirm={() => handleDeleteComment(item.id)}
+                                        onCancel={() => showUpdateCommentDrawer(item)}
+                                        okText="Xoá"
+                                        cancelText="Chỉnh sửa"
+                                        key="list-vertical-message"
+                                    >
+                                        <Button className="border-none px-2 shadow-none"><IconText icon={SettingOutlined} text=""/></Button>
+                                    </Popconfirm>
+                                ) : <></>
                             ]}
                         >
                             <List.Item.Meta
@@ -107,7 +219,7 @@ export default function Comment({post}:{post: Post}) {
                                     <>
                                         <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                        <p className="text-sm text-black" dangerouslySetInnerHTML={{ __html:item.content }} />
+                                        <p className="text-sm text-black break-words" dangerouslySetInnerHTML={{ __html:item.content }} />
                                     </>
                                 )}
                             />
@@ -117,7 +229,6 @@ export default function Comment({post}:{post: Post}) {
             </Card>
 
             <Drawer
-                title="Thêm bình luận mới"
                 width={720}
                 onClose={closeDrawer}
                 open={openDrawer}
@@ -129,9 +240,15 @@ export default function Comment({post}:{post: Post}) {
                 extra={
                 <Space>
                     <Button onClick={closeDrawer}>Hủy</Button>
-                    <Button onClick={handleSetLoading} type="primary" loading={loading}>
-                        Thêm
-                    </Button>
+                    {commentId === '' ? (
+                        <Button onClick={handleCreateComment} type="primary" loading={createCommentLoading}>
+                            Thêm
+                        </Button>
+                    ) : (
+                        <Button onClick={handleUpdateComment} type="primary" loading={updateCommentLoading}>
+                            Cập nhật
+                        </Button>
+                    )}
                 </Space>
                 }
             >

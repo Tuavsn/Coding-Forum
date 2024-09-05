@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { AuthContext } from "./AuthContextProvider"
 
 export default function ReactQueryProvider({
     children
@@ -17,9 +18,18 @@ export default function ReactQueryProvider({
         }
     }))
 
+    const [auth, setAuth] = useState<User | null>(null)
+
+    const value = {
+        auth,
+        setAuth
+    }
+
     return (
         <QueryClientProvider client={client}>
-            {children}
+            <AuthContext.Provider value={value}>
+                {children}
+            </AuthContext.Provider>
         </QueryClientProvider>
     )
 }

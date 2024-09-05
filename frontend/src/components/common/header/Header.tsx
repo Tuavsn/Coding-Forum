@@ -13,15 +13,18 @@ import {
 } from "@ant-design/icons"
 import Link from "next/link";
 import { FloatButton } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { logout } from "@/libs/actions/user.actions";
-import { useQuery, useQueryClient } from "react-query";
+import { getInfo, logout } from "@/libs/actions/user.actions";
+import { AuthContext } from "@/context/AuthContextProvider";
+import { useQuery } from "react-query";
 
 type MenuItem = Required<MenuProps>['items'][number]
 
 export default function Header() {
-    const queryClient = useQueryClient()
+    const {auth, setAuth} = useContext(AuthContext)
+    
+    const {data} = useQuery('getUserInfo', getInfo)
 
     const path = usePathname()
 
@@ -31,14 +34,9 @@ export default function Header() {
 
     const [openNotify, setOpenNotify] = useState<'default' | 'primary'>('default')
 
-    const [username, setUsername] = useState<string | null>(sessionStorage.getItem('username'))
-
-    useQuery({queryKey: ['getUsername'], queryFn: () => setUsername(sessionStorage.getItem('username'))})
-
     const handleLogout = async () => {
         await logout().then(() => {
-            // setUsername(null)
-            queryClient.invalidateQueries({queryKey: ['getUsername']})
+            setAuth(null)
             message.success("Đăng xuất thành công")
         })
     }
@@ -99,14 +97,15 @@ export default function Header() {
             icon: <InfoCircleOutlined />
         },
         {
-            label: username ? username : "Tài khoản",
+            label: auth ? auth.username : "Tài khoản",
             key: "account",
             icon: <UserOutlined />,
-            children: username ? [
+            children: auth ? [
                 { label: "Hồ Sơ", key: "profile" },
                 { label: <button onClick={handleLogout}>Đăng Xuất</button>, key: "logout", danger: true}
             ] : [
-                { label: <Link href="/login">Đăng Nhập</Link>, key: "login"}
+                { label: <Link href="/login">Đăng Nhập</Link>, key: "login"},
+                { label: <Link href="/register">Đăng Ký</Link>, key: "register"}
             ]
         }
     ]
@@ -114,6 +113,10 @@ export default function Header() {
     useEffect(() => {
         setCurrentKey(path.split('/')[1])
     },[path])
+
+    useEffect(() => {
+        if(data) setAuth(data)
+    }, [data, setAuth])
 
     return (
         <>
@@ -125,7 +128,7 @@ export default function Header() {
                 onClick={handleSetCurrentKey}
             />
             <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
-                <Badge count={1000} overflowCount={99}>
+                {/* <Badge count={1000} overflowCount={99}>
                     <FloatButton 
                     icon={<MessageOutlined />} 
                     tooltip={<div>Tin Nhắn</div>} 
@@ -133,7 +136,7 @@ export default function Header() {
                     style={{ insetInlineEnd: 24 }}
                     onClick={handleOpenMessage}
                     />
-                </Badge>
+                </Badge> */}
                 <Badge count={1000} overflowCount={99}>
                     <FloatButton 
                     icon={<BellOutlined />} 

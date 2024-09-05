@@ -1,17 +1,16 @@
 package com.hoctuan.studentcodehub.model.entity.post;
 
 import com.hoctuan.studentcodehub.common.BaseEntity;
+import com.hoctuan.studentcodehub.constant.ReactionType;
 import com.hoctuan.studentcodehub.model.entity.account.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -19,17 +18,13 @@ import java.util.List;
 @Getter
 @Setter
 @SuperBuilder
-public class PostComment extends BaseEntity {
+public class CommentReaction extends BaseEntity {
     @ManyToOne(optional = false)
-    private Post post;
+    private PostComment postComment;
 
     @ManyToOne(optional = false)
     private User user;
 
-    @OneToMany(mappedBy = "postComment", fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<CommentReaction> commentReactions;
-
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String content;
+    @Column(nullable = false)
+    private ReactionType reactionType;
 }

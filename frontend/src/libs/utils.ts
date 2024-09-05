@@ -17,6 +17,12 @@ export const stringToSlug = (str: string) => {
     return str;
 }
 
+export const isValidEmail = (email: string) => {
+    // Biểu thức chính quy kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 export const formatDate = (isoString: string): string => {
     const date = new Date(isoString);
   
@@ -29,3 +35,14 @@ export const formatDate = (isoString: string): string => {
   
     return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
+
+
+import { FileType } from "./types";
+
+export const getBase64 = (file: FileType): Promise<string> => 
+    new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+})

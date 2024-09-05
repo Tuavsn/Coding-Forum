@@ -45,46 +45,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
@@ -97,46 +58,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
@@ -149,46 +71,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
@@ -201,46 +84,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
@@ -253,46 +97,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
@@ -305,46 +110,7 @@ const dataSource = [
                 user: {
                     avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
                 },
-                header: 'Tư vấn tuyển sinh, chọn ngành nghề, review trường học tất cả cho vào đây',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Leetcode mỗi ngày',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Top công ty công nghệ cho lập trình viên ở VN',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: '[Java] Thắc mắc về Java',
+                header: 'C++',
                 totalComment: '10',
                 description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
                 postImage: [
