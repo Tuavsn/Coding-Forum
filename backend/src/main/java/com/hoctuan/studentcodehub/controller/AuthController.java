@@ -58,7 +58,7 @@ public class AuthController {
                 , HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+//    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @GetMapping("/profile")
     public ResponseEntity<BaseResponse> getProfile() {
         return new ResponseEntity<>(
