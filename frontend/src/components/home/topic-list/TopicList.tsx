@@ -21,21 +21,21 @@ export default function TopicList() {
     return (
         <>
             <Divider orientation="left">Post mới</Divider>
-            <Tabs 
-                className="mt-2" 
-                defaultActiveKey="0" items={
-                    data?.map((topic) => ({
-                        key: topic.id,
-                        label: topic.name,
-                        children: isLoading ? (
-                            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
-                        ) : (
-                            <PostList posts={topic.posts} topic={topic} />
-                        )
-                    })
-                )}
-            >
-            </Tabs>
+            {isLoading ? (
+                <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+            ) : (
+                <Tabs 
+                    className="mt-2" 
+                    defaultActiveKey="0" items={
+                        data?.map((topic) => ({
+                            key: topic.id,
+                            label: topic.name,
+                            children: <PostList posts={topic.posts} topic={topic} />
+                        })
+                    )}
+                >
+                </Tabs>
+            )}
         </>
     )
 }
