@@ -45,8 +45,6 @@ export default function PostDetail() {
     
     const postId = useSearchParams().get('id')
 
-    const topicId = useSearchParams().get('topic')
-
     const router = useRouter()
 
     const { data, isLoading } = useQuery<Post>('getPostDetail', () => getPostDetail(postId))
@@ -89,7 +87,6 @@ export default function PostDetail() {
 
     const handleUpdatePost = () => {
         postUpdateMutation.mutate({
-            topicId: topicId ? topicId: '', 
             postId: postId ? postId: '',
             newPost: {
                 header: postHeader,
@@ -259,7 +256,7 @@ export default function PostDetail() {
                         </Carousel>
                     )}
                     <Typography className="mt-2">
-                        <div dangerouslySetInnerHTML={{ __html:data.content }} />
+                        <div dangerouslySetInnerHTML={{ __html:data.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />
                     </Typography>
                 </Card>
                 <Comment post={data}/>

@@ -1,12 +1,12 @@
-import { getData, postData } from "@/utils/FetchData"
-import { UserLogin, UserRegist } from "../types";
+import { getData, postData, putData } from "@/utils/FetchData"
+import { Post, User, UserLogin, UserProfile, UserRegist } from "../types";
 
 export const login = async ({ email, password} : UserLogin) => {
     const result = await postData('api/auth/login', {email, password})
     if (!(result.Status == '200')) {
         throw new Error(`${result.Message}`);
     }
-    sessionStorage.setItem('userToken', result.Data.token)
+    localStorage.setItem('userToken', result.Data.token)
     return result;
 }
 
@@ -20,11 +20,27 @@ export const register = async({email, username, password} : UserRegist) => {
 
 export const logout = async () => {
     const result = await postData('api/auth/logout', {})
-    sessionStorage.removeItem('userToken')
+    localStorage.removeItem('userToken')
     return result
 }
 
 export const getInfo = async () => {
     const result = await getData('api/auth/profile');
+    return result.Data;
+}
+
+export const updateProfile = async ({username, avatar, gender, phone, address, password} : UserProfile) => {
+    const result = await putData('api/auth/profile/update', {username, avatar, gender, phone, address});
+    return result;
+}
+
+
+export const getPersonalPosts = async(userId: string | undefined | null): Promise<Post[]> => {
+    const result = await getData(`api/user/${userId}/posts`)
+    return result.Data;
+}
+
+export const getUserProfile = async(userId: string | null): Promise<User> => {
+    const result = await getData(`api/user/${userId}/profile`)
     return result.Data;
 }

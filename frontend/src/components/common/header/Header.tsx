@@ -1,5 +1,5 @@
 'use client'
-import { Badge, Menu, MenuProps, message } from "antd";
+import { Avatar, Badge, Menu, MenuProps, message } from "antd";
 import { 
     HomeOutlined, 
     CodeOutlined, 
@@ -97,11 +97,15 @@ export default function Header() {
             icon: <InfoCircleOutlined />
         },
         {
-            label: auth ? auth.username : "Tài khoản",
+            label: auth ? (
+                <>
+                    <Avatar size="small" src={auth.avatar} /> {auth.username}
+                </>
+            ) : "Tài khoản",
             key: "account",
-            icon: <UserOutlined />,
+            icon: !auth && <UserOutlined />,
             children: auth ? [
-                { label: "Hồ Sơ", key: "profile" },
+                { label: <Link href={`/profile/${auth.id}`}>Hồ Sơ</Link>, key: "profile" },
                 { label: <button onClick={handleLogout}>Đăng Xuất</button>, key: "logout", danger: true}
             ] : [
                 { label: <Link href="/login">Đăng Nhập</Link>, key: "login"},
@@ -137,7 +141,7 @@ export default function Header() {
                     onClick={handleOpenMessage}
                     />
                 </Badge> */}
-                <Badge count={1000} overflowCount={99}>
+                {/* <Badge count={1000} overflowCount={99}>
                     <FloatButton 
                     icon={<BellOutlined />} 
                     tooltip={<div>Thông Báo</div>} 
@@ -145,7 +149,7 @@ export default function Header() {
                     style={{ insetInlineEnd: 24 }}
                     onClick={handleOpenNotify}
                     />
-                </Badge>
+                </Badge> */}
                 <FloatButton.BackTop 
                     tooltip={<div>Trở về đầu trang</div>}
                     visibilityHeight={0} 

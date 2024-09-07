@@ -17,11 +17,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class UserRequestDTO extends BaseRequestDTO {
-    @NotBlank(message = "Bạn chưa nhập Email")
-    @Email(message = "Email không đúng định dạng")
-    @Size(max = 50, message = "Email quá dài" )
-    private String email;
-
     @NotBlank(message = "Bạn chưa nhập Username")
     @Size(max = 50, message = "Username quá dài")
     private String username;

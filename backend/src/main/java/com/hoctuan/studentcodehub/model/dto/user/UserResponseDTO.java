@@ -20,11 +20,17 @@ import java.util.Set;
 @Setter
 @SuperBuilder
 public class UserResponseDTO extends BaseResponseDTO {
+    private String email;
+
     private String username;
 
     private String avatar;
 
     private AccountGender gender;
+
+    private String address;
+
+    private String phone;
 
     private AccountRole role;
 

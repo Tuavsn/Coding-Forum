@@ -9,7 +9,9 @@ import com.hoctuan.studentcodehub.exception.CustomException;
 import com.hoctuan.studentcodehub.exception.NotFoundException;
 import com.hoctuan.studentcodehub.model.dto.auth.AuthRequestDTO;
 import com.hoctuan.studentcodehub.model.dto.auth.AuthResponseDTO;
+import com.hoctuan.studentcodehub.model.dto.user.UserRequestDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
+import com.hoctuan.studentcodehub.model.mapper.UserMapper;
 import com.hoctuan.studentcodehub.repository.account.UserRepository;
 import com.hoctuan.studentcodehub.service.account.AuthService;
 import com.hoctuan.studentcodehub.service.common.AuthContext;
@@ -95,8 +97,15 @@ public class AuthServiceImpl implements AuthService {
 
         return AuthResponseDTO.builder()
                 .id(savedUser.getId())
+                .email(savedUser.getEmail())
                 .username(savedUser.getUsername())
+                .gender(savedUser.getGender())
                 .role(savedUser.getRole())
+                .avatar(savedUser.getAvatar())
+                .achievement(savedUser.getAchievement())
+                .address(savedUser.getAddress())
+                .phone(savedUser.getPhone())
+                .status(savedUser.getStatus())
                 .createdAt(savedUser.getCreatedAt())
                 .updatedAt(savedUser.getUpdatedAt())
                 .createdBy(savedUser.getCreatedBy())
@@ -109,8 +118,15 @@ public class AuthServiceImpl implements AuthService {
         User user = authContext.getUserAuthenticated();
         return AuthResponseDTO.builder()
                 .id(user.getId())
+                .email(user.getEmail())
                 .username(user.getUsername())
+                .gender(user.getGender())
                 .role(user.getRole())
+                .avatar(user.getAvatar())
+                .achievement(user.getAchievement())
+                .address(user.getAddress())
+                .phone(user.getPhone())
+                .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .createdBy(user.getCreatedBy())
@@ -126,5 +142,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout() {
         authContext.clearUserAuthenticated();
+    }
+
+    @Override
+    public void updateProfile(UserRequestDTO userRequestDTO) {
+        User user = authContext.getUserAuthenticated();
+
+        user.setUsername(userRequestDTO.getUsername());
+        user.setAvatar(userRequestDTO.getAvatar());
+        user.setAddress(userRequestDTO.getAddress());
+        user.setPhone(userRequestDTO.getPhone());
+        user.setGender(userRequestDTO.getGender());
+        if(userRequestDTO.getPassword() != null) {
+            user.setPassword(userRequestDTO.getPassword());
+        }
+
+        userRepository.save(user);
     }
 }

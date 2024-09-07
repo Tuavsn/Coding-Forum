@@ -19,8 +19,8 @@ export const createPost = async({ topicId, newPost }: { topicId: string, newPost
     return result;
 }
 
-export const updatePost = async({ topicId, postId, newPost }: { topicId: string, postId: string, newPost: { header: string, content: string, postImage: PostImage[] } }) => {
-    const result = await putData(`api/topic/${topicId}/post/${postId}`, newPost);
+export const updatePost = async({ postId, newPost }: { postId: string, newPost: { header: string, content: string, postImage: PostImage[] } }) => {
+    const result = await putData(`api/post/${postId}`, newPost);
     return result;
 }
 

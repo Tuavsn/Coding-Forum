@@ -2,6 +2,7 @@ package com.hoctuan.studentcodehub.controller;
 
 import com.hoctuan.studentcodehub.common.BaseResponse;
 import com.hoctuan.studentcodehub.model.dto.auth.AuthRequestDTO;
+import com.hoctuan.studentcodehub.model.dto.user.UserRequestDTO;
 import com.hoctuan.studentcodehub.service.account.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -64,6 +65,20 @@ public class AuthController {
                 BaseResponse.builder()
                         .message("Lấy thông tin thành công")
                         .data(authService.getInfo())
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK);
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<BaseResponse> updateProfile(
+            @RequestBody UserRequestDTO userRequestDTO
+            ) {
+        authService.updateProfile(userRequestDTO);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Cập nhật thông tin thành công")
+                        .data(null)
                         .status(HttpStatus.OK.value())
                         .build()
                 , HttpStatus.OK);

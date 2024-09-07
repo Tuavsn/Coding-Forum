@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card, Popconfirm } from "antd";
+import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card, Popconfirm, Typography } from "antd";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
@@ -34,7 +34,7 @@ export default function Comment({post}:{post: Post}) {
 
     const queryClient = useQueryClient()
 
-    const sortedComment = [...post.postComment].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const sortedComment = [...post.postComment].sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
     const [openDrawer, setOpenDrawer] = useState(false)
 
@@ -179,7 +179,8 @@ export default function Comment({post}:{post: Post}) {
                     }}
                     dataSource={sortedComment} 
                     renderItem={(item) => (
-                        <List.Item className="mb-10 p-0"  
+                        <List.Item 
+                            className="mb-10 p-0"  
                             actions={[
                                 <Button 
                                     className="border-none shadow-none" key="list-vertical-message"
@@ -219,7 +220,9 @@ export default function Comment({post}:{post: Post}) {
                                     <>
                                         <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                        <p className="text-sm text-black break-words" dangerouslySetInnerHTML={{ __html:item.content }} />
+                                        <Typography>
+                                            <div dangerouslySetInnerHTML={{ __html: item.content }} style={{overflow: "hidden", wordBreak: "break-word", overflowWrap: "break-word", color: "black"}} />
+                                        </Typography>
                                     </>
                                 )}
                             />

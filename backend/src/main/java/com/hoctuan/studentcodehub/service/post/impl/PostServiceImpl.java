@@ -5,11 +5,13 @@ import com.hoctuan.studentcodehub.exception.CustomException;
 import com.hoctuan.studentcodehub.exception.NotFoundException;
 import com.hoctuan.studentcodehub.model.dto.post.PostRequestDTO;
 import com.hoctuan.studentcodehub.model.dto.post.PostResponseDTO;
+import com.hoctuan.studentcodehub.model.dto.post.TopicRequestDTO;
 import com.hoctuan.studentcodehub.model.dto.user.UserRequestDTO;
 import com.hoctuan.studentcodehub.model.entity.account.User;
 import com.hoctuan.studentcodehub.model.entity.post.Post;
 import com.hoctuan.studentcodehub.model.entity.post.PostImage;
 import com.hoctuan.studentcodehub.model.mapper.PostMapper;
+import com.hoctuan.studentcodehub.repository.account.UserRepository;
 import com.hoctuan.studentcodehub.repository.post.PostImageRepository;
 import com.hoctuan.studentcodehub.repository.post.PostRepository;
 import com.hoctuan.studentcodehub.service.common.AuthContext;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,6 +36,8 @@ public class PostServiceImpl extends BaseServiceImpl<
     private AuthContext authContext;
     @Autowired
     private PostImageRepository postImageRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public PostServiceImpl(PostRepository postRepository, PostMapper postMapper) {
         super(postRepository, postMapper);
@@ -51,6 +56,7 @@ public class PostServiceImpl extends BaseServiceImpl<
             if(existedPost.getUser().getId() != user.getId()) {
                 throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
             }
+            dto.setTopic(TopicRequestDTO.builder().id(existedPost.getTopic().getId()).build());
         }
 
         UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
@@ -93,5 +99,12 @@ public class PostServiceImpl extends BaseServiceImpl<
 
         postRepository.deleteById(id);
     };
+
+    @Override
+    public List<PostResponseDTO> findPostByUser(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+
+        return postMapper.toDTO(postRepository.findByUser(user));
+    }
 
 }

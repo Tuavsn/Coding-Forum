@@ -1,7 +1,7 @@
 const server_url = process.env.NEXT_PUBLIC_BASE_API_URL
 
 export const getData = async(url: string) => {
-    const token = sessionStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('userToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -14,7 +14,7 @@ export const getData = async(url: string) => {
 }
 
 export const postData = async(url: string, post: object) => {
-    const token = sessionStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('userToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -28,7 +28,7 @@ export const postData = async(url: string, post: object) => {
 }
 
 export const putData = async(url: string, put: object) => {
-    const token = sessionStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('userToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -42,7 +42,7 @@ export const putData = async(url: string, put: object) => {
 }
 
 export const patchData = async(url: string, patch: object) => {
-    const token = sessionStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('userToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -56,7 +56,7 @@ export const patchData = async(url: string, patch: object) => {
 }
 
 export const deleteData = async(url: string) => {
-    const token = sessionStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('userToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })

@@ -31,6 +31,15 @@ declare type UserRegist = {
     password: string; 
 }
 
+declare type UserProfile = {
+    username: string;
+    avatar: string;
+    gender: Gender;
+    phone: string;
+    address: string;
+    password: string;
+}
+
 declare type Topic = {
     id: string;
     createdBy: Date;

@@ -71,14 +71,12 @@ public class PostController {
                 , HttpStatus.CREATED);
     }
 
-    @PutMapping("/topic/{topicId}/post/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<BaseResponse> update(
-            @PathVariable UUID topicId,
             @PathVariable UUID postId,
             @Valid @RequestBody PostRequestDTO DTO
     ) {
         DTO.setId(postId);
-        DTO.setTopic(TopicRequestDTO.builder().id(topicId).build());
         PostResponseDTO data = postService.save(DTO);
         return new ResponseEntity<>(
                 BaseResponse.builder()

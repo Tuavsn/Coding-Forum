@@ -9,7 +9,7 @@ import { formatDate, getBase64, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, HeartOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined, PlusOutlined, RightCircleOutlined, SettingOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Space, Upload, UploadFile, UploadProps } from "antd";
+import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
@@ -110,7 +110,6 @@ export default function PostList({posts, topic}: postList) {
 
     const handleUpdatePost = () => {
         postUpdateMutation.mutate({
-            topicId: topic.id,
             postId: postId,
             newPost: {
                 header: postHeader,
@@ -221,7 +220,7 @@ export default function PostList({posts, topic}: postList) {
                     size="large"
                     className="my-2"
                     bordered={false}
-                    split={false}
+                    split={true}
                     itemLayout="vertical" 
                     pagination={{
                         pageSize: 10
@@ -279,16 +278,19 @@ export default function PostList({posts, topic}: postList) {
                             }
                         >
                             <List.Item.Meta
+                                style={{overflow: "hidden"}}
                                 avatar={<Avatar shape="square" size={60} src={item.user.avatar}/>}
-                                title={<Link href={`/post/${stringToSlug(topic.name)}}/${stringToSlug(item.header)}?id=${item.id}&topic=${topic.id}`}><strong>{item.header}</strong></Link>}
+                                title={<Link href={`/post/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
                                 description={(
                                     <>
-                                        <strong className="mr-6"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
+                                        <strong className="mr-6"><Link href={`/user?id=${item.user.id}`}><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
                                     </>
                                 )}
                             />
-                            <div dangerouslySetInnerHTML={{ __html: item.content }} style={{maxHeight: "160px", overflow: "hidden"}} />
+                            <Typography>
+                                <div dangerouslySetInnerHTML={{ __html: item.content }} style={{maxHeight: "160px", overflow: "hidden", wordBreak: "break-word", overflowWrap: "break-word"}} />
+                            </Typography>
                         </List.Item>
                     )}
                 />

@@ -1,6 +1,6 @@
 'use client'
 
-import { CodeOutlined, CopyOutlined, HomeOutlined } from "@ant-design/icons";
+import { CodeOutlined, CopyOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb } from "antd"
 import { useParams } from "next/navigation";
 
@@ -27,6 +27,12 @@ export default function BreadCrumb({type}: {type: string}) {
             items.push({
                 icon: <CodeOutlined />,
                 path: "Problem"
+            })
+            break
+        case "profile":
+            items.push({
+                icon: <UserOutlined />,
+                path: "Profile"
             })
             break
         default:

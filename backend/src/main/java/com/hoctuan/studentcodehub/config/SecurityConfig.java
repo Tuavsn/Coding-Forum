@@ -46,7 +46,8 @@ public class SecurityConfig {
     private String[] getWhiteList = {
             "/api/topic/**",
             "/api/post/**",
-            "/api/comment/**"
+            "/api/comment/**",
+            "/api/user/**"
     };
 
 
