@@ -1,11 +1,12 @@
 'use client'
 
-import { Divider, Tabs } from "antd";
+import { Divider, Spin, Tabs } from "antd";
 import React from "react";
 import { useQuery } from "react-query";
 import { getTopic } from "@/libs/actions/post.acttion";
 import { Topic } from "@/libs/types";
 import dynamic from "next/dynamic";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const PostList = dynamic(
     () => {
@@ -15,7 +16,7 @@ const PostList = dynamic(
 
 export default function TopicList() {
 
-    const { data } = useQuery<Topic[]>('getTopic', getTopic)
+    const { data, isLoading } = useQuery<Topic[]>('getTopic', getTopic)
 
     return (
         <>
@@ -26,7 +27,9 @@ export default function TopicList() {
                     data?.map((topic) => ({
                         key: topic.id,
                         label: topic.name,
-                        children: (
+                        children: isLoading ? (
+                            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                        ) : (
                             <PostList posts={topic.posts} topic={topic} />
                         )
                     })

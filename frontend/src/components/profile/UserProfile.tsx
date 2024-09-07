@@ -2,12 +2,12 @@
 
 import { getPersonalPosts, getUserProfile, updateProfile } from "@/libs/actions/user.actions"
 import { Post, User } from "@/libs/types"
-import { Avatar, Button, List, Space, Tag } from "antd"
+import { Avatar, Button, List, Space, Spin, Tag } from "antd"
 import React from "react"
 import { useQuery, useQueryClient } from "react-query"
 import Link from "next/link"
 import { formatDate, stringToSlug } from "@/libs/utils"
-import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined, UserOutlined } from "@ant-design/icons"
+import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MessageFilled, MessageOutlined, UserOutlined } from "@ant-design/icons"
 import { ReactionType } from "@/libs/enum"
 import { useSearchParams } from "next/navigation"
 
@@ -23,7 +23,7 @@ export default function UserProfile() {
     
     const {data: userProfile} = useQuery<User>('getUserProfile', () => getUserProfile(userId))
 
-    const {data: userPosts} = useQuery<Post[]>(['getUserPosts'], () => getPersonalPosts(userId))
+    const {data: userPosts, isLoading: userPostsLoading} = useQuery<Post[]>(['getUserPosts'], () => getPersonalPosts(userId))
 
     return (
         <>
@@ -69,65 +69,69 @@ export default function UserProfile() {
                                     </ul>
                                 </div>
                                 <hr className="my-6 border-t border-gray-300"/>
-                                <div className="flex flex-col">
-                                    <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">Danh sách bài post</span>
-                                    {userPosts && (
-                                        <List 
-                                            size="large"
-                                            className="my-2"
-                                            bordered={false}
-                                            split={true}
-                                            itemLayout="vertical" 
-                                            pagination={{
-                                                pageSize: 10
-                                            }}
-                                            dataSource={userPosts}
-                                            renderItem={(item) => (
-                                                <List.Item
-                                                    className="px-0 items-center"
-                                                    actions={[
-                                                        <Button 
-                                                            className="border-none px-2 shadow-none" key="list-vertical-message"
-                                                            // onClick={() => handleLikePost(item.id)}
-                                                        >
-                                                            <IconText 
-                                                                icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.LIKE && reaction.user.id === userProfile?.id)) ? LikeFilled : LikeOutlined} 
-                                                                text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.LIKE).length.toString()}
-                                                            />
-                                                        </Button>,
-                                                        <Button 
-                                                            className="border-none px-2 shadow-none" key="list-vertical-message"
-                                                            // onClick={() => handleDislikePost(item.id)}
-                                                        >
-                                                            <IconText 
-                                                                icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.DISLIKE && reaction.user.id === userProfile?.id)) ? DislikeFilled : DislikeOutlined} 
-                                                                text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.DISLIKE).length.toString()}
-                                                            />
-                                                        </Button>,
-                                                        <Button className="border-none px-2 shadow-none" key="list-vertical-message">
-                                                            <IconText 
-                                                                icon={item.postComment.some((comment) => comment.user.id === userProfile?.id) ? MessageFilled : MessageOutlined} 
-                                                                text={item.postComment.length.toString()}
-                                                            />
-                                                        </Button>,
-                                                    ]}
-                                                >
-                                                    <List.Item.Meta
-                                                        style={{overflow: "hidden"}}
-                                                        avatar={<Avatar shape="square" size={60} src={item.user.avatar}/>}
-                                                        title={<Link href={`/post/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
-                                                        description={(
-                                                            <>
-                                                                <strong className="mr-6"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
-                                                                <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                                            </>
-                                                        )}
-                                                    />
-                                                </List.Item>
-                                        )}>
-                                        </List>
-                                    )}
-                                </div>
+                                {userPostsLoading ? (
+                                    <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">Danh sách bài post</span>
+                                        {userPosts && (
+                                            <List 
+                                                size="large"
+                                                className="my-2"
+                                                bordered={false}
+                                                split={true}
+                                                itemLayout="vertical" 
+                                                pagination={{
+                                                    pageSize: 10
+                                                }}
+                                                dataSource={userPosts}
+                                                renderItem={(item) => (
+                                                    <List.Item
+                                                        className="px-0 items-center"
+                                                        actions={[
+                                                            <Button 
+                                                                className="border-none px-2 shadow-none" key="list-vertical-message"
+                                                                // onClick={() => handleLikePost(item.id)}
+                                                            >
+                                                                <IconText 
+                                                                    icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.LIKE && reaction.user.id === userProfile?.id)) ? LikeFilled : LikeOutlined} 
+                                                                    text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.LIKE).length.toString()}
+                                                                />
+                                                            </Button>,
+                                                            <Button 
+                                                                className="border-none px-2 shadow-none" key="list-vertical-message"
+                                                                // onClick={() => handleDislikePost(item.id)}
+                                                            >
+                                                                <IconText 
+                                                                    icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.DISLIKE && reaction.user.id === userProfile?.id)) ? DislikeFilled : DislikeOutlined} 
+                                                                    text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.DISLIKE).length.toString()}
+                                                                />
+                                                            </Button>,
+                                                            <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                                                <IconText 
+                                                                    icon={item.postComment.some((comment) => comment.user.id === userProfile?.id) ? MessageFilled : MessageOutlined} 
+                                                                    text={item.postComment.length.toString()}
+                                                                />
+                                                            </Button>,
+                                                        ]}
+                                                    >
+                                                        <List.Item.Meta
+                                                            style={{overflow: "hidden"}}
+                                                            avatar={<Avatar shape="square" size={60} src={item.user.avatar}/>}
+                                                            title={<Link href={`/post/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
+                                                            description={(
+                                                                <>
+                                                                    <strong className="mr-6"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
+                                                                    <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
+                                                                </>
+                                                            )}
+                                                        />
+                                                    </List.Item>
+                                            )}>
+                                            </List>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

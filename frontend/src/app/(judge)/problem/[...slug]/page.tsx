@@ -1,6 +1,6 @@
 import BreadCrumb from "@/components/common/breadcrumb/BreadCrumb";
 import ProblemDetail from "@/components/judge/problem/ProblemDetail";
-import { Empty } from "antd";
+import { Card, Empty } from "antd";
 
 const exampleData = {
     problem: {
@@ -20,7 +20,10 @@ export default function ProblemSubmitPage() {
     return (
         <div>
             <BreadCrumb type="problem"/>
-            <ProblemDetail problem={exampleData.problem}/>
+            <Card>
+                Feature under development
+            </Card>
+            {/* <ProblemDetail problem={exampleData.problem}/> */}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import RankingWelcomeCard from "@/components/home/ranking-welcome-card/RankingWelcomeCard";
 import RankingList from "@/components/home/ranking-list/RankingList";
 import { AreaChartOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Divider, Empty } from "antd";
+import { Breadcrumb, Card, Divider, Empty } from "antd";
 
 export default function RankingPage() {
 
@@ -29,10 +29,13 @@ export default function RankingPage() {
                 ]}
             />
             <RankingWelcomeCard />
-            <Divider orientation="left">Bảng xếp hạng</Divider>
+            <Card>
+                Feature under development
+            </Card>
+            {/* <Divider orientation="left">Bảng xếp hạng</Divider>
             <div className="mt-2">
                 <RankingList />
-            </div>
+            </div> */}
         </div>
     )
 }
