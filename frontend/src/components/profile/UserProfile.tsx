@@ -19,8 +19,6 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 export default function UserProfile() {
-    const queryClient = useQueryClient()
-
     const userId = useSearchParams().get('id')
     
     const {data: userProfile} = useQuery<User>('getUserProfile', () => getUserProfile(userId))
