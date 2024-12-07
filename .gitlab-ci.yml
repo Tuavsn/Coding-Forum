@@ -1,0 +1,29 @@
+stages:
+  - prepare
+  - build
+  - deploy
+
+prepare:
+  stage: prepare
+  script:
+    - echo "Setting up environment variables for Docker Compose..."
+    - printenv
+  only:
+    - main
+
+build:
+  stage: build
+  script:
+    - echo "Building Docker images..."
+    - docker-compose -f docker-compose.yml build
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying containers with Docker Compose..."
+    - docker-compose -f docker-compose.yml up -d
+    - docker ps
+  only:
+    - main
