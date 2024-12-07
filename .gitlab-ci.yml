@@ -15,7 +15,7 @@ build:
   stage: build
   script:
     - echo "Building Docker images..."
-    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml build --no-cache
   only:
     - main
 
