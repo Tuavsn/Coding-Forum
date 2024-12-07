@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATA_SOURCE_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=${SPRING_DATA_SOURCE_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
+      SPRING_APPLICATION_PORT: ${SPRING_APPLICATION_PORT}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+      SPRING_DATA_SOURCE_URL: ${SPRING_DATA_SOURCE_URL}
+      SPRING_DATA_SOURCE_USERNAME: ${SPRING_DATA_SOURCE_USERNAME}
+      SPRING_DATA_SOURCE_PASSWORD: ${SPRING_DATA_SOURCE_PASSWORD}
+      SPRING_DATA_SOURCE_DRIVER_CLASSNAME: ${SPRING_DATA_SOURCE_DRIVER_CLASSNAME}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      PUBLIC_KEY: ${PUBLIC_KEY}
+      EXPIRES_TIME: ${EXPIRES_TIME}
+      CLIENT_URL: ${CLIENT_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      OPEN_API_LOCAL_SERVER_URL: ${OPEN_API_LOCAL_SERVER_URL}
+      OPEN_API_HOST_SERVER_URL: ${OPEN_API_HOST_SERVER_URL}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
