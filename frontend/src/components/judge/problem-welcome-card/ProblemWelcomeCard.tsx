@@ -6,13 +6,13 @@ export default function ProblemWelComeCard() {
         <Card 
             className="my-6" 
             title={(
-                <><CodeOutlined style={{color: "#1677ff", fontSize: '.9rem'}} /> Hệ thống bài tập của StudentCodeHub</>
+                <><CodeOutlined style={{color: "#1677ff", fontSize: '.9rem'}} /> Hệ thống bài tập của Coding Forum</>
             )} 
             bordered style={{width: '100%'}} 
         >
             <div>
                 <span>
-                    - Hệ thống bài tập của StudentCodeHub được phân loại chi tiết và được thiết kế để phù hợp với những bạn mới học lập trình.<br/>
+                    - Hệ thống bài tập của Coding Forum được phân loại chi tiết và được thiết kế để phù hợp với những bạn mới học lập trình.<br/>
                     - Bài tập trên hệ thống sẽ chia ra các cấp độ bao gồm: Dễ, Trung bình và Khó.<br />
                     - Số điểm làm bài sẽ được tính vào tổng điểm của bạn, đồng thời hệ thống sẽ xếp hạng dựa trên tổng điểm của bạn.<br/>
                 </span>
