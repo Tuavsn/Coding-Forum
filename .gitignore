@@ -2,3 +2,4 @@
 .dev.env
 .pro.env
 launch.json
+settings.json
