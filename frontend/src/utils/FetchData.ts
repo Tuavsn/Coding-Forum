@@ -1,4 +1,4 @@
-const server_url = process.env.NEXT_PUBLIC_BASE_API_URL
+const server_url = process.env.NEXT_PUBLIC_API_URL || 'https://codingforumapi.trinhhoctuan.io.vn'
 
 export const getData = async(url: string) => {
     const token = localStorage.getItem('userToken') || undefined;
