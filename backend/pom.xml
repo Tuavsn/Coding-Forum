@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hoctuan</groupId>
-	<artifactId>studentcodehub</artifactId>
+	<artifactId>codingforum</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>studentcodehub</name>
+	<name>codingforum</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

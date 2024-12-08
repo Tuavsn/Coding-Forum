@@ -6,7 +6,7 @@ export default function RankingCard() {
         <Card 
             className="my-6" 
             title={(
-                <><AreaChartOutlined style={{color: "#1677ff"}} /> Hệ thống xếp hạng của StudentCodeHub</>
+                <><AreaChartOutlined style={{color: "#1677ff"}} /> Hệ thống xếp hạng của Coding Forum</>
             )} 
             bordered style={{width: '100%'}} 
         >
