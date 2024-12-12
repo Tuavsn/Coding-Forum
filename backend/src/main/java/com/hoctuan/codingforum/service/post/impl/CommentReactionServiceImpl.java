@@ -1,6 +1,5 @@
 package com.hoctuan.codingforum.service.post.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -10,24 +9,21 @@ import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.post.CommentReaction;
 import com.hoctuan.codingforum.model.entity.post.PostComment;
-import com.hoctuan.codingforum.model.mapper.CommentReactionMapper;
 import com.hoctuan.codingforum.repository.post.CommentReactionRepository;
 import com.hoctuan.codingforum.repository.post.PostCommentRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.post.CommentReactionService;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CommentReactionServiceImpl implements CommentReactionService {
-    @Autowired
-    private CommentReactionRepository commentReactionRepository;
-    @Autowired
-    private PostCommentRepository postCommentRepository;
-    @Autowired
-    private CommentReactionMapper commentReactionMapper;
-    @Autowired
-    private AuthContext authContext;
+    private final CommentReactionRepository commentReactionRepository;
+    private final PostCommentRepository postCommentRepository;
+    private final AuthContext authContext;
 
     public void likeComment(UUID commentId) {
         User user = authContext.getUserAuthenticated();

@@ -1,6 +1,10 @@
 package com.hoctuan.codingforum.common;
 
 import com.hoctuan.codingforum.exception.NotFoundException;
+
+import io.micrometer.common.lang.NonNull;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,20 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public abstract class BaseServiceImpl<Model extends BaseEntity,
         ResponseDTO extends BaseResponseDTO,
         RequestDTO extends BaseRequestDTO,
         ID extends UUID> implements BaseService<ResponseDTO, RequestDTO, ID> {
-    private final BaseRepository<Model, ID> repository;
-    private final BaseMapper<Model, ResponseDTO, RequestDTO> mapper;
-
-    public BaseServiceImpl(
-            BaseRepository<Model, ID> repository,
-            BaseMapper<Model, ResponseDTO, RequestDTO> mapper
-    ) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+    @NonNull protected final BaseRepository<Model, ID> repository;
+    @NonNull protected final BaseMapper<Model, ResponseDTO, RequestDTO> mapper;
 
     @Override
     public List<ResponseDTO> findAll() {

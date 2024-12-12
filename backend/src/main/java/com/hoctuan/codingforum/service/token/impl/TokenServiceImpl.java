@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import com.google.common.hash.Hashing;
-import com.hoctuan.codingforum.config.AppConstant;
 import com.hoctuan.codingforum.constant.AccountRole;
+import com.hoctuan.codingforum.constant.AppConstant;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.service.account.DeviceService;
 import com.hoctuan.codingforum.service.common.AuthContext;

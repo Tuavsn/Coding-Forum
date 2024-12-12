@@ -1,14 +1,14 @@
 package com.hoctuan.codingforum.service.account.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hoctuan.codingforum.config.AppConstant;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.device.DeviceResponseDTO;
@@ -31,17 +31,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class DeviceServiceImpl implements DeviceService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private DeviceRepository deviceRepository;
-    @Autowired
-    private AuthContext authContext;
-    @Autowired
-    private AppConstant appConstant;
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final UserRepository userRepository;
+    private final DeviceRepository deviceRepository;
+    private final AuthContext authContext;
+    private final DeviceMapper deviceMapper;
 
     @Override
     public Page<DeviceResponseDTO> getAllByUserId(Pageable pageable) {

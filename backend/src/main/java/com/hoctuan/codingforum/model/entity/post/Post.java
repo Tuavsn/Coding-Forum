@@ -35,7 +35,7 @@ public class Post extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private PostStatus status = PostStatus.ATIVE;
+    private PostStatus status = PostStatus.ACTIVE;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)

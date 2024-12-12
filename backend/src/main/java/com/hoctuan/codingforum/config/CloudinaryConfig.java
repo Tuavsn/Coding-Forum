@@ -1,6 +1,8 @@
 package com.hoctuan.codingforum.config;
 
 import com.cloudinary.Cloudinary;
+import com.hoctuan.codingforum.constant.AppConstant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
