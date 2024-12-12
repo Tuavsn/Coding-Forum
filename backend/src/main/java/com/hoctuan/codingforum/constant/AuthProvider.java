@@ -1,15 +1,16 @@
 package com.hoctuan.codingforum.constant;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum AuthProvider {
-    LOCAL("Local"),
-    GOOGLE("Google"),
-    GITHUB("Github");
+    LOCAL(0, "local", "Hệ thống"),
+    GOOGLE(1, "google", "Google"),
+    GITHUB(2, "github", "Github");
 
+    private final int code;
+    private final String name;
     private final String displayName;
-
-    AuthProvider(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDisplayName() { return displayName; }
 }

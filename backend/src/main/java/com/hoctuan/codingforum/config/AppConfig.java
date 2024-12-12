@@ -1,5 +1,6 @@
 package com.hoctuan.codingforum.config;
 
+import com.hoctuan.codingforum.constant.GlobalVariables;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -23,9 +24,9 @@ public class AppConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowedOrigins(Arrays.asList("*")); // appConfig.getClientUrl()
-        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

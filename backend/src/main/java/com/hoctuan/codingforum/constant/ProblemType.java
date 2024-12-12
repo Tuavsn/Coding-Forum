@@ -1,15 +1,16 @@
 package com.hoctuan.codingforum.constant;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum ProblemType {
-    EASY("Easy"),
-    MEDIUM("Medium"),
-    HARD("Hard");
+    EASY(0, "easy", "Easy"),
+    MEDIUM(1, "medium", "Medium"),
+    HARD(2, "hard", "Hard");
 
+    private final int code;
+    private final String name;
     private final String displayName;
-
-    ProblemType(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDisplayName() { return displayName; }
 }
