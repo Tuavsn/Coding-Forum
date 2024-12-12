@@ -3,10 +3,23 @@ package com.hoctuan.codingforum.constant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+
 @Configuration
-public final class GlobalVariables {
+@Getter
+public class GlobalVariables {
     @Value("${client.url:codingforum.trinhhoctuan.io.vn}")
-    public static String CLIENT_URL;
+    public String clientUrl;
     @Value("${server.url:codingforumapi.trinhhoctuan.io.vn}")
+    public String serverUrl;
+
+    public static String CLIENT_URL;
     public static String SERVER_URL;
+
+    @PostConstruct
+    private void init() {
+        CLIENT_URL = clientUrl;
+        SERVER_URL = serverUrl;
+    }
 }

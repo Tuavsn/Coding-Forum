@@ -1,8 +1,8 @@
 package com.hoctuan.codingforum.service.account.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,12 +31,15 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class DeviceServiceImpl implements DeviceService {
-    private final UserRepository userRepository;
-    private final DeviceRepository deviceRepository;
-    private final AuthContext authContext;
-    private final DeviceMapper deviceMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
+    @Autowired
+    private AuthContext authContext;
+    @Autowired
+    private DeviceMapper deviceMapper;
 
     @Override
     public Page<DeviceResponseDTO> getAllByUserId(Pageable pageable) {

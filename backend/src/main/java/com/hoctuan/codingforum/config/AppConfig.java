@@ -28,9 +28,9 @@ public class AppConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedHeaders(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         configuration.setAllowedOrigins(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

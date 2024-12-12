@@ -1,8 +1,8 @@
 package com.hoctuan.codingforum.service.account.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,15 @@ import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.token.TokenService;
 
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private final AppConstant appConstant;
-    private final UserRepository userRepository;
-    private final TokenService tokenService;
-    private final AuthContext authContext;
+    @Autowired
+    private AppConstant appConstant;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private AuthContext authContext;
 
     @Override
     @Transactional

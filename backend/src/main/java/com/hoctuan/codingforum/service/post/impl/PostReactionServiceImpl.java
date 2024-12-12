@@ -1,5 +1,6 @@
 package com.hoctuan.codingforum.service.post.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +15,16 @@ import com.hoctuan.codingforum.repository.post.PostRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.post.PostReactionService;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class PostReactionServiceImpl implements PostReactionService {
-    private final PostReactionRepository postReactionRepository;
-    private final PostRepository postRepository;
-    private final AuthContext authContext;
+    @Autowired
+    private PostReactionRepository postReactionRepository;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private AuthContext authContext;
 
     public void likePost(UUID postId) {
         User user = authContext.getUserAuthenticated();

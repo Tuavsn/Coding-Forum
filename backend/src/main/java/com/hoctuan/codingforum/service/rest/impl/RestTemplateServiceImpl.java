@@ -2,6 +2,7 @@ package com.hoctuan.codingforum.service.rest.impl;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,13 +15,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.hoctuan.codingforum.service.rest.RestTemplateService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class RestTemplateServiceImpl implements RestTemplateService {
-
-    private final RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
      public <T> T get(String url, Map<String, String> params, Class<T> responseType) {

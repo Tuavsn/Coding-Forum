@@ -22,13 +22,10 @@ import com.hoctuan.codingforum.repository.post.PostRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.post.PostService;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class PostServiceImpl extends BaseServiceImpl<
         Post,
         PostResponseDTO,
