@@ -33,7 +33,16 @@ public class ProblemSubmission extends BaseEntity {
     private ProblemSubmissionLanguageType languageType;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String result;
+    private String submitResult;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String submitToken;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String submitError;
+
+    @Column(nullable = false)
+    private int time;
 
     @Column(nullable = false)
     private double score;

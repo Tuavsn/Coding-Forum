@@ -11,8 +11,6 @@ import java.util.Set;
 
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 import com.hoctuan.codingforum.constant.*;
-import com.hoctuan.codingforum.model.dto.device.DeviceResponseDTO;
-import com.hoctuan.codingforum.model.entity.account.Device;
 import com.hoctuan.codingforum.model.entity.account.UserFollow;
 
 @AllArgsConstructor

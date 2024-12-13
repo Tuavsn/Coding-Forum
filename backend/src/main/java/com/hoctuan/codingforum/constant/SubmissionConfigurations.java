@@ -3,58 +3,69 @@ package com.hoctuan.codingforum.constant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.annotation.PostConstruct;
-import lombok.Getter;
-
 @Configuration
-@Getter
 public class SubmissionConfigurations {
     // Configuration settings (instance fields)
-    @Value("${judge0.max_cpu_time_limit:15}")
-    private int maxCpuTimeLimit;
-    @Value("${judge0.max_cpu_extra_time:2}")
-    private int maxCpuExtraTime;
-    @Value("${judge0.max_wall_time_limit:20}")
-    private int maxWallTimeLimit;
-    @Value("${judge0.max_memory_limit:256000}")
-    private int maxMemoryLimit;
-    @Value("${judge0.max_stack_limit:128000}")
-    private int maxStackLimit;
-    @Value("${judge0.max_max_processes_and_or_threads:120}")
-    private int maxMaxProcessesAndOrThreads;
-    @Value("${judge0.allow_enable_per_process_and_thread_time_limit:true}")
-    private boolean allowEnablePerProcessAndThreadTimeLimit;
-    @Value("${judge0.allow_enable_per_process_and_thread_memory_limit:true}")
-    private boolean allowEnablePerProcessAndThreadMemoryLimit;
-    @Value("${judge0.max_max_file_size:4096}")
-    private int maxMaxFileSize;
-    @Value("${judge0.max_number_of_runs:20}")
-    private int maxNumberOfRuns;
-
-    public static float MAX_CPU_TIME_LIMIT;
-    public static float MAX_CPU_EXTRA_TIME;
-    public static float MAX_WALL_TIME_LIMIT;
-    public static float MAX_MEMORY_LIMIT;
-    public static float MAX_STACK_LIMIT;
-    public static float MAX_MAX_PROCESSES_AND_OR_THREADS;
-    public static boolean ALLOW_ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT;
-    public static boolean ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT;
-    public static float MAX_MAX_FILE_SIZE;
-    public static float MAX_NUMBER_OF_RUNS;
-
-    @PostConstruct
-    private void init() {
-        MAX_CPU_TIME_LIMIT = maxCpuTimeLimit;
-        MAX_CPU_EXTRA_TIME = maxCpuExtraTime;
-        MAX_WALL_TIME_LIMIT = maxWallTimeLimit;
-        MAX_MEMORY_LIMIT = maxMemoryLimit;
-        MAX_STACK_LIMIT = maxStackLimit;
-        MAX_MAX_PROCESSES_AND_OR_THREADS = maxMaxProcessesAndOrThreads;
-        ALLOW_ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT = allowEnablePerProcessAndThreadTimeLimit;
-        ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT = allowEnablePerProcessAndThreadMemoryLimit;
-        MAX_MAX_FILE_SIZE = maxMaxFileSize;
-        MAX_NUMBER_OF_RUNS = maxNumberOfRuns;
+    public static int MAX_CPU_TIME_LIMIT;
+    @Value("${judge0.max_cpu_time_limit}")
+    public void setMaxCpuTimeLimit(int value) {
+        MAX_CPU_TIME_LIMIT = value;
     }
+
+    public static int MAX_CPU_EXTRA_TIME;
+    @Value("${judge0.max_cpu_extra_time}")
+    public void setMaxCpuExtraTime(int value) {
+        MAX_CPU_EXTRA_TIME = value;
+    }
+
+    public static int MAX_WALL_TIME_LIMIT;
+    @Value("${judge0.max_wall_time_limit}")
+    public void setMaxWallTimeLimit(int value) {
+        MAX_WALL_TIME_LIMIT = value;
+    }
+
+    public static int MAX_MEMORY_LIMIT;
+    @Value("${judge0.max_memory_limit}")
+    public void setMaxMemoryLimit(int value) {
+        MAX_MEMORY_LIMIT = value;
+    }
+
+    public static int MAX_STACK_LIMIT;
+    @Value("${judge0.max_stack_limit}")
+    public void setMaxStackLimit(int value) {
+        MAX_STACK_LIMIT = value;
+    }
+
+    public static int MAX_MAX_PROCESSES_AND_OR_THREADS;
+    @Value("${judge0.max_max_processes_and_or_threads}")
+    public void setMaxMaxProcessesAndOrThreads(int value) {
+        MAX_MAX_PROCESSES_AND_OR_THREADS = value;
+    }
+
+    public static boolean ALLOW_ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT;
+    @Value("${judge0.allow_enable_per_process_and_thread_time_limit}")
+    public void setAllowEnablePerProcessAndThreadTimeLimit(boolean value) {
+        ALLOW_ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT = value;
+    }
+
+    public static boolean ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT;
+    @Value("${judge0.allow_enable_per_process_and_thread_memory_limit}")
+    public void setAllowEnablePerProcessAndThreadMemoryLimit(boolean value) {
+        ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT = value;
+    }
+
+    public static int MAX_MAX_FILE_SIZE;
+    @Value("${judge0.max_max_file_size}")
+    public void setMaxMaxFileSize(int value) {
+        MAX_MAX_FILE_SIZE = value;
+    }
+
+    public static int MAX_NUMBER_OF_RUNS;
+    @Value("${judge0.max_number_of_runs}")
+    public void setMaxNumberOfRuns(int value) {
+        MAX_NUMBER_OF_RUNS = value;
+    }
+
     // Param names
     public static final String SOURCE_CODE = "source_code"; // text
     public static final String LANGUAGE_ID = "language_id"; // integer

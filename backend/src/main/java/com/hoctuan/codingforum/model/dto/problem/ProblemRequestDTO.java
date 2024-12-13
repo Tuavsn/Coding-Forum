@@ -3,7 +3,6 @@ package com.hoctuan.codingforum.model.dto.problem;
 import com.hoctuan.codingforum.common.BaseRequestDTO;
 import com.hoctuan.codingforum.constant.ProblemType;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
-import com.hoctuan.codingforum.model.entity.account.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

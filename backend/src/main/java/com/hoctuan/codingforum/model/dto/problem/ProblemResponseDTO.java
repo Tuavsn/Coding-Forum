@@ -11,7 +11,6 @@ import java.util.Set;
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 import com.hoctuan.codingforum.constant.ProblemType;
 import com.hoctuan.codingforum.model.dto.user.UserResponseDTO;
-import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.problem.ProblemComment;
 import com.hoctuan.codingforum.model.entity.problem.ProblemSubmission;
 

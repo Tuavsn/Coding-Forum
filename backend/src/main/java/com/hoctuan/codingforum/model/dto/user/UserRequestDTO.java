@@ -3,7 +3,6 @@ package com.hoctuan.codingforum.model.dto.user;
 import com.hoctuan.codingforum.common.BaseRequestDTO;
 import com.hoctuan.codingforum.constant.AccountGender;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
