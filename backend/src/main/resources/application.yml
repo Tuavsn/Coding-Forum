@@ -48,6 +48,7 @@ client:
 
 judge0:
   url: ${JUDGE0_URL}
+  judge0_auth_token: ${JUDGE0_AUTH_TOKEN}
   max_cpu_time_limit: ${MAX_CPU_TIME_LIMIT:15}
   max_cpu_extra_time: ${MAX_CPU_EXTRA_TIME:2}
   max_wall_time_limit: ${MAX_WALL_TIME_LIMIT:20}

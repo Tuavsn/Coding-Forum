@@ -25,7 +25,7 @@ public class ProblemSubmissionResponseDTO extends BaseResponseDTO {
 
     private ProblemSubmissionLanguageType languageType;
 
-    private String result;
+    private Object result;
 
     private double score;
 }

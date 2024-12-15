@@ -17,8 +17,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class ProblemSubmissionRequestDTO extends BaseRequestDTO {
-    private Problem problem;
-
     private User user;
 
     private String code;

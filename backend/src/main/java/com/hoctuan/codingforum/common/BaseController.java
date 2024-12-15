@@ -1,6 +1,9 @@
 package com.hoctuan.codingforum.common;
 
+import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,15 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class BaseController<Model extends BaseEntity,
         ResponseDTO extends BaseResponseDTO,
         RequestDTO extends BaseRequestDTO,
         ID extends UUID> {
-    private final BaseService<ResponseDTO, RequestDTO, ID> baseService;
-
-    public BaseController(BaseService<ResponseDTO, RequestDTO, ID> baseService) {
-        this.baseService = baseService;
-    }
+    @Nonnull private final BaseService<ResponseDTO, RequestDTO, ID> baseService;
 
     @GetMapping
     public ResponseEntity<BaseResponse> findAll() {

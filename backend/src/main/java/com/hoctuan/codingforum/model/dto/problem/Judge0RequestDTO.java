@@ -4,19 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class Judge0RequestDTO {
-    private String sourceCode;
+    private String source_code;
 
-    private String languageId;
-
-    private String compilerOptions;
-
-    private String commandLineArguments;
+    private int language_id;
 
     private String stdin;
+
+    private String expected_output;
+
+    private int cpu_time_limit;
+
+    private int cpu_extra_time;
+
+    private int wall_time_limit;
+
+    private int memory_limit;
+
+    private int stack_limit;
 }

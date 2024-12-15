@@ -66,7 +66,14 @@ public class SubmissionConfigurations {
         MAX_NUMBER_OF_RUNS = value;
     }
 
+    public static String AUTH_TOKEN;
+    @Value("${judge0.judge0_auth_token}")
+    public void setAuthToken(String value) {
+        AUTH_TOKEN = value;
+    }
+
     // Param names
+    public static final String TOKEN = "X-Auth-Token";
     public static final String SOURCE_CODE = "source_code"; // text
     public static final String LANGUAGE_ID = "language_id"; // integer
     public static final String COMPILER_OPTIONS = "compiler_options"; // string (max. 512 chars)
@@ -96,7 +103,6 @@ public class SubmissionConfigurations {
     public static final String STATUS = "status"; // object
     public static final String CREATED_AT = "created_at"; // datetime
     public static final String FINISHED_AT = "finished_at"; // datetime
-    public static final String TOKEN = "token"; // string
     public static final String TIME = "time"; // float
     public static final String WALL_TIME = "wall_time"; // float
     public static final String MEMORY = "memory"; // float

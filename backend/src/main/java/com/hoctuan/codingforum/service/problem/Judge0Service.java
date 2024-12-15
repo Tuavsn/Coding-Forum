@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
+import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
 
 public interface Judge0Service {
-    public String submitSolution(List<Judge0RequestDTO> solutions, Map<String, ? extends Object> params);
+    public List<Judge0ResponseDTO> submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params);
 
-    public String getSubmitResult(List<String> tokens, Map<String, ? extends Object> params);
+    public List<Judge0ResponseDTO> getSubmitResult(List<String> tokens, Map<String, String> params);
 
     public void deleteSubmitReuslt(String token);
 }
