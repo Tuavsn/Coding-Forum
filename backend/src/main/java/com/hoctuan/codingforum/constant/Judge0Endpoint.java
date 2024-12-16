@@ -14,12 +14,12 @@ public final class Judge0Endpoint {
     private static final String STATISTIC = "statistics";
     private static final String HEALTH = "workers";
 
-    public static final String SUBMISSION_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, SUBMISSION);
-    public static final String SUBMISSION_BATCH_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, SUBMISSION_BATCH);
-    public static final String LANGUAGE_ENPOINT = String.join("/", GlobalVariables.SERVER_URL, LANGUAGE);
-    public static final String STATUS_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, STATUS);
-    public static final String SYSTEM_INFO_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, SYSTEM_INFO);
-    public static final String CONFIG_INFO_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, CONFIG_INFO);
-    public static final String STATISTIC_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, STATISTIC);
-    public static final String HEALTH_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, HEALTH);
+    public static final String SUBMISSION_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SUBMISSION);
+    public static final String SUBMISSION_BATCH_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SUBMISSION_BATCH);
+    public static final String LANGUAGE_ENPOINT = String.join("/", GlobalVariables.JUDGE0_URL, LANGUAGE);
+    public static final String STATUS_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, STATUS);
+    public static final String SYSTEM_INFO_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SYSTEM_INFO);
+    public static final String CONFIG_INFO_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, CONFIG_INFO);
+    public static final String STATISTIC_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, STATISTIC);
+    public static final String HEALTH_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, HEALTH);
 }

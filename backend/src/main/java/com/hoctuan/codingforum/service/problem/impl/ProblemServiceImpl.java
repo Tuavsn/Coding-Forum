@@ -61,22 +61,24 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         List<Judge0RequestDTO> judge0RequestDTOs = new ArrayList<Judge0RequestDTO>();
 
-        existedProblem.getTestCases().forEach(testCase -> {
+        Utils.splitStringByPipe(existedProblem.getTestCases()).forEach(testCase -> {
             List<String> separatedStringBySemicolon = Utils.splitStringBySemicolon(testCase);
 
             String input = formatInput(separatedStringBySemicolon.get(0));
 
             String output = separatedStringBySemicolon.get(1);
 
+            String source_code = Utils.replaceNewlineWithLiteral(solutions.getCode());
+
             judge0RequestDTOs.add(
                 Judge0RequestDTO.builder()
-                    .source_code(solutions.getCode())
+                    .source_code(source_code)
                     .language_id(solutions.getLanguageType().getCode())
                     .stdin(input)
                     .expected_output(output)
                     .build()
             );
-        });
+        }); 
 
         List<Judge0ResponseDTO> results = judge0Service.submitSolution(judge0RequestDTOs, params);
 

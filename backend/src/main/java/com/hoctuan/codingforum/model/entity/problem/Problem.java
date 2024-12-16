@@ -42,7 +42,7 @@ public class Problem extends BaseEntity {
     private String otherProps;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private List<String> testCases;
+    private String testCases;
     
     @ManyToOne(optional = false)
     private User author;

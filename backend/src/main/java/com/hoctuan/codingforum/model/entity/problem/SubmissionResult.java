@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class SubmissionResult extends BaseEntity {
     @ManyToOne(optional = false)
-    private ProblemSubmission submission;
+    private ProblemSubmission problemSubmission;
 
     @Column(nullable = false)
     private int testCaseNum;

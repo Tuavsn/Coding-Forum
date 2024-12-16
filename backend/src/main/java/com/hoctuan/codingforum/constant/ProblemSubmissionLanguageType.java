@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProblemSubmissionLanguageType {
     C(75, "c", "C"),
-    CPLUSPLUS(76, "cplusplus", "C++"),
+    CPLUSPLUS(54, "cplusplus", "C++"),
     PYTHON(100, "python", "Python"),
     JAVA(91, "java", "Java"),
     JAVASCRIPT(63, "javascript", "Javascript"),

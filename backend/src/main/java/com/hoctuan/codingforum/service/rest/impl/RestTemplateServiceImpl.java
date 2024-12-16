@@ -46,7 +46,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     public <T> T post(String url, Object requestBody, Map<String, String> params, Class<T> responseType) {
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Content-type", "application/json;charset=UTF-8");
             HttpEntity<Object> entity = new HttpEntity<>(requestBody, headers);
             url = buildUrlWithParams(url, params);
             logger.debug(">>> POST URL: {}", url);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.hoctuan.codingforum.constant.GlobalVariables;
+import com.hoctuan.codingforum.constant.Judge0Endpoint;
 import com.hoctuan.codingforum.constant.SubmissionConfigurations;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
@@ -40,7 +41,7 @@ public class Judge0ServiceImpl implements Judge0Service {
     public List<Judge0ResponseDTO> getSubmitResult(List<String> tokens, Map<String, String> params) {
         params.put(SubmissionConfigurations.TOKEN, SubmissionConfigurations.AUTH_TOKEN);
         List<Object> result = restTemplateService.get(
-            GlobalVariables.JUDGE0_URL,
+            Judge0Endpoint.SUBMISSION_BATCH_ENDPOINT,
             params,
             List.class);
         return result.stream().map(res -> 
