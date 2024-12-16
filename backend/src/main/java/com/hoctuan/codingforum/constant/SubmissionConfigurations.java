@@ -74,6 +74,7 @@ public class SubmissionConfigurations {
 
     // Param names
     public static final String TOKEN = "X-Auth-Token";
+    public static final String SUBMISSION_TOKEN = "tokens";
     public static final String SOURCE_CODE = "source_code"; // text
     public static final String LANGUAGE_ID = "language_id"; // integer
     public static final String COMPILER_OPTIONS = "compiler_options"; // string (max. 512 chars)
@@ -108,7 +109,7 @@ public class SubmissionConfigurations {
     public static final String MEMORY = "memory"; // float
     public static final String RESULT_WAIT = "wait"; // boolean
     public static final String ENCODED = "base64_encoded"; // boolean
-    public static final String RETURN_FIELD = "field"; //string
+    public static final String RETURN_FIELD = "fields"; //string
     public static final String PAGE = "page"; //string
     public static final String PER_PAGE = "per_page"; //string
 }

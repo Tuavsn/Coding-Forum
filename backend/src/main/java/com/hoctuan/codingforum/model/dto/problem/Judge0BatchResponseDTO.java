@@ -6,27 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Judge0ResponseDTO {
-    private List<Submission> submissions;
-    
+@SuperBuilder
+public class Judge0BatchResponseDTO {
+    private List<Token> tokens;
+
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     @Setter
-    public static class Submission {
-        private int language_id;
-
-        private String stdout;
-
-        private int status_id;
-
-        private String stderr;
-
+    public static class Token {
         private String token;
     }
 }

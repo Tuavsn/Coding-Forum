@@ -1,53 +1,72 @@
 package com.hoctuan.codingforum.service.problem.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import com.hoctuan.codingforum.constant.GlobalVariables;
 import com.hoctuan.codingforum.constant.Judge0Endpoint;
 import com.hoctuan.codingforum.constant.SubmissionConfigurations;
+import com.hoctuan.codingforum.model.dto.problem.Judge0BatchRequestDTO;
+import com.hoctuan.codingforum.model.dto.problem.Judge0BatchResponseDTO;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
 import com.hoctuan.codingforum.service.problem.Judge0Service;
-import com.hoctuan.codingforum.service.problem.SubmissionStrategy;
 import com.hoctuan.codingforum.service.rest.RestTemplateService;
 
 @Service
 public class Judge0ServiceImpl implements Judge0Service {
     @Autowired
-    private Judge0SubmitFactory judge0SubmitFactory;
-    @Autowired
     private RestTemplateService restTemplateService;
 
     @Override
-    public List<Judge0ResponseDTO> submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params) {
+    public Judge0ResponseDTO submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params) {
         params.put(SubmissionConfigurations.TOKEN, SubmissionConfigurations.AUTH_TOKEN);
-        boolean isWaitingForResult;
-        if(ObjectUtils.isEmpty(params.get(SubmissionConfigurations.RESULT_WAIT))) {
-            isWaitingForResult = true;
-        } else {
-            isWaitingForResult = false;
+
+        Judge0BatchRequestDTO batchRequest = new Judge0BatchRequestDTO(solutions);
+
+        ParameterizedTypeReference<List<Judge0BatchResponseDTO.Token>> typeRef = new ParameterizedTypeReference<List<Judge0BatchResponseDTO.Token>>() {};
+
+        List<Judge0BatchResponseDTO.Token> batchResults = restTemplateService.post(
+            Judge0Endpoint.SUBMISSION_BATCH_ENDPOINT,
+            batchRequest,
+            params,
+            typeRef);
+
+        List<String> tokens = batchResults.stream().map(result -> result.getToken()).collect(Collectors.toList());
+
+        try {
+            Thread.sleep(2000);  // Dừng 2 giây
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        SubmissionStrategy strategy = judge0SubmitFactory.getSubmissionStrategy(isWaitingForResult);
-        return strategy.submitSolution(solutions, params);
+
+        return getSubmitResult(tokens, new HashMap<>());
     }
 
     @Override
-    public List<Judge0ResponseDTO> getSubmitResult(List<String> tokens, Map<String, String> params) {
+    public Judge0ResponseDTO getSubmitResult(List<String> tokens, Map<String, String> params) {
         params.put(SubmissionConfigurations.TOKEN, SubmissionConfigurations.AUTH_TOKEN);
-        List<Object> result = restTemplateService.get(
+
+        params.put(SubmissionConfigurations.SUBMISSION_TOKEN, String.join(",", tokens));
+
+        List<String> returnFields = List.of("token","stdout","stderr","status_id","language_id");
+
+        params.put(SubmissionConfigurations.RETURN_FIELD, String.join(",", returnFields));
+
+        ParameterizedTypeReference<Judge0ResponseDTO> typeRef = new ParameterizedTypeReference<Judge0ResponseDTO>() {};
+
+        return restTemplateService.get(
             Judge0Endpoint.SUBMISSION_BATCH_ENDPOINT,
             params,
-            List.class);
-        return result.stream().map(res -> 
-            (Judge0ResponseDTO) res
-        ).collect(Collectors.toList());
-    }
+            typeRef);
+    };
 
     @Override
     public void deleteSubmitReuslt(String token) {

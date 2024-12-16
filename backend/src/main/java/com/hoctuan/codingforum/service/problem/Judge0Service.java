@@ -7,9 +7,9 @@ import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
 
 public interface Judge0Service {
-    public List<Judge0ResponseDTO> submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params);
+    public Judge0ResponseDTO submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params);
 
-    public List<Judge0ResponseDTO> getSubmitResult(List<String> tokens, Map<String, String> params);
+    public Judge0ResponseDTO getSubmitResult(List<String> tokens, Map<String, String> params);
 
     public void deleteSubmitReuslt(String token);
 }

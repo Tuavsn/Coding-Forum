@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
+import com.hoctuan.codingforum.constant.ProblemResult;
 import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
@@ -68,11 +69,9 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
             String output = separatedStringBySemicolon.get(1);
 
-            String source_code = Utils.replaceNewlineWithLiteral(solutions.getCode());
-
             judge0RequestDTOs.add(
                 Judge0RequestDTO.builder()
-                    .source_code(source_code)
+                    .source_code(solutions.getCode())
                     .language_id(solutions.getLanguageType().getCode())
                     .stdin(input)
                     .expected_output(output)
@@ -80,16 +79,14 @@ public class ProblemServiceImpl extends BaseServiceImpl<
             );
         }); 
 
-        List<Judge0ResponseDTO> results = judge0Service.submitSolution(judge0RequestDTOs, params);
+        Judge0ResponseDTO results = judge0Service.submitSolution(judge0RequestDTOs, params);
 
-        results.forEach(result -> {
-            logger.debug(result.toString());
-        });
+        boolean isNotAccept = results.getSubmissions().stream().anyMatch(result -> ProblemResult.ACCEPTED.getCode() != result.getStatus_id());
 
         return ProblemSubmissionResponseDTO.builder()
             .code(solutions.getCode())
             .languageType(solutions.getLanguageType())
-            .result("Accepted")
+            .result(isNotAccept ? "Wrong Answer" : "Accepted")
             .build();
     }
 

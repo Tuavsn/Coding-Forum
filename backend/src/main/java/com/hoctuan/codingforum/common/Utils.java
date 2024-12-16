@@ -54,13 +54,6 @@ public class Utils {
     }
 
     public static String joinListWithNewLine(List<String> strings) {
-        return String.join("\\n", strings);
-    }
-
-    public static String replaceNewlineWithLiteral(String input) {
-        if (input == null) {
-            return null;
-        }
-        return input.replace("\n", "\\n");
+        return String.join("\n", strings);
     }
 }

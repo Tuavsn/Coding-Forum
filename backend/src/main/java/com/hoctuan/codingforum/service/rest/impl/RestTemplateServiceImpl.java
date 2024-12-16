@@ -5,6 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,7 +26,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     private RestTemplate restTemplate;
 
     @Override
-     public <T> T get(String url, Map<String, String> params, Class<T> responseType) {
+    public <T> T get(String url, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
         try {
             HttpEntity<String> entity = new HttpEntity<>(null);
             url = buildUrlWithParams(url, params);
@@ -43,7 +44,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     }
 
     @Override
-    public <T> T post(String url, Object requestBody, Map<String, String> params, Class<T> responseType) {
+    public <T> T post(String url, Object requestBody, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-type", "application/json;charset=UTF-8");
@@ -63,7 +64,7 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     }
 
     @Override
-    public <T> T put(String url, Object requestBody, Map<String, String> params, Class<T> responseType) {
+    public <T> T put(String url, Object requestBody, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
