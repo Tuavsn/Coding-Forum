@@ -13,7 +13,6 @@ import com.hoctuan.codingforum.common.BaseEntity;
 import com.hoctuan.codingforum.constant.ProblemType;
 import com.hoctuan.codingforum.model.entity.account.User;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity

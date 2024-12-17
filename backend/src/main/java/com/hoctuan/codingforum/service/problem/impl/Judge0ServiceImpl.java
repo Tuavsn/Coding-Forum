@@ -1,6 +1,5 @@
 package com.hoctuan.codingforum.service.problem.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +39,7 @@ public class Judge0ServiceImpl implements Judge0Service {
             typeRef);
 
         List<String> tokens = batchResults.stream().map(result -> result.getToken()).collect(Collectors.toList());
-
-        try {
-            Thread.sleep(2000);  // Dừng 2 giây
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        
         return getSubmitResult(tokens, new HashMap<>());
     }
 
@@ -56,7 +49,7 @@ public class Judge0ServiceImpl implements Judge0Service {
 
         params.put(SubmissionConfigurations.SUBMISSION_TOKEN, String.join(",", tokens));
 
-        List<String> returnFields = List.of("token","stdout","stderr","status_id","language_id");
+        List<String> returnFields = List.of("token","stdout","stderr","status_id","language_id", "time", "memory");
 
         params.put(SubmissionConfigurations.RETURN_FIELD, String.join(",", returnFields));
 

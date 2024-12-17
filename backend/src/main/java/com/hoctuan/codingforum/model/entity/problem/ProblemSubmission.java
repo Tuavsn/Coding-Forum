@@ -47,5 +47,8 @@ public class ProblemSubmission extends BaseEntity {
     private int time;
 
     @Column(nullable = false)
+    private String result;
+
+    @Column(nullable = false)
     private double score;
 }

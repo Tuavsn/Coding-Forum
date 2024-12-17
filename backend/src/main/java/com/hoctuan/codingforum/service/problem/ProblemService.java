@@ -16,7 +16,9 @@ import com.hoctuan.codingforum.model.dto.problem.ProblemSubmissionResponseDTO;
 public interface ProblemService extends BaseService<ProblemResponseDTO, ProblemRequestDTO, UUID> {
     public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions, Map<String, String> params);
 
-    public Page<ProblemSubmissionResponseDTO> getSubmitResult(Pageable pageable, MultiValueMap<String, String> params);
+    public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId, MultiValueMap<String, String> params);
+
+    public Page<ProblemSubmissionResponseDTO> getSubmissions(Pageable pageable, UUID id);
 
     public void deleteSubmitReuslt(String token);
 }
