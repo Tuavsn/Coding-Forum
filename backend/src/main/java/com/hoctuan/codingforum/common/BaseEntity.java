@@ -26,10 +26,10 @@ public abstract class BaseEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false, updatable = false)
+    // @Column(nullable = false, updatable = false)
     private String createdBy = "System";
 
-    @Column(nullable = false)
+    // @Column(nullable = false)
     private String updatedBy = "System";
 
     @CreationTimestamp

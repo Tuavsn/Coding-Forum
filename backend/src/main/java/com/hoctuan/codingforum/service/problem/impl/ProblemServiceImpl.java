@@ -82,7 +82,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         Judge0ResponseDTO results = judge0Service.submitSolution(judge0RequestDTOs, params);
 
-        List<SubmissionResult> submissionResults = 
+        List<SubmissionResult> submissionResults = submissionResultRepository.saveAll(
             IntStream.range(0, results.getSubmissions().size())
                 .mapToObj(i -> {
                     var result = results.getSubmissions().get(i);
@@ -93,7 +93,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<
                             .submitError(result.getStderr())
                             .build();
                 })
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
+        );
 
         ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
             ProblemSubmission.builder()
@@ -107,10 +108,10 @@ public class ProblemServiceImpl extends BaseServiceImpl<
                 .build()
         );
 
-        asyncUpdateBatchResult(
-            results.getSubmissions().stream().map(result -> result.getToken()).collect(Collectors.toList()),
-            savedProblemSubmission
-        );
+        // asyncUpdateBatchResult(
+        //     results.getSubmissions().stream().map(result -> result.getToken()).collect(Collectors.toList()),
+        //     savedProblemSubmission
+        // );
 
         return problemSubmissonMapper.toDTO(savedProblemSubmission);
     }
