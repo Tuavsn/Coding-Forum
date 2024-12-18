@@ -9,6 +9,7 @@ import com.hoctuan.codingforum.common.BaseEntity;
 import com.hoctuan.codingforum.constant.ProblemSubmissionLanguageType;
 import com.hoctuan.codingforum.model.entity.account.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class ProblemSubmission extends BaseEntity {
     @ManyToOne(optional = false)
     private Problem problem;
 
-    @OneToMany(mappedBy = "problemSubmission", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problemSubmission", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<SubmissionResult> submissionResults;
 

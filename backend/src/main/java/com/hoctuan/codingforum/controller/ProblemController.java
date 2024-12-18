@@ -90,38 +90,37 @@ public class ProblemController extends BaseController<
                         , HttpStatus.OK);
     }
 
-    // @GetMapping("/{id}/submissions")
-    // public ResponseEntity<BaseResponse> getSubmissionResult(
-    //     @PathVariable UUID id,
-    //     @ParameterObject Pageable pageable,
-    //     @RequestParam MultiValueMap<String, String> params
-    // ) {
-    //     Page<ProblemSubmissionResponseDTO> data = problemService.getSubmitResult(id, pageable, params);
-    //     return new ResponseEntity<>(
-    //             BaseResponse.builder()
-    //                     .message("Lấy submission thành công")
-    //                     .data(data)
-    //                     .status(HttpStatus.OK.value())
-    //                     .build()
-    //                 , HttpStatus.OK);
-    // }
+    @GetMapping("/{id}/submissions")
+    public ResponseEntity<BaseResponse> getSubmissionResult(
+        @PathVariable UUID id,
+        @ParameterObject Pageable pageable,
+        @RequestParam MultiValueMap<String, String> params
+    ) {
+        Page<ProblemSubmissionResponseDTO> data = problemService.getSubmissions(id, pageable);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy submission thành công")
+                        .data(data)
+                        .status(HttpStatus.OK.value())
+                        .build()
+                    , HttpStatus.OK);
+    }
 
-    // @GetMapping("/{id}/submissions/${submissionId}")
-    // public ResponseEntity<BaseResponse> getSubmissionResultById(
-    //     @PathVariable UUID id,
-    //     @PathVariable UUID submissionId,
-    //     @ParameterObject Pageable pageable,
-    //     @RequestParam MultiValueMap<String, String> params
-    // ) {
-    //     ProblemSubmissionResponseDTO data = problemService.getSubmitResultById(id, submissionId, params);
-    //     return new ResponseEntity<>(
-    //             BaseResponse.builder()
-    //                     .message("Lấy submission thành công")
-    //                     .data(data)
-    //                     .status(HttpStatus.OK.value())
-    //                     .build()
-    //                 , HttpStatus.OK);
-    // }
+    @GetMapping("/submissions/{submissionId}")
+    public ResponseEntity<BaseResponse> getSubmissionResultById(
+        @PathVariable UUID submissionId,
+        @ParameterObject Pageable pageable,
+        @RequestParam MultiValueMap<String, String> params
+    ) {
+        ProblemSubmissionResponseDTO data = problemService.getSubmitResult(submissionId, params);
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy submission thành công")
+                        .data(data)
+                        .status(HttpStatus.OK.value())
+                        .build()
+                    , HttpStatus.OK);
+    }
 
     // @GetMapping("/{id}/delete-submissions")
     // public ResponseEntity<BaseResponse> deleteSubmissionResult(

@@ -26,4 +26,12 @@ public enum ProblemResult {
                      .findFirst()
                      .orElse("Unknown Code"); // Trả về "Unknown Code" nếu không tìm thấy
     }
+
+    public static String getNameByCode(int code) {
+        return Arrays.stream(values())
+                     .filter(result -> result.getCode() == code)
+                     .map(ProblemResult::getName)
+                     .findFirst()
+                     .orElse("Unknown Code"); // Trả về "Unknown Code" nếu không tìm thấy
+    }
 }

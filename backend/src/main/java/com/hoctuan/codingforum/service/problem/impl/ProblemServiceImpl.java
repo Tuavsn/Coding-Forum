@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
@@ -82,6 +82,17 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         Judge0ResponseDTO results = judge0Service.submitSolution(judge0RequestDTOs, params);
 
+        ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
+            ProblemSubmission.builder()
+                .problem(existedProblem)
+                .code(solutions.getCode())
+                .languageType(solutions.getLanguageType())
+                .user(submitUser)
+                .result("Pending")
+                .score(0)
+                .build()
+        );
+
         List<SubmissionResult> submissionResults = submissionResultRepository.saveAll(
             IntStream.range(0, results.getSubmissions().size())
                 .mapToObj(i -> {
@@ -89,29 +100,24 @@ public class ProblemServiceImpl extends BaseServiceImpl<
                     return SubmissionResult.builder()
                             .testCaseNum(i + 1) // Thứ tự bắt đầu từ 1
                             .submitToken(result.getToken())
-                            .submitResult(ProblemResult.getDisplayNameByCode(result.getStatus_id()))
-                            .submitError(result.getStderr())
+                            .submitResult(ProblemResult.getNameByCode(result.getStatus_id()))
+                            .submitError(ObjectUtils.isEmpty(result.getStderr()) ? "" : result.getStderr())
+                            .problemSubmission(savedProblemSubmission)
                             .build();
                 })
             .collect(Collectors.toList())
         );
 
-        ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
-            ProblemSubmission.builder()
-                .problem(existedProblem)
-                .code(solutions.getCode())
-                .languageType(solutions.getLanguageType())
-                .user(submitUser)
-                .submissionResults(new HashSet<>(submissionResults))
-                .result("Pending")
-                .score(0)
-                .build()
-        );
+        savedProblemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
 
-        // asyncUpdateBatchResult(
-        //     results.getSubmissions().stream().map(result -> result.getToken()).collect(Collectors.toList()),
-        //     savedProblemSubmission
-        // );
+        existedProblem.getProblemSubmissions().add(savedProblemSubmission);
+
+        problemRepository.save(existedProblem);
+
+        updateBatchResult(
+            results.getSubmissions().stream().map(result -> result.getToken()).collect(Collectors.toList()),
+            savedProblemSubmission
+        );
 
         return problemSubmissonMapper.toDTO(savedProblemSubmission);
     }
@@ -123,7 +129,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     }
 
     @Override
-    public Page<ProblemSubmissionResponseDTO> getSubmissions(Pageable pageable, UUID id) {
+    public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
         Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
 
         return problemSubmissionRepository.findByProblem(pageable, existedProblem).map(problemSubmissonMapper::toDTO);
@@ -166,8 +172,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         return Utils.joinListWithNewLine(result);
     }
 
-    @Async
-    public void asyncUpdateBatchResult(List<String> tokens, ProblemSubmission problemSubmission) {
+    public void updateBatchResult(List<String> tokens, ProblemSubmission problemSubmission) {
         Map<String, String> params = new HashMap<>();
         boolean isCompleted = false;
 
@@ -191,8 +196,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
                 if (submissionResult != null) {
                     // Cập nhật thông tin vào SubmissionResult
-                    submissionResult.setSubmitResult(submission.getStdout());
-                    submissionResult.setSubmitError(submission.getStderr());
+                    submissionResult.setSubmitResult(ProblemResult.getNameByCode(submission.getStatus_id()));
+                    submissionResult.setSubmitError(ObjectUtils.isEmpty(submission.getStderr()) ? "" : submission.getStderr());
                     submissionResultRepository.save(submissionResult); // Lưu kết quả mới vào DB
 
                     // Nếu submission được chấp nhận (status_id == 3), tăng số test case Passed

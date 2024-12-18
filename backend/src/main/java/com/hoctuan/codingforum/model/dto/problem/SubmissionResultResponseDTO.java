@@ -1,7 +1,6 @@
 package com.hoctuan.codingforum.model.dto.problem;
 
 import com.hoctuan.codingforum.common.BaseResponseDTO;
-import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,10 +13,12 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class ProblemCommentResponseDTO extends BaseResponseDTO {
-    private ProblemResponseDTO problem;
+public class SubmissionResultResponseDTO  extends BaseResponseDTO {
+    private int testCaseNum;
 
-    private AuthResponseDTO user;
+    private String submitResult;
 
-    private String content;
+    private String submitToken;
+
+    private String submitError;
 }
