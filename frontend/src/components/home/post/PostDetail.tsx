@@ -28,7 +28,7 @@ import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, mess
 import Meta from "antd/es/card/Meta";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
@@ -186,6 +186,10 @@ export default function PostDetail() {
 
         setPostImage(postImages);
     }
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [postId]);
 
     if(isLoading) {
         return <Skeleton active />

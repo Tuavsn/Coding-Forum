@@ -3,7 +3,7 @@ import { CheckCircleOutlined, ClockCircleOutlined, CloudServerOutlined, HistoryO
 import { Button, Card, Divider, Flex, Modal, Skeleton, Tag, Typography } from "antd";
 import LanguageMenu from "./LanguageMenu";
 import MonacoEditor from "./MonacoEditor";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AuthContext } from "@/context/AuthContextProvider";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -27,7 +27,9 @@ export default function ProblemDetail({problem}: {problem: Problem}) {
 
     const problemId = useSearchParams().get('id');
 
-    const { data, isLoading } = useQuery<Problem>('getProblemDetail', () => getProblemDetail(problemId));
+    const { data, isLoading } = useQuery<Problem>(
+        ['getProblemDetail', problemId], () => getProblemDetail(problemId)
+    );
 
     const [runLoading, setRunLoading] = useState(false);
 
@@ -95,6 +97,11 @@ export default function ProblemDetail({problem}: {problem: Problem}) {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [problemId]);
+
     
     if(isLoading) {
         return <Skeleton active />
