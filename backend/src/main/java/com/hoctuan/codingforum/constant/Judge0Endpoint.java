@@ -16,6 +16,8 @@ public final class Judge0Endpoint {
 
     public static final String SUBMISSION_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SUBMISSION);
     public static final String SUBMISSION_BATCH_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SUBMISSION_BATCH);
+    // public static final String CALLBACK_ENDPOINT = String.join("/", GlobalVariables.SERVER_URL, "api/problem/update-judge0-result");
+    public static final String CALLBACK_ENDPOINT = "https://webhook.site/ebfb70c8-cd37-458c-9b2c-461237fc933f";
     public static final String LANGUAGE_ENPOINT = String.join("/", GlobalVariables.JUDGE0_URL, LANGUAGE);
     public static final String STATUS_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, STATUS);
     public static final String SYSTEM_INFO_ENDPOINT = String.join("/", GlobalVariables.JUDGE0_URL, SYSTEM_INFO);

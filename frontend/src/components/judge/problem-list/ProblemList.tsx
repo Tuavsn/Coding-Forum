@@ -1,10 +1,19 @@
 'use client'
 
-import { Card, List, Space, Tabs, Tag } from "antd";
-import TabPane from "antd/es/tabs/TabPane";
-import React from "react";
-import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography } from "antd";
+import React, { useContext, useState } from "react";
+import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { Problem } from "@/libs/types";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/actions/problem.actions";
+import { formatDate } from "@/libs/utils";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { ProblemType } from "@/libs/enum";
+import { AuthContext } from "@/context/AuthContextProvider";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Option } from "antd/es/mentions";
 
 function stringToSlug(str: string) {
    // Chuyển tất cả các ký tự thành chữ thường
@@ -27,9 +36,9 @@ function stringToSlug(str: string) {
 
 function getTopicColor(str: string): string {
     switch(str) {
-        case "Dễ":
+        case ProblemType.EASY:
             return "#87d068"
-        case "Trung bình":
+        case ProblemType.MEDIUM:
             return "#108ee9"
         default:
             return "#f50"
@@ -236,19 +245,164 @@ const dataSource = [
     }
 ];
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
 
 export default function ProblemList() {
+    const {auth, setAuth} = useContext(AuthContext);
+
+    const { data, isLoading } = useQuery<Problem[]>('getProblem', getProblem);
+
+    const queryClient = useQueryClient();
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    const [problemCreateLoading, setProblemCreateLoading] = useState(false);
+
+    const [problemUpdateLoading, setProblemUpdateLoading] = useState(false);
+
+    const [problemDeleteLoading, setProblemDeleteLoading] = useState(false);
+
+    const [problemId, setProblemId] = useState('');
+
+    const [problemTitle, setProblemTitle] = useState('');
+
+    const [problemDescription, setProblemDescription] = useState('');
+
+    const [example, setExample] = useState('');
+
+    const [tags, setTags] = useState('');
+
+    const [difficulty, setDifficulty] = useState(ProblemType.EASY);
+
+    const [testCases, setTestCases] = useState('');
+
+    const [totalScore, setTotalScore] = useState(0);
+
+    // create problem
+    const problemCreateMutation = useMutation(createProblem, {
+        onMutate: () => {
+            setProblemCreateLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemCreateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getProblem');
+            setProblemTitle('');
+            setProblemDescription('');
+            setExample('');
+            setTags('');
+            setDifficulty(ProblemType.EASY);
+            setTestCases('');
+            setTotalScore(0);
+            message.success(data.Message);
+        }
+    })
+
+    const showCreateProblemDrawer = () => {
+        setOpenDrawer(true);
+    };
+
+    const handleCreateProblem = () => {
+        problemCreateMutation.mutate({
+            newProblem: {
+                title: problemTitle,
+                description: problemDescription,
+                example: example,
+                tags: tags,
+                difficulty: difficulty,
+                testCases: testCases,
+                totalScore: totalScore
+            }
+        })
+    }
+    // update problem
+    const problemUpdateMutation = useMutation(updateProblem, {
+        onMutate: () => {
+            setProblemUpdateLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemUpdateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getProblem');
+            setProblemId('');
+            setProblemTitle('');
+            setProblemDescription('');
+            setExample('');
+            setTags('');
+            setDifficulty(ProblemType.EASY);
+            setTestCases('');
+            setTotalScore(0);
+            message.success(data.Message);
+        }
+    })
+
+    const showUpdateProblemDrawer = (problem:Problem) => {
+        setOpenDrawer(true);
+        setProblemId(problem.id);
+        setProblemTitle(problem.title);
+        setProblemDescription(problem.description);
+        setExample(problem.example);
+        setTags(problem.tags);
+        setDifficulty(problem.difficulty);
+        setTestCases(problem.testCases);
+        setTotalScore(problem.totalScore);
+    }
+
+    const handleUpdateProblem = () => {
+        problemUpdateMutation.mutate({
+            newProblem: {
+                title: problemTitle,
+                description: problemDescription,
+                example: example,
+                tags: tags,
+                difficulty: difficulty,
+                testCases: testCases,
+                totalScore: totalScore
+            }
+        })
+    }
+
+    // delete problem
+    const problemDeleteMutation = useMutation(deleteProblem, {
+        onMutate: () => {
+            setProblemDeleteLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemDeleteLoading(false);
+            queryClient.invalidateQueries('getProblem');
+            message.success(data.Message);
+        }
+    })
+
+    const handleDeleteProblem = (problemId: string) => {
+        problemDeleteMutation.mutate(problemId);
+    }
+
+    // common
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+    }
+
     return (
-        <Tabs defaultActiveKey="0" items={dataSource.map((topic, index) => ({
-            key: index.toString(),
-            label: topic.name,
-            children: (
+        <>
+        {isLoading ? (
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+        ) : (
+            <>
+                {
+                    auth && auth.role === 'SYS_ADMIN' && (
+                        <Button type="primary" onClick={showCreateProblemDrawer}><PlusOutlined />Thêm bài</Button>
+                    )
+                }
+                <Divider orientation="left"><p>{data?.length} Bài tập</p></Divider>
                 <Card>
                     <List
                         size="large"
@@ -259,27 +413,174 @@ export default function ProblemList() {
                         pagination={{
                             pageSize: 10
                         }}
-                        dataSource={topic.posts} 
+                        dataSource={data} 
                         renderItem={(item) => (
                             <List.Item
                                 className="px-0"
                                 actions={[
-                                    <Tag key='1' color={getTopicColor(topic.name)}>{topic.name}</Tag>,
-                                    <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />,
-                                    <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                                    <Tag key='1' color={getTopicColor(item.difficulty)}>{item.difficulty}</Tag>,
+                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                        <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />
+                                    </Button>,
+                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                        <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                                    </Button>,
+                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                        <IconText icon={ClockCircleOutlined} text={formatDate(item.createdAt.toString())} />
+                                    </Button>,
+                                    auth?.username == item.author.username ? (
+                                        <Popconfirm
+                                            title="Tuỳ chọn"
+                                            onConfirm={() => handleDeleteProblem(item.id)}
+                                            onCancel={() => showUpdateProblemDrawer(item)}
+                                            okText="Xoá"
+                                            cancelText="Chỉnh sửa"
+                                            key="list-vertical-message"
+                                        >
+                                            <Button className="border-none px-2 shadow-none"><IconText icon={SettingOutlined} text=""/></Button>
+                                        </Popconfirm>
+                                    ) : <></>
                                 ]}
                             >
                                 <List.Item.Meta
-                                    title={<Link href={`/problem/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
-                                    description={<strong><ClockCircleOutlined /> {item.createAt}</strong>}
+                                    title={<Link href={`/problem/${stringToSlug(item.title)}?id=${item.id}`}><strong>{item.title}</strong></Link>}
                                 />
-                                {item.description}
+                                <Typography className="relative max-h-[160px] overflow-hidden">
+                                    <div 
+                                        dangerouslySetInnerHTML={{ __html: item.description }} 
+                                        className="break-words"
+                                    />
+                                </Typography>
                             </List.Item>
                         )}
                     />
                 </Card>
-            )
-        }))}>
-        </Tabs>
+                <Drawer
+                    width={720}
+                    onClose={closeDrawer}
+                    open={openDrawer}
+                    styles={{
+                    body: {
+                        paddingBottom: 80,
+                    },
+                    }}
+                    extra={
+                    <Space>
+                        <Button onClick={closeDrawer}>Hủy</Button>
+                        {problemId === '' ? (
+                            <Button onClick={handleCreateProblem} type="primary" loading={problemCreateLoading}>
+                                Thêm
+                            </Button>
+                        ) : (
+                            <Button onClick={handleUpdateProblem} type="primary" loading={problemUpdateLoading}>
+                                Cập nhật
+                            </Button>
+                        )}
+                    </Space>
+                    }
+                >
+                    <Form layout="vertical" hideRequiredMark>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Tiêu đề"
+                                    rules={[{ required: true, message: 'Nhập tiêu đề bài Post' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setProblemTitle(e.target.value)} value={problemTitle} placeholder="Nhập tiêu đề" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Nội dung"
+                                    rules={[
+                                    {
+                                        required: true,
+                                        message: 'Nhập nội dung bài Post',
+                                    },
+                                    ]}
+                                >
+                                    <CKEditor
+                                        editor={ ClassicEditor }
+                                        onChange={(event, editor) => setProblemDescription(editor.getData())}
+                                        data={problemDescription}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Ví dụ"
+                                    rules={[
+                                    {
+                                        required: true,
+                                        message: 'Nhập ví dụ',
+                                    },
+                                    ]}
+                                >
+                                    <CKEditor
+                                        editor={ ClassicEditor }
+                                        onChange={(event, editor) => setExample(editor.getData())}
+                                        data={example}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Tags"
+                                    rules={[{ required: true, message: 'Nhập tags' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTags(e.target.value)} value={tags} placeholder="Nhập tags" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Độ khó"
+                                    rules={[{ required: true, message: 'Chọn độ khó' }]}
+                                >
+                                    <Select
+                                        style={{ width: '100%' }} 
+                                        value={difficulty} 
+                                        onChange={(value) => setDifficulty(value)} 
+                                        placeholder="Chọn độ khó"
+                                    >
+                                        <Option value={ProblemType.EASY}>Dễ</Option>
+                                        <Option value={ProblemType.MEDIUM}>Trung bình</Option>
+                                        <Option value={ProblemType.HARD}>Khó</Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Test cases"
+                                    rules={[{ required: true, message: 'Nhập test cases' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTestCases(e.target.value)} value={testCases} placeholder="Nhập test cases" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Tổng điểm"
+                                    rules={[{ required: true, message: 'Nhập tổng điểm' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTotalScore(Number(e.target.value))} value={totalScore} placeholder="Nhập tổng điểm" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Drawer>
+            </>
+            )}
+        </>
     )
 }

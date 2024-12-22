@@ -13,64 +13,65 @@ import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message,
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
 interface postList {
     posts: Post[];
     topic: Topic;
 }
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
 
 
 export default function PostList({posts, topic}: postList) {
-    const {auth, setAuth} = useContext(AuthContext)
+    const {auth, setAuth} = useContext(AuthContext);
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     const sortedPost = [...posts].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    const [openDrawer, setOpenDrawer] = useState(false)
+    const [openDrawer, setOpenDrawer] = useState(false);
 
-    const [postCreateLoading, setPostCreateLoading] = useState(false)
+    const [postCreateLoading, setPostCreateLoading] = useState(false);
 
-    const [postUpdateLoading, setPostUpdateLoading] = useState(false)
+    const [postUpdateLoading, setPostUpdateLoading] = useState(false);
 
-    const [postDeleteLoading, setPostDeleteLoading] = useState(false)
+    const [postDeleteLoading, setPostDeleteLoading] = useState(false);
 
-    const [postId, setPostId] = useState('')
+    const [postId, setPostId] = useState('');
 
-    const [postHeader, setPostHeader] = useState('')
+    const [postHeader, setPostHeader] = useState('');
 
-    const [postContent, setPostContent] = useState('')
+    const [postContent, setPostContent] = useState('');
     
-    const [postImage, setPostImage] = useState<PostImage[]>([])
+    const [postImage, setPostImage] = useState<PostImage[]>([]);
 
-    const [previewOpen, setPreviewOpen] = useState(false)
+    const [previewOpen, setPreviewOpen] = useState(false);
 
-    const [previewImage, setPreviewImage] = useState('')
+    const [previewImage, setPreviewImage] = useState('');
 
-    const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     // create Post
     const postCreateMutation = useMutation(createPost, {
         onMutate: () => {
-            setPostCreateLoading(true)
+            setPostCreateLoading(true);
         },
 
         onSuccess: (data) => {
-            setPostCreateLoading(false)
-            setOpenDrawer(false)
-            queryClient.invalidateQueries('getTopic')
-            setPostHeader('')
-            setPostContent('')
-            setPostImage([])
-            setFileList([])
-            message.success(data.Message)
+            setPostCreateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getTopic');
+            setPostHeader('');
+            setPostContent('');
+            setPostImage([]);
+            setFileList([]);
+            message.success(data.Message);
         }
     })
 
@@ -92,19 +93,19 @@ export default function PostList({posts, topic}: postList) {
     // update Post
     const postUpdateMutation = useMutation(updatePost, {
         onMutate: () => {
-            setPostUpdateLoading(true)
+            setPostUpdateLoading(true);
         },
 
         onSuccess: (data) => {
-            setPostUpdateLoading(false)
-            setOpenDrawer(false)
-            queryClient.invalidateQueries('getTopic')
-            setPostId('')
-            setPostHeader('')
-            setPostContent('')
-            setPostImage([])
-            setFileList([])
-            message.success(data.Message)
+            setPostUpdateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getTopic');
+            setPostId('');
+            setPostHeader('');
+            setPostContent('');
+            setPostImage([]);
+            setFileList([]);
+            message.success(data.Message);
         }
     })
 
@@ -121,84 +122,84 @@ export default function PostList({posts, topic}: postList) {
 
     const showUpdatePostDrawer = (post:Post) => {
         setOpenDrawer(true);
-        setPostId(post.id)
-        setPostHeader(post.header)
-        setPostContent(post.content)
+        setPostId(post.id);
+        setPostHeader(post.header);
+        setPostContent(post.content);
     }
 
     // delete Post
     const postDeleteMutation = useMutation(deletePost, {
         onMutate: () => {
-            setPostDeleteLoading(true)
+            setPostDeleteLoading(true);
         },
 
         onSuccess: (data) => {
-            setPostDeleteLoading(false)
-            queryClient.invalidateQueries('getTopic')
-            message.success(data.Message)
+            setPostDeleteLoading(false);
+            queryClient.invalidateQueries('getTopic');
+            message.success(data.Message);
         }
     })
 
     const handleDeletePost = (id: string) => {
-        postDeleteMutation.mutate(id)
+        postDeleteMutation.mutate(id);
     }
 
     // like Post
     const postLikeMutation = useMutation(likePost, {
         onSuccess: (data) => {
-            queryClient.invalidateQueries('getTopic')
-            message.success(data.Message)
+            queryClient.invalidateQueries('getTopic');
+            message.success(data.Message);
         }
     })
 
     const handleLikePost = (id: string) => {
-        auth ? postLikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+        auth ? postLikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập");
     }
 
     // dislike Post
     const postDislikeMutation = useMutation(dislikePost, {
         onSuccess: (data) => {
-            queryClient.invalidateQueries('getTopic')
-            message.success(data.Message)
+            queryClient.invalidateQueries('getTopic');
+            message.success(data.Message);
         }
     })
 
     const handleDislikePost = (id: string) => {
-        auth ? postDislikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập")
+        auth ? postDislikeMutation.mutate(id) : message.error("Bạn chưa đăng nhập");
     }
 
     // common
     const closeDrawer = () => {
         setOpenDrawer(false);
-        setPostHeader('')
-        setPostContent('')
-        setPostImage([])
+        setPostHeader('');
+        setPostContent('');
+        setPostImage([]);
     }
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
-          file.preview = await getBase64(file.originFileObj as FileType)
+          file.preview = await getBase64(file.originFileObj as FileType);
         }
     
-        setPreviewImage(file.url || (file.preview as string))
-        setPreviewOpen(true)
+        setPreviewImage(file.url || (file.preview as string));
+        setPreviewOpen(true);
     }
 
     const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
         const updatedFileList = await Promise.all(
             newFileList.map(async (file) => {
               if (file.originFileObj && !file.url && !file.preview) {
-                const base64 = await getBase64(file.originFileObj as FileType)
+                const base64 = await getBase64(file.originFileObj as FileType);
                 return {
                   ...file,
                   url: base64,
                 }
               }
-              return file
+              return file;
             })
         )
 
-        setFileList(updatedFileList)
+        setFileList(updatedFileList);
 
         const postImages = updatedFileList.map((file) => ({
             image: file.url as string
@@ -234,7 +235,7 @@ export default function PostList({posts, topic}: postList) {
                                     className="border-none px-2 shadow-none" key="list-vertical-message"
                                     onClick={() => handleLikePost(item.id)}
                                 >
-                                    <IconText 
+                                    <IconText
                                         icon={item.postReactions.some((reaction => reaction.reactionType === ReactionType.LIKE && reaction.user.id === auth?.id)) ? LikeFilled : LikeOutlined} 
                                         text={item.postReactions.filter((reaction) => reaction.reactionType === ReactionType.LIKE).length.toString()}
                                     />
@@ -288,8 +289,19 @@ export default function PostList({posts, topic}: postList) {
                                     </>
                                 )}
                             />
-                            <Typography>
-                                <div dangerouslySetInnerHTML={{ __html: item.content }} style={{maxHeight: "160px", overflow: "hidden", wordBreak: "break-word", overflowWrap: "break-word"}} />
+                            <Typography className="relative max-h-[160px] overflow-hidden">
+                                <div 
+                                    dangerouslySetInnerHTML={{ __html: item.content }} 
+                                    className="break-words"
+                                />
+                                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent">
+                                    <Link 
+                                        href={`/post/${stringToSlug(item.header)}?id=${item.id}`} 
+                                        className="absolute inset-0 flex items-center justify-center bg-white/80 text-gray-600 font-medium shadow-lg cursor-pointer hover:shadow-xl"
+                                    >
+                                        Xem thêm
+                                    </Link>
+                                </div>
                             </Typography>
                         </List.Item>
                     )}

@@ -1,15 +1,18 @@
 package com.hoctuan.codingforum.service.problem;
 
 import java.util.List;
-import java.util.Map;
 
+import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
-import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
+import com.hoctuan.codingforum.model.entity.problem.ProblemSubmission;
+import com.hoctuan.codingforum.model.entity.problem.SubmissionResult;
 
 public interface Judge0Service {
-    public Judge0ResponseDTO submitSolution(List<Judge0RequestDTO> solutions, Map<String, String> params);
+    public List<SubmissionResult> submitSolution(List<Judge0RequestDTO> solutions, SubmitType type, ProblemSubmission problemSubmission);
 
-    public Judge0ResponseDTO getSubmitResult(List<String> tokens, Map<String, String> params);
+    public SubmissionResult runSolution(Judge0RequestDTO solution, SubmitType type);
+
+    // public Judge0ResponseDTO getSubmitResult(List<String> tokens, Map<String, String> params);
 
     public void deleteSubmitReuslt(String token);
 }

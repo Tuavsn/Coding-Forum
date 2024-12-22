@@ -49,7 +49,8 @@ public class SecurityConfig {
             "/api/topic/**",
             "/api/post/**",
             "/api/comment/**",
-            "/api/user/**"
+            "/api/user/**",
+            "/api/problem/**"
     };
 
 

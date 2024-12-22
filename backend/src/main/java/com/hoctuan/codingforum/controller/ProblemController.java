@@ -5,11 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,16 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hoctuan.codingforum.common.BaseController;
 import com.hoctuan.codingforum.common.BaseResponse;
+import com.hoctuan.codingforum.constant.SubmitType;
+import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemResponseDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemSubmissionRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemSubmissionResponseDTO;
+import com.hoctuan.codingforum.model.dto.problem.SubmissionResultResponseDTO;
 import com.hoctuan.codingforum.model.entity.problem.Problem;
 import com.hoctuan.codingforum.service.problem.ProblemService;
 
 import jakarta.validation.Valid;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -78,12 +80,28 @@ public class ProblemController extends BaseController<
     public ResponseEntity<BaseResponse> submitSolution(
         @PathVariable UUID id,
         @Valid @RequestBody ProblemSubmissionRequestDTO DTO,
-        @RequestParam Map<String, String> params
+        @RequestParam String type
     ) {
-        ProblemSubmissionResponseDTO data = problemService.submitSolution(id, DTO, params);
+        ProblemSubmissionResponseDTO data = problemService.submitSolution(id, DTO, SubmitType.getByName(type));
         return new ResponseEntity<>(
                 BaseResponse.builder()
                             .message("Submit thành công")
+                            .data(data)
+                            .status(HttpStatus.OK.value())
+                            .build()
+                        , HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/run")
+    public ResponseEntity<BaseResponse> runSolution(
+        @PathVariable UUID id,
+        @Valid @RequestBody ProblemSubmissionRequestDTO DTO,
+        @RequestParam String type
+    ) {
+        SubmissionResultResponseDTO data = problemService.runSolution(id, DTO, SubmitType.getByName(type));
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                            .message("Run thành công")
                             .data(data)
                             .status(HttpStatus.OK.value())
                             .build()
@@ -108,11 +126,9 @@ public class ProblemController extends BaseController<
 
     @GetMapping("/submissions/{submissionId}")
     public ResponseEntity<BaseResponse> getSubmissionResultById(
-        @PathVariable UUID submissionId,
-        @ParameterObject Pageable pageable,
-        @RequestParam MultiValueMap<String, String> params
+        @PathVariable UUID submissionId
     ) {
-        ProblemSubmissionResponseDTO data = problemService.getSubmitResult(submissionId, params);
+        ProblemSubmissionResponseDTO data = problemService.getSubmitResult(submissionId);
         return new ResponseEntity<>(
                 BaseResponse.builder()
                         .message("Lấy submission thành công")
@@ -120,6 +136,13 @@ public class ProblemController extends BaseController<
                         .status(HttpStatus.OK.value())
                         .build()
                     , HttpStatus.OK);
+    }
+
+    @PutMapping("/update-judge0-result")
+    public void getSubmissionResultById(
+        @RequestBody Judge0ResponseDTO response
+    ) {
+        System.out.println(">>>> response from judge0" + response.toString());
     }
 
     // @GetMapping("/{id}/delete-submissions")

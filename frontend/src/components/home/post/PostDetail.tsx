@@ -24,16 +24,17 @@ import {
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, message, Popconfirm, Row, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
+import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, message, Popconfirm, Row, Skeleton, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
@@ -47,7 +48,9 @@ export default function PostDetail() {
 
     const router = useRouter()
 
-    const { data, isLoading } = useQuery<Post>('getPostDetail', () => getPostDetail(postId))
+    const { data, isLoading } = useQuery<Post>(
+        ['getPostDetail', postId], () => getPostDetail(postId),
+    );
 
     const [openDrawer, setOpenDrawer] = useState(false)
 
@@ -183,10 +186,9 @@ export default function PostDetail() {
 
         setPostImage(postImages);
     }
-    
 
     if(isLoading) {
-        return (<Loading />)
+        return <Skeleton active />
     }
 
     return (

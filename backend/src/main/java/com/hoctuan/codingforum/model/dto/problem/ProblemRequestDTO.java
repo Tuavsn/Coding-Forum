@@ -26,8 +26,6 @@ public class ProblemRequestDTO extends BaseRequestDTO {
 
     private ProblemType difficulty;
 
-    private String otherProps;
-
     private String testCases;
 
     private UserRequestDTO author;

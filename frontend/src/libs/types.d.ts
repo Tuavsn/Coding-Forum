@@ -100,6 +100,61 @@ declare type PostReaction = {
     reactionType: ReactionType;
 }
 
+declare type Problem = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    example: string;
+    tags: string;
+    difficulty: ProblemType;
+    testCases: string;
+    author: User;
+    totalScore: number;
+    comments: ProblemComment[]
+}
+
+declare type ProblemComment = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    user: User;
+    content: string;
+}
+
+declare type ProblemSubmission = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    submissionResults: SubmissionResult[];
+    code: string;
+    languageType: ProblemSubmissionLanguageType;
+    time: number;
+    result: string;
+    score: number;
+}
+
+declare type SubmissionResult = {
+    id: string;
+    createdBy: Date;
+    updatedBy: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    testCaseNum: number;
+    submitResult: string;
+    submitError: string;
+    stdout: string;
+    time: number;
+    memory: number;
+}
+
 import { GetProp, UploadProps } from "antd";
 import Password from "antd/es/input/Password";
 import { AccountProvider, AccountStatus, Achievement, Gender, PostStatus, ReactionType } from "./enum";

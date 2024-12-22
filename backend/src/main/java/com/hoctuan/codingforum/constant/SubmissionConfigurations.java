@@ -1,5 +1,7 @@
 package com.hoctuan.codingforum.constant;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -112,4 +114,13 @@ public class SubmissionConfigurations {
     public static final String RETURN_FIELD = "fields"; //string
     public static final String PAGE = "page"; //string
     public static final String PER_PAGE = "per_page"; //string
+    public static final String FIELD_LIST = String.join(",", List.of(
+        "token",
+        "stdout",
+        "stderr",
+        "status_id",
+        "language_id",
+        "time",
+        "memory"
+    ));
 }

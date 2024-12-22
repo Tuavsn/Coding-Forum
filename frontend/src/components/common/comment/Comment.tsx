@@ -21,10 +21,11 @@ import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, 
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );

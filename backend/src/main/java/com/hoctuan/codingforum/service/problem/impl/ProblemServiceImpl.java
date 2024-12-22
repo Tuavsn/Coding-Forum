@@ -8,20 +8,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
 import com.hoctuan.codingforum.constant.ProblemResult;
+import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
-import com.hoctuan.codingforum.model.dto.problem.Judge0ResponseDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemResponseDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemSubmissionRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemSubmissionResponseDTO;
+import com.hoctuan.codingforum.model.dto.problem.SubmissionResultResponseDTO;
+import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.problem.Problem;
 import com.hoctuan.codingforum.model.entity.problem.ProblemSubmission;
@@ -30,18 +30,14 @@ import com.hoctuan.codingforum.model.mapper.ProblemMapper;
 import com.hoctuan.codingforum.model.mapper.ProblemSubmissonMapper;
 import com.hoctuan.codingforum.repository.problem.ProblemRepository;
 import com.hoctuan.codingforum.repository.problem.ProblemSubmissionRepository;
-import com.hoctuan.codingforum.repository.problem.SubmissionResultRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.problem.Judge0Service;
 import com.hoctuan.codingforum.service.problem.ProblemService;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class ProblemServiceImpl extends BaseServiceImpl<
@@ -60,8 +56,6 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     @Autowired
     private AuthContext authContext;
     @Autowired
-    private SubmissionResultRepository submissionResultRepository;
-    @Autowired
     private ProblemSubmissonMapper problemSubmissonMapper;
 
     public ProblemServiceImpl(ProblemRepository problemRepository, ProblemMapper problemMapper) {
@@ -72,15 +66,32 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
     @Override
     @Transactional
-    public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions,
-            Map<String, String> params) {
+    public ProblemResponseDTO save(ProblemRequestDTO dto) {
+        User user = authContext.getUserAuthenticated();
+
+        // check if user is problem author
+        if(dto.getId() != null) {
+            Problem existedProblem = problemRepository.findById(dto.getId()).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+            if(existedProblem.getAuthor().getId() != user.getId()) {
+                throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
+            }
+        }
+
+        UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
+
+        dto.setAuthor(userDTO);
+
+        return super.forceSave(dto);
+    }
+
+    @Override
+    @Transactional
+    public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
         Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
 
         User submitUser = authContext.getUserAuthenticated();
 
         List<Judge0RequestDTO> judge0RequestDTOs = getSubmitRequest(existedProblem, solutions);
-
-        Judge0ResponseDTO results = judge0Service.submitSolution(judge0RequestDTOs, params);
 
         ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
             ProblemSubmission.builder()
@@ -88,42 +99,59 @@ public class ProblemServiceImpl extends BaseServiceImpl<
                 .code(solutions.getCode())
                 .languageType(solutions.getLanguageType())
                 .user(submitUser)
-                .result("Pending")
+                .result(ProblemResult.PROCESSING.getDisplayName())
                 .score(0)
                 .build()
         );
 
-        List<SubmissionResult> submissionResults = submissionResultRepository.saveAll(
-            IntStream.range(0, results.getSubmissions().size())
-                .mapToObj(i -> {
-                    var result = results.getSubmissions().get(i);
-                    return SubmissionResult.builder()
-                            .testCaseNum(i + 1) // Thứ tự bắt đầu từ 1
-                            .submitToken(result.getToken())
-                            .submitResult(ProblemResult.getNameByCode(result.getStatus_id()))
-                            .submitError(ObjectUtils.isEmpty(result.getStderr()) ? "" : result.getStderr())
-                            .problemSubmission(savedProblemSubmission)
-                            .build();
-                })
-            .collect(Collectors.toList())
-        );
+        List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type, savedProblemSubmission);
 
         savedProblemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
 
         existedProblem.getProblemSubmissions().add(savedProblemSubmission);
 
-        problemRepository.save(existedProblem);
+        double totalTestCases = submissionResults.size();
+        
+        long passedTestCases = submissionResults.stream()
+            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
+            .count();
+        
+        double score = (passedTestCases / totalTestCases) * existedProblem.getTotalScore();
+        savedProblemSubmission.setScore(score);
 
-        updateBatchResult(
-            results.getSubmissions().stream().map(result -> result.getToken()).collect(Collectors.toList()),
-            savedProblemSubmission
-        );
+        if (passedTestCases == totalTestCases) {
+            savedProblemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
+        } else {
+            savedProblemSubmission.setResult(ProblemResult.WRONG_ANSWER.getDisplayName());
+        }
+
+        existedProblem.getProblemSubmissions().add(savedProblemSubmission);
+
+        problemRepository.save(existedProblem);
 
         return problemSubmissonMapper.toDTO(savedProblemSubmission);
     }
 
     @Override
-    public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId, MultiValueMap<String, String> params) {
+    public SubmissionResultResponseDTO runSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
+        Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+
+        List<Judge0RequestDTO> judge0RequestDTO = getSubmitRequest(existedProblem, solutions);
+
+        SubmissionResult submissionResult = judge0Service.runSolution(judge0RequestDTO.get(0), type);
+
+        return SubmissionResultResponseDTO.builder()
+            .submitToken(submissionResult.getSubmitToken())
+            .submitResult(submissionResult.getSubmitResult())
+            .submitError(submissionResult.getSubmitError())
+            .stdout(submissionResult.getStdout())
+            .time(submissionResult.getTime())
+            .memory(submissionResult.getMemory())
+            .build();
+    }
+
+    @Override
+    public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
         ProblemSubmission existedProblemSubmission = problemSubmissionRepository.findById(problemSubmissionId).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
@@ -170,67 +198,5 @@ public class ProblemServiceImpl extends BaseServiceImpl<
             .collect(Collectors.toList());
         
         return Utils.joinListWithNewLine(result);
-    }
-
-    public void updateBatchResult(List<String> tokens, ProblemSubmission problemSubmission) {
-        Map<String, String> params = new HashMap<>();
-        boolean isCompleted = false;
-
-        // Ánh xạ tokens với SubmissionResult
-        Map<String, SubmissionResult> tokenToResultMap = problemSubmission.getSubmissionResults().stream()
-                .collect(Collectors.toMap(SubmissionResult::getSubmitToken, result -> result));
-
-        int totalTestCases = tokens.size();
-        int passedTestCases = 0; // Đếm số test case Passed
-
-        while (!isCompleted) {
-            Judge0ResponseDTO results = judge0Service.getSubmitResult(tokens, params);
-            isCompleted = true;
-
-            for (int i = 0; i < tokens.size(); i++) {
-                String token = tokens.get(i);
-                Judge0ResponseDTO.Submission submission = results.getSubmissions().get(i);
-
-                // Lấy SubmissionResult từ map
-                SubmissionResult submissionResult = tokenToResultMap.get(token);
-
-                if (submissionResult != null) {
-                    // Cập nhật thông tin vào SubmissionResult
-                    submissionResult.setSubmitResult(ProblemResult.getNameByCode(submission.getStatus_id()));
-                    submissionResult.setSubmitError(ObjectUtils.isEmpty(submission.getStderr()) ? "" : submission.getStderr());
-                    submissionResultRepository.save(submissionResult); // Lưu kết quả mới vào DB
-
-                    // Nếu submission được chấp nhận (status_id == 3), tăng số test case Passed
-                    if (ProblemResult.ACCEPTED.getCode() == submission.getStatus_id()) { // Status "Accepted"
-                        passedTestCases++;
-                    }
-
-                    // Nếu còn trạng thái "in_queue" hoặc "processing", tiếp tục kiểm tra
-                    if (ProblemResult.IN_QUEUE.getCode() == submission.getStatus_id() || ProblemResult.PROCESSING.getCode() == submission.getStatus_id()) {
-                        isCompleted = false;
-                    }
-                } else {
-                    throw new RuntimeException("Token không tồn tại trong SubmissionResult");
-                }
-            }
-
-            // Tạm dừng trước khi gọi lại (throttling API)
-            if (!isCompleted) {
-                try {
-                    Thread.sleep(2000); // Đợi 2 giây trước khi gọi lại
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new RuntimeException("Thread interrupted", e);
-                }
-            }
-        }
-
-        // Khi hoàn tất, tính điểm và cập nhật ProblemSubmission
-        double score = (double) passedTestCases / totalTestCases * 100.0;
-        String finalResult = passedTestCases == totalTestCases ? "Accepted" : "Wrong Answer";
-
-        problemSubmission.setResult(finalResult);
-        problemSubmission.setScore(score);
-        problemSubmissionRepository.save(problemSubmission); // Lưu kết quả vào DB
     }
 }

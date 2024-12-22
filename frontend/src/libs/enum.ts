@@ -55,10 +55,12 @@ export const enum ProblemResult {
 }
 
 export const enum ProblemSubmissionLanguageType {
-    C = '1',
-    CPLUSPLUS = '2',
-    PYTHON = '3',
-    JAVA = '4'
+    C = 'C',
+    CPLUSPLUS = 'CPP',
+    PYTHON = 'PYTHON',
+    JAVA = 'JAVA',
+    JAVASCRIPT = 'JAVASCRIPT',
+    CSHARP = 'CSHARP'
 }
 
 export enum ProblemType {

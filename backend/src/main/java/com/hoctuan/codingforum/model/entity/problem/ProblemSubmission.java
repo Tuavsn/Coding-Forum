@@ -45,7 +45,7 @@ public class ProblemSubmission extends BaseEntity {
     private ProblemSubmissionLanguageType languageType;
 
     @Column(nullable = false)
-    private int time;
+    private double time;
 
     @Column(nullable = false)
     private String result;

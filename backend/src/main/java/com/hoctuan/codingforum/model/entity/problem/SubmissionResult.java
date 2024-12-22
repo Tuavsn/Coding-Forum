@@ -1,5 +1,6 @@
 package com.hoctuan.codingforum.model.entity.problem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoctuan.codingforum.common.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -32,4 +33,14 @@ public class SubmissionResult extends BaseEntity {
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String submitError;
+
+    @JsonIgnore
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String stdout;
+
+    @Column(nullable = false)
+    private double time;
+
+    @Column(nullable = false)
+    private double memory;
 }

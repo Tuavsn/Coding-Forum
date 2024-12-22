@@ -1,7 +1,5 @@
 package com.hoctuan.codingforum.model.dto.problem;
 
-import com.hoctuan.codingforum.constant.SubmissionConfigurations;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,8 +4,6 @@ import java.util.Set;
 
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 import com.hoctuan.codingforum.constant.ProblemSubmissionLanguageType;
-import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
-import com.hoctuan.codingforum.model.entity.problem.SubmissionResult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +23,7 @@ public class ProblemSubmissionResponseDTO extends BaseResponseDTO {
 
     private ProblemSubmissionLanguageType languageType;
 
-    private int time;
+    private double time;
 
     private String result;
 

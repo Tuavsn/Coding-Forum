@@ -38,9 +38,6 @@ public class Problem extends BaseEntity {
     private ProblemType difficulty;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String otherProps;
-
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String testCases;
     
     @ManyToOne(optional = false)

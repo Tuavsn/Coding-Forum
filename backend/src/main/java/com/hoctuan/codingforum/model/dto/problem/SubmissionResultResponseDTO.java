@@ -21,4 +21,10 @@ public class SubmissionResultResponseDTO  extends BaseResponseDTO {
     private String submitToken;
 
     private String submitError;
+
+    private String stdout;
+
+    private double time;
+
+    private double memory;
 }

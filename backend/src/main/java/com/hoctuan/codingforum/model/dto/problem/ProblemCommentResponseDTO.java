@@ -15,8 +15,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class ProblemCommentResponseDTO extends BaseResponseDTO {
-    private ProblemResponseDTO problem;
-
     private AuthResponseDTO user;
 
     private String content;
