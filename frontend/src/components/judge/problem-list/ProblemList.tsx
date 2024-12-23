@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography } from "antd";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { Problem } from "@/libs/types";
@@ -13,7 +13,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { ProblemType } from "@/libs/enum";
 import { AuthContext } from "@/context/AuthContextProvider";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { Option } from "antd/es/mentions";
+import dynamic from "next/dynamic";
 
 function stringToSlug(str: string) {
    // Chuyển tất cả các ký tự thành chữ thường
@@ -201,6 +201,10 @@ export default function ProblemList() {
     const closeDrawer = () => {
         setOpenDrawer(false);
     }
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <>

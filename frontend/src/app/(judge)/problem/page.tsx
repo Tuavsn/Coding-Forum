@@ -1,7 +1,13 @@
 import BreadCrumb from "@/components/common/breadcrumb/BreadCrumb";
 import ProblemWelcomeCard from "@/components/judge/problem-welcome-card/ProblemWelcomeCard";
-import ProblemList from "@/components/judge/problem-list/ProblemList";
 import { Divider } from "antd";
+import dynamic from "next/dynamic";
+
+const ProblemList = dynamic(
+    () => {
+        return import("@/components/judge/problem-list/ProblemList")
+    }, {ssr: false}
+)
 
 export default function ProblemPage() {
     return (
