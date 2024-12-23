@@ -10,6 +10,7 @@ import com.hoctuan.codingforum.model.mapper.UserMapper;
 import com.hoctuan.codingforum.repository.account.UserRepository;
 import com.hoctuan.codingforum.service.account.UserService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,5 +26,10 @@ public class UserServiceImpl extends BaseServiceImpl<
         super(userRepository, userMapper);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+    }
+
+    @Override
+    public List<UserResponseDTO> getUserRanking() {
+        return userMapper.toDTO(userRepository.findTop100UsersOrderedBySubmissionPoint());
     }
 }

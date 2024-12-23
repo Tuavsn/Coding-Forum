@@ -48,3 +48,8 @@ export const getUserProfile = async(userId: string | null): Promise<User> => {
     const result = await getData(`api/user/${userId}/profile`)
     return result.Data;
 }
+
+export const getUserRanking = async(): Promise<User[]> => {
+    const result = await getData(`api/user/ranking`)
+    return result.Data;
+}

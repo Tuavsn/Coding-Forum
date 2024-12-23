@@ -1,84 +1,39 @@
 'use client'
 
+import { getUserRanking } from "@/libs/actions/user.actions";
+import { User } from "@/libs/types";
 import { FireFilled, UserOutlined } from "@ant-design/icons";
-import { List, Table } from "antd";
+import { List, Skeleton, Table } from "antd";
 import Link from "next/link";
-
-const dataSource =
-{
-    title: "Top 100",
-    tableData: [
-        {
-            key: '1',
-            user: 'user 1',
-            totalScore: '10',
-            link: (
-                <Link href="/user"><UserOutlined /> Profile</Link>
-            )
-        },
-        {
-            key: '2',
-            user: 'user 2',
-            totalScore: '9',
-            link: (
-                <Link href="/user"><UserOutlined /> Profile</Link>
-            )
-        },
-        {
-            key: '3',
-            user: 'user 3',
-            totalScore: '8',
-            link: (
-                <Link href="/user"><UserOutlined /> Profile</Link>
-            )
-        },
-        {
-            key: '4',
-            user: 'user 4',
-            totalScore: '7',
-            link: (
-                <Link href="/user"><UserOutlined /> Profile</Link>
-            )
-        },
-    ]
-}
-  
-  const columns = [
-    {
-        title: 'Tài khoản',
-        dataIndex: 'user',
-        key: 'user',
-    },
-    {
-        title: 'Tổng số điểm',
-        dataIndex: 'totalScore',
-        key: 'totalScore',
-    },
-    {
-        title: 'Thông tin tài khoản',
-        dataIndex: 'link',
-        key: 'link',
-    },
-  ];
-
+import { useQuery } from "react-query";
 
 export default function RankingList() {
+
+    const { data, isLoading } = useQuery<User[]>('getUserRanking', getUserRanking)
+
+    console.log(data)
+
+    if(isLoading) {
+        return <Skeleton active />
+    }
+
     return (
-        <List
-            size="small"
-            className="mb-8"
-            header={<div className="font-medium text-base"><FireFilled style={{color: "red"}} /> {dataSource.title}</div>}
-            bordered
-            itemLayout="vertical" 
-            dataSource={[dataSource]} 
-            renderItem={(item) => (
-                <List.Item>
-                    <Table
-                        columns={columns}
-                        dataSource={item.tableData}
-                    />
-                </List.Item>
-            )}
-        />
+        <></>
+        // <List
+        //     size="small"
+        //     className="mb-8"
+        //     header={<div className="font-medium text-base"><FireFilled style={{color: "red"}} /> {dataSource.title}</div>}
+        //     bordered
+        //     itemLayout="vertical" 
+        //     dataSource={[data]} 
+        //     renderItem={(item) => (
+        //         <List.Item>
+        //             {/* <Table
+        //                 columns={columns}
+        //                 dataSource={item.tableData}
+        //             /> */}
+        //         </List.Item>
+        //     )}
+        // />
     )
 }

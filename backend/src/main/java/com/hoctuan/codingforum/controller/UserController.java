@@ -82,4 +82,16 @@ public class UserController extends BaseController<
                 , HttpStatus.OK
         );
     }
+
+    @GetMapping("/ranking")
+    public ResponseEntity<BaseResponse> getUserRanking() {
+        return new ResponseEntity<>(
+                BaseResponse.builder()
+                        .message("Lấy bảng xếp hạng thành công")
+                        .data(userService.getUserRanking())
+                        .status(HttpStatus.OK.value())
+                        .build()
+                , HttpStatus.OK
+        );
+    }
 }

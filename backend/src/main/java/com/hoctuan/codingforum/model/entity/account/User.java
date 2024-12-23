@@ -49,6 +49,9 @@ public class User extends BaseEntity {
     private AccountAchievement achievement;
 
     @Column(nullable = false)
+    private double totalSubmissionPoint;
+
+    @Column(nullable = false)
     private AccountStatus status = AccountStatus.INACTIVE;
 
     @Column(nullable = false)

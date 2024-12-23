@@ -28,6 +28,7 @@ import com.hoctuan.codingforum.model.entity.problem.ProblemSubmission;
 import com.hoctuan.codingforum.model.entity.problem.SubmissionResult;
 import com.hoctuan.codingforum.model.mapper.ProblemMapper;
 import com.hoctuan.codingforum.model.mapper.ProblemSubmissonMapper;
+import com.hoctuan.codingforum.repository.account.UserRepository;
 import com.hoctuan.codingforum.repository.problem.ProblemRepository;
 import com.hoctuan.codingforum.repository.problem.ProblemSubmissionRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
@@ -53,6 +54,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     private Judge0Service judge0Service;
     @Autowired
     private ProblemSubmissionRepository problemSubmissionRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private AuthContext authContext;
     @Autowired
@@ -141,6 +144,10 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         savedProblemSubmission.setMemory(avarageMemory);
 
+        double userScore = submitUser.getTotalSubmissionPoint() + score;
+
+        submitUser.setTotalSubmissionPoint(userScore);
+
         if (passedTestCases == totalTestCases) {
             savedProblemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
         } else {
@@ -150,6 +157,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         existedProblem.getProblemSubmissions().add(savedProblemSubmission);
 
         problemRepository.save(existedProblem);
+
+        userRepository.save(submitUser);
 
         return problemSubmissonMapper.toDTO(savedProblemSubmission);
     }
