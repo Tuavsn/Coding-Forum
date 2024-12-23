@@ -35,6 +35,8 @@ public class UserResponseDTO extends BaseResponseDTO {
 
     private AccountAchievement achievement;
 
+    private double totalSubmissionPoint;
+
     private AccountStatus status = AccountStatus.INACTIVE;
 
     private Set<UserFollow> followers = new HashSet<>();

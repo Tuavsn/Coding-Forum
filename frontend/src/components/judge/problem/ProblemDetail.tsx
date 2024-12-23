@@ -1,6 +1,6 @@
 'use client'
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, CloudServerOutlined, DatabaseOutlined, HistoryOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Collapse, Divider, Flex, Modal, Pagination, Skeleton, Tag, Typography } from "antd";
+import { Button, Card, Collapse, Divider, Flex, message, Modal, Pagination, Skeleton, Tag, Typography } from "antd";
 import LanguageMenu from "./LanguageMenu";
 import MonacoEditor from "./MonacoEditor";
 import { useContext, useEffect, useState } from "react";
@@ -25,7 +25,7 @@ function getTopicColor(str: string): string {
 const { Panel } = Collapse;
 
 export default function ProblemDetail({problem}: {problem: Problem}) {
-    const queryClient = useQueryClient();
+    const { auth } = useContext(AuthContext);
 
     const problemId = useSearchParams().get('id');
 
@@ -91,13 +91,17 @@ export default function ProblemDetail({problem}: {problem: Problem}) {
     })
 
     const handleSubmitSolution = () => {
-        submitSolutionMutation.mutate({
-            problemId: problemId as string,
-            solution: {
-                languageType: language,
-                code: code
-            }
-        })
+        if (auth) {
+            submitSolutionMutation.mutate({
+                problemId: problemId as string,
+                solution: {
+                    languageType: language,
+                    code: code
+                }
+            });
+        } else {
+            message.error("Bạn cần đăng nhập để submit bài giải");
+        }
     }
 
     const handleSubmitModalConfirm = () => {
@@ -118,7 +122,11 @@ export default function ProblemDetail({problem}: {problem: Problem}) {
     })
 
     const handleGetSubmissions = () => {
-        getSubmissionMutation.mutate(problemId as string);
+        if (auth) {
+            getSubmissionMutation.mutate(problemId as string);
+        } else {
+            message.error("Bạn cần đăng nhập để xem lịch sử nộp bài");
+        }
     }
 
     const handleHistoryModalConfirm = () => {

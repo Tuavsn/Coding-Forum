@@ -30,6 +30,8 @@ public class AuthResponseDTO extends BaseResponseDTO {
 
     private AccountAchievement achievement;
 
+    private double totalSubmissionPoint;
+
     private String phone;
 
     private String address;

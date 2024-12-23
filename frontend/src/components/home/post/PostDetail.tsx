@@ -252,7 +252,9 @@ export default function PostDetail() {
                             <div>
                                 <p className="text-xl">{data.header}</p>
                                 <p className="text-sm text-slate-400 mt-1">
-                                    <Link href="/user"><UserOutlined /> {data.user.username}</Link>
+                                    <Link href={`/profile/${data.user.id}`} className="text-blue-500 hover:underline">
+                                        {data.user.username}
+                                    </Link>
                                     <ClockCircleOutlined className="ml-4" /> {formatDate(data.createdAt.toString())}
                                 </p>
                             </div>

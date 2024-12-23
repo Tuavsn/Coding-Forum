@@ -15,6 +15,7 @@ declare type User = {
     phone: string;
     address: string;
     achievement: Achievement;
+    totalSubmissionPoint: number;
     status: AccountStatus;
     authProvider: AccountProvider;
     devices: Device[];
