@@ -137,6 +137,7 @@ declare type ProblemSubmission = {
     code: string;
     languageType: ProblemSubmissionLanguageType;
     time: number;
+    memory: number;
     result: string;
     score: number;
 }

@@ -23,8 +23,8 @@ export const submitSolution = async({ problemId, solution } : { problemId: strin
 }
 
 export const getSubmission = async(problemId: string): Promise<ProblemSubmission[]> => {
-    const result = await getData(`api/problem/${problemId}/submissions`)
-    return result.Data;
+    const result = await getData(`api/problem/${problemId}/submissions?size=9999`)
+    return result.Data.content;
 }
 
 export const getSubmissionDetail = async(submissionId: string): Promise<ProblemSubmission> => {

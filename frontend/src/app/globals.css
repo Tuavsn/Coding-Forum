@@ -34,4 +34,24 @@ body {
 
 .ck-editor__editable {
   min-height: 400px;
+  padding-left: 1rem !important;
+}
+
+.ck-editor__editable ul, .ck-editor__editable ol {
+  margin-left: 0 !important;
+  padding-left: 20px !important; /* Optional: adjust padding for list items */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 2px solid black;
+}
+
+td, th {
+  padding: 8px;
+  text-align: left;
 }

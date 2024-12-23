@@ -48,6 +48,9 @@ public class ProblemSubmission extends BaseEntity {
     private double time;
 
     @Column(nullable = false)
+    private double memory;
+
+    @Column(nullable = false)
     private String result;
 
     @Column(nullable = false)

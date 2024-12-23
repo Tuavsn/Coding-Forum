@@ -25,6 +25,8 @@ public class ProblemSubmissionResponseDTO extends BaseResponseDTO {
 
     private double time;
 
+    private double memory;
+
     private String result;
 
     private double score;

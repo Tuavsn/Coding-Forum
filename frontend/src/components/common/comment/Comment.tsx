@@ -221,8 +221,8 @@ export default function Comment({post}:{post: Post}) {
                                     <>
                                         <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                        <Typography>
-                                            <div dangerouslySetInnerHTML={{ __html: item.content }} style={{overflow: "hidden", wordBreak: "break-word", overflowWrap: "break-word", color: "black"}} />
+                                        <Typography className="mt-2">
+                                            <div dangerouslySetInnerHTML={{ __html:item.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />
                                         </Typography>
                                     </>
                                 )}

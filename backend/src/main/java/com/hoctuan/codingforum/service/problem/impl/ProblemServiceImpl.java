@@ -100,6 +100,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<
                 .languageType(solutions.getLanguageType())
                 .user(submitUser)
                 .result(ProblemResult.PROCESSING.getDisplayName())
+                .time(0)
+                .memory(0)
                 .score(0)
                 .build()
         );
@@ -112,12 +114,32 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         double totalTestCases = submissionResults.size();
         
-        long passedTestCases = submissionResults.stream()
-            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
-            .count();
+        long passedTestCases = submissionResults.stream().count();
+
+        double totalTime = 0;
+
+        double totalMemory = 0;
+
+        for(SubmissionResult submissionResult : submissionResults) {
+            totalTime += submissionResult.getTime();
+            totalMemory += submissionResult.getMemory();
+        }
+
+        double avarageTime = 0;
+
+        double avarageMemory = 0;
+
+        if(totalTime > 0) avarageTime = (totalTime / totalTestCases);
+
+        if(totalMemory > 0) avarageMemory = (totalMemory / totalTestCases);
         
         double score = (passedTestCases / totalTestCases) * existedProblem.getTotalScore();
+        
         savedProblemSubmission.setScore(score);
+
+        savedProblemSubmission.setTime(avarageTime);
+
+        savedProblemSubmission.setMemory(avarageMemory);
 
         if (passedTestCases == totalTestCases) {
             savedProblemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
@@ -153,14 +175,17 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     @Override
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
         ProblemSubmission existedProblemSubmission = problemSubmissionRepository.findById(problemSubmissionId).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
 
     @Override
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
+        User submitUser = authContext.getUserAuthenticated();
+
         Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
 
-        return problemSubmissionRepository.findByProblem(pageable, existedProblem).map(problemSubmissonMapper::toDTO);
+        return problemSubmissionRepository.findByProblem(pageable, existedProblem, submitUser).map(problemSubmissonMapper::toDTO);
     }
 
     @Override

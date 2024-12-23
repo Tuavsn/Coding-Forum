@@ -2,7 +2,7 @@
 
 import { Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography } from "antd";
 import React, { useContext, useState } from "react";
-import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { Problem } from "@/libs/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -45,206 +45,6 @@ function getTopicColor(str: string): string {
     }
 }
 
-const dataSource = [
-    {
-        name: "Dễ",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    },
-    {
-        name: "Trung bình",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Word',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Excel',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'PowerPoint',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Zalo',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    },
-    {
-        name: "Khó",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Java',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C#',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Javascript',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    }
-];
-
 const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
         {React.createElement(icon, {style: {fontSize: '18px'}})}
@@ -283,6 +83,8 @@ export default function ProblemList() {
 
     const [totalScore, setTotalScore] = useState(0);
 
+    const [form] = Form.useForm();
+
     // create problem
     const problemCreateMutation = useMutation(createProblem, {
         onMutate: () => {
@@ -308,19 +110,24 @@ export default function ProblemList() {
         setOpenDrawer(true);
     };
 
-    const handleCreateProblem = () => {
-        problemCreateMutation.mutate({
-            newProblem: {
-                title: problemTitle,
-                description: problemDescription,
-                example: example,
-                tags: tags,
-                difficulty: difficulty,
-                testCases: testCases,
-                totalScore: totalScore
-            }
-        })
+    const handleCreateProblem = async () => {
+        try {
+            await form.validateFields();
+            problemCreateMutation.mutate({
+                newProblem: {
+                    title: problemTitle,
+                    description: problemDescription,
+                    example: example,
+                    tags: tags,
+                    difficulty: difficulty,
+                    testCases: testCases,
+                    totalScore: totalScore
+                }
+            })
+        } catch (error: any) {
+        }
     }
+
     // update problem
     const problemUpdateMutation = useMutation(updateProblem, {
         onMutate: () => {
@@ -355,18 +162,22 @@ export default function ProblemList() {
         setTotalScore(problem.totalScore);
     }
 
-    const handleUpdateProblem = () => {
-        problemUpdateMutation.mutate({
-            newProblem: {
-                title: problemTitle,
-                description: problemDescription,
-                example: example,
-                tags: tags,
-                difficulty: difficulty,
-                testCases: testCases,
-                totalScore: totalScore
-            }
-        })
+    const handleUpdateProblem = async () => {
+        try {
+            await form.validateFields();
+            problemUpdateMutation.mutate({
+                newProblem: {
+                    title: problemTitle,
+                    description: problemDescription,
+                    example: example,
+                    tags: tags,
+                    difficulty: difficulty,
+                    testCases: testCases,
+                    totalScore: totalScore
+                }
+            })
+        } catch (error: any) {
+        }
     }
 
     // delete problem
@@ -425,9 +236,6 @@ export default function ProblemList() {
                                     <Button className="border-none px-2 shadow-none" key="list-vertical-message">
                                         <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
                                     </Button>,
-                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
-                                        <IconText icon={ClockCircleOutlined} text={formatDate(item.createdAt.toString())} />
-                                    </Button>,
                                     auth?.username == item.author.username ? (
                                         <Popconfirm
                                             title="Tuỳ chọn"
@@ -444,6 +252,12 @@ export default function ProblemList() {
                             >
                                 <List.Item.Meta
                                     title={<Link href={`/problem/${stringToSlug(item.title)}?id=${item.id}`}><strong>{item.title}</strong></Link>}
+                                    description={(
+                                        <>
+                                            <strong className="mr-6"><Link href={`/user?id=${item.author.id}`}><UserOutlined /> {item.author.username}</Link></strong>
+                                            <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
+                                        </>
+                                    )}
                                 />
                                 <Typography className="relative max-h-[160px] overflow-hidden">
                                     <div 
@@ -479,10 +293,11 @@ export default function ProblemList() {
                     </Space>
                     }
                 >
-                    <Form layout="vertical" hideRequiredMark>
+                    <Form form={form} layout="vertical">
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
+                                    name="title"
                                     label="Tiêu đề"
                                     rules={[{ required: true, message: 'Nhập tiêu đề bài Post' }]}
                                 >
@@ -497,7 +312,7 @@ export default function ProblemList() {
                                     rules={[
                                     {
                                         required: true,
-                                        message: 'Nhập nội dung bài Post',
+                                        message: 'Nhập nội dung',
                                     },
                                     ]}
                                 >
@@ -531,6 +346,7 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
+                                    name="tag"
                                     label="Tags"
                                     rules={[{ required: true, message: 'Nhập tags' }]}
                                 >
@@ -550,9 +366,9 @@ export default function ProblemList() {
                                         onChange={(value) => setDifficulty(value)} 
                                         placeholder="Chọn độ khó"
                                     >
-                                        <Option value={ProblemType.EASY}>Dễ</Option>
-                                        <Option value={ProblemType.MEDIUM}>Trung bình</Option>
-                                        <Option value={ProblemType.HARD}>Khó</Option>
+                                        <Select.Option value={ProblemType.EASY}>Dễ</Select.Option>
+                                        <Select.Option value={ProblemType.MEDIUM}>Trung bình</Select.Option>
+                                        <Select.Option value={ProblemType.HARD}>Khó</Select.Option>
                                     </Select>
                                 </Form.Item>
                             </Col>
@@ -560,8 +376,9 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
+                                    name="testcase"
                                     label="Test cases"
-                                    rules={[{ required: true, message: 'Nhập test cases' }]}
+                                    rules={[{ required: true, message: 'Nhập test cases. Vd: 1,1;2|2,2;4 Với input: 1, 1; 2, 2 và output: 2; 4' }]}
                                 >
                                     <Input style={{width: '100%'}} onChange={(e) => setTestCases(e.target.value)} value={testCases} placeholder="Nhập test cases" />
                                 </Form.Item>
@@ -570,6 +387,7 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
+                                    name="totalscore"
                                     label="Tổng điểm"
                                     rules={[{ required: true, message: 'Nhập tổng điểm' }]}
                                 >

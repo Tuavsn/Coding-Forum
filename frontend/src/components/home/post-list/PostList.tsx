@@ -57,6 +57,8 @@ export default function PostList({posts, topic}: postList) {
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
+    const [form] = Form.useForm();
+
     // create Post
     const postCreateMutation = useMutation(createPost, {
         onMutate: () => {
@@ -75,15 +77,19 @@ export default function PostList({posts, topic}: postList) {
         }
     })
 
-    const handleCreatePost = () => {
-        postCreateMutation.mutate({
-            topicId: topic.id,
-            newPost: {
-                header: postHeader,
-                content: postContent,
-                postImage: postImage
-            }
-        })
+    const handleCreatePost = async () => {
+        try {
+            await form.validateFields();
+            postCreateMutation.mutate({
+                topicId: topic.id,
+                newPost: {
+                    header: postHeader,
+                    content: postContent,
+                    postImage: postImage
+                }
+            })
+        } catch (error: any) {
+        }
     }
 
     const showCreatePostDrawer = () => {
@@ -109,15 +115,19 @@ export default function PostList({posts, topic}: postList) {
         }
     })
 
-    const handleUpdatePost = () => {
-        postUpdateMutation.mutate({
-            postId: postId,
-            newPost: {
-                header: postHeader,
-                content: postContent,
-                postImage: postImage
-            }
-        })
+    const handleUpdatePost = async () => {
+        try {
+            await form.validateFields();
+            postUpdateMutation.mutate({
+                postId: postId,
+                newPost: {
+                    header: postHeader,
+                    content: postContent,
+                    postImage: postImage
+                }
+            })
+        } catch (error: any) {
+        }
     }
 
     const showUpdatePostDrawer = (post:Post) => {
@@ -332,10 +342,11 @@ export default function PostList({posts, topic}: postList) {
                 </Space>
                 }
             >
-                <Form layout="vertical" hideRequiredMark>
+                <Form form={form} layout="vertical">
                     <Row gutter={16}>
                         <Col span={22}>
                             <Form.Item
+                                name="header"
                                 label="Tiêu đề"
                                 rules={[{ required: true, message: 'Nhập tiêu đề bài Post' }]}
                             >

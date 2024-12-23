@@ -40,35 +40,37 @@ const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; te
 );
 
 export default function PostDetail() {
-    const {auth, setAuth} = useContext(AuthContext)
+    const {auth, setAuth} = useContext(AuthContext);
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
     
-    const postId = useSearchParams().get('id')
+    const postId = useSearchParams().get('id');
 
-    const router = useRouter()
+    const router = useRouter();
 
     const { data, isLoading } = useQuery<Post>(
         ['getPostDetail', postId], () => getPostDetail(postId),
     );
 
-    const [openDrawer, setOpenDrawer] = useState(false)
+    const [openDrawer, setOpenDrawer] = useState(false);
 
-    const [postUpdateLoading, setPostUpdateLoading] = useState(false)
+    const [postUpdateLoading, setPostUpdateLoading] = useState(false);
 
-    const [postDeleteLoading, setPostDeleteLoading] = useState(false)
+    const [postDeleteLoading, setPostDeleteLoading] = useState(false);
 
-    const [postHeader, setPostHeader] = useState('')
+    const [postHeader, setPostHeader] = useState('');
 
-    const [postContent, setPostContent] = useState('')
+    const [postContent, setPostContent] = useState('');
 
-    const [postImage, setPostImage] = useState<PostImage[]>([])
+    const [postImage, setPostImage] = useState<PostImage[]>([]);
 
-    const [previewOpen, setPreviewOpen] = useState(false)
+    const [previewOpen, setPreviewOpen] = useState(false);
 
-    const [previewImage, setPreviewImage] = useState('')
+    const [previewImage, setPreviewImage] = useState('');
 
-    const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+    const [form] = Form.useForm();
 
     // update Post
     const postUpdateMutation = useMutation(updatePost, {
@@ -88,15 +90,20 @@ export default function PostDetail() {
         }
     })
 
-    const handleUpdatePost = () => {
-        postUpdateMutation.mutate({
-            postId: postId ? postId: '',
-            newPost: {
-                header: postHeader,
-                content: postContent,
-                postImage: postImage
-            }
-        })
+    const handleUpdatePost = async () => {
+        try {
+            await form.validateFields();
+            postUpdateMutation.mutate({
+                postId: postId ? postId: '',
+                newPost: {
+                    header: postHeader,
+                    content: postContent,
+                    postImage: postImage
+                }
+            })
+        } catch (error: any) {
+            message.error(error);
+        }
     }
 
     const showUpdatePostDrawer = (post:Post) => {

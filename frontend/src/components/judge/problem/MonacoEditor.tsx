@@ -1,6 +1,5 @@
 'use client'
 import { Editor, OnChange } from "@monaco-editor/react";
-import { useState } from "react";
 
 interface MonacoEditorProps {
     language: string;
