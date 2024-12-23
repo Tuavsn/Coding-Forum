@@ -24,7 +24,7 @@ function getTopicColor(str: string): string {
 
 const { Panel } = Collapse;
 
-export default function ProblemDetail({problem}: {problem: Problem}) {
+export default function ProblemDetail() {
     const { auth } = useContext(AuthContext);
 
     const problemId = useSearchParams().get('id');
