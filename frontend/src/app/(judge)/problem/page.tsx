@@ -9,10 +9,10 @@ export default function ProblemPage() {
             <BreadCrumb type="problem"/>
             <ProblemWelcomeCard />
             <Divider orientation="left">Danh sách bài tập</Divider>
-            <Card>
+            {/* <Card>
                 Feature under development
-            </Card>
-            {/* <ProblemList /> */}
+            </Card> */}
+            <ProblemList />
         </div>
     )
 }

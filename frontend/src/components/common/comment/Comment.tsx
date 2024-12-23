@@ -21,10 +21,11 @@ import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, 
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
@@ -220,8 +221,8 @@ export default function Comment({post}:{post: Post}) {
                                     <>
                                         <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
-                                        <Typography>
-                                            <div dangerouslySetInnerHTML={{ __html: item.content }} style={{overflow: "hidden", wordBreak: "break-word", overflowWrap: "break-word", color: "black"}} />
+                                        <Typography className="mt-2">
+                                            <div dangerouslySetInnerHTML={{ __html:item.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />
                                         </Typography>
                                     </>
                                 )}

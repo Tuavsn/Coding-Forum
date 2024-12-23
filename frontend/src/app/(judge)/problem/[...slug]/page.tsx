@@ -20,10 +20,10 @@ export default function ProblemSubmitPage() {
     return (
         <div>
             <BreadCrumb type="problem"/>
-            <Card>
+            {/* <Card>
                 Feature under development
-            </Card>
-            {/* <ProblemDetail problem={exampleData.problem}/> */}
+            </Card> */}
+            <ProblemDetail problem={exampleData.problem}/>
         </div>
     )
 }

@@ -1,9 +1,9 @@
 package com.hoctuan.codingforum.model.dto.problem;
 
+import java.util.Set;
+
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 import com.hoctuan.codingforum.constant.ProblemSubmissionLanguageType;
-import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.model.entity.problem.Problem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,13 +17,15 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class ProblemSubmissionResponseDTO extends BaseResponseDTO {
-    private Problem problem;
-
-    private User user;
+    private Set<SubmissionResultResponseDTO> submissionResults;
 
     private String code;
 
     private ProblemSubmissionLanguageType languageType;
+
+    private double time;
+
+    private double memory;
 
     private String result;
 

@@ -9,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.hoctuan.codingforum.common.BaseEntity;
 import com.hoctuan.codingforum.common.BaseResponse;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;

@@ -29,13 +29,10 @@ export default function RankingPage() {
                 ]}
             />
             <RankingWelcomeCard />
-            <Card>
-                Feature under development
-            </Card>
-            {/* <Divider orientation="left">Bảng xếp hạng</Divider>
+            <Divider orientation="left">Bảng xếp hạng</Divider>
             <div className="mt-2">
                 <RankingList />
-            </div> */}
+            </div>
         </div>
     )
 }

@@ -11,9 +11,6 @@ import java.util.Set;
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 import com.hoctuan.codingforum.constant.ProblemType;
 import com.hoctuan.codingforum.model.dto.user.UserResponseDTO;
-import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.model.entity.problem.ProblemComment;
-import com.hoctuan.codingforum.model.entity.problem.ProblemSubmission;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,15 +28,11 @@ public class ProblemResponseDTO extends BaseResponseDTO {
 
     private ProblemType difficulty;
 
-    private String otherProps;
-
     private String testCases;
 
     private UserResponseDTO author;
 
     private double totalScore;
 
-    private Set<ProblemSubmission> problemSubmissions;
-
-    private Set<ProblemComment> comments;
+    private Set<ProblemCommentResponseDTO> comments;
 }

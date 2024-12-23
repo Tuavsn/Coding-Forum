@@ -1,10 +1,19 @@
 'use client'
 
-import { Card, List, Space, Tabs, Tag } from "antd";
-import TabPane from "antd/es/tabs/TabPane";
-import React from "react";
-import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography } from "antd";
+import React, { useContext, useState } from "react";
+import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { Problem } from "@/libs/types";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/actions/problem.actions";
+import { formatDate } from "@/libs/utils";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { ProblemType } from "@/libs/enum";
+import { AuthContext } from "@/context/AuthContextProvider";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Option } from "antd/es/mentions";
 
 function stringToSlug(str: string) {
    // Chuyển tất cả các ký tự thành chữ thường
@@ -27,228 +36,184 @@ function stringToSlug(str: string) {
 
 function getTopicColor(str: string): string {
     switch(str) {
-        case "Dễ":
+        case ProblemType.EASY:
             return "#87d068"
-        case "Trung bình":
+        case ProblemType.MEDIUM:
             return "#108ee9"
         default:
             return "#f50"
     }
 }
 
-const dataSource = [
-    {
-        name: "Dễ",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    },
-    {
-        name: "Trung bình",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Word',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Excel',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'PowerPoint',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Zalo',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    },
-    {
-        name: "Khó",
-        posts: [
-            {
-                id: '1',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C++',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '2',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Java',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '3',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'C#',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-            {
-                id: '4',
-                user: {
-                    avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=5"
-                },
-                header: 'Javascript',
-                totalComment: '10',
-                description: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-                postImage: [
-                    "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                ],
-                createAt: '19/8/2024 10:23 am'
-            },
-        ]
-    }
-];
-
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
 
 export default function ProblemList() {
+    const {auth, setAuth} = useContext(AuthContext);
+
+    const { data, isLoading } = useQuery<Problem[]>('getProblem', getProblem);
+
+    const queryClient = useQueryClient();
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    const [problemCreateLoading, setProblemCreateLoading] = useState(false);
+
+    const [problemUpdateLoading, setProblemUpdateLoading] = useState(false);
+
+    const [problemDeleteLoading, setProblemDeleteLoading] = useState(false);
+
+    const [problemId, setProblemId] = useState('');
+
+    const [problemTitle, setProblemTitle] = useState('');
+
+    const [problemDescription, setProblemDescription] = useState('');
+
+    const [example, setExample] = useState('');
+
+    const [tags, setTags] = useState('');
+
+    const [difficulty, setDifficulty] = useState(ProblemType.EASY);
+
+    const [testCases, setTestCases] = useState('');
+
+    const [totalScore, setTotalScore] = useState(0);
+
+    const [form] = Form.useForm();
+
+    // create problem
+    const problemCreateMutation = useMutation(createProblem, {
+        onMutate: () => {
+            setProblemCreateLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemCreateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getProblem');
+            setProblemTitle('');
+            setProblemDescription('');
+            setExample('');
+            setTags('');
+            setDifficulty(ProblemType.EASY);
+            setTestCases('');
+            setTotalScore(0);
+            message.success(data.Message);
+        }
+    })
+
+    const showCreateProblemDrawer = () => {
+        setOpenDrawer(true);
+    };
+
+    const handleCreateProblem = async () => {
+        try {
+            await form.validateFields();
+            problemCreateMutation.mutate({
+                newProblem: {
+                    title: problemTitle,
+                    description: problemDescription,
+                    example: example,
+                    tags: tags,
+                    difficulty: difficulty,
+                    testCases: testCases,
+                    totalScore: totalScore
+                }
+            })
+        } catch (error: any) {
+        }
+    }
+
+    // update problem
+    const problemUpdateMutation = useMutation(updateProblem, {
+        onMutate: () => {
+            setProblemUpdateLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemUpdateLoading(false);
+            setOpenDrawer(false);
+            queryClient.invalidateQueries('getProblem');
+            setProblemId('');
+            setProblemTitle('');
+            setProblemDescription('');
+            setExample('');
+            setTags('');
+            setDifficulty(ProblemType.EASY);
+            setTestCases('');
+            setTotalScore(0);
+            message.success(data.Message);
+        }
+    })
+
+    const showUpdateProblemDrawer = (problem:Problem) => {
+        setOpenDrawer(true);
+        setProblemId(problem.id);
+        setProblemTitle(problem.title);
+        setProblemDescription(problem.description);
+        setExample(problem.example);
+        setTags(problem.tags);
+        setDifficulty(problem.difficulty);
+        setTestCases(problem.testCases);
+        setTotalScore(problem.totalScore);
+    }
+
+    const handleUpdateProblem = async () => {
+        try {
+            await form.validateFields();
+            problemUpdateMutation.mutate({
+                newProblem: {
+                    title: problemTitle,
+                    description: problemDescription,
+                    example: example,
+                    tags: tags,
+                    difficulty: difficulty,
+                    testCases: testCases,
+                    totalScore: totalScore
+                }
+            })
+        } catch (error: any) {
+        }
+    }
+
+    // delete problem
+    const problemDeleteMutation = useMutation(deleteProblem, {
+        onMutate: () => {
+            setProblemDeleteLoading(true);
+        },
+
+        onSuccess: (data) => {
+            setProblemDeleteLoading(false);
+            queryClient.invalidateQueries('getProblem');
+            message.success(data.Message);
+        }
+    })
+
+    const handleDeleteProblem = (problemId: string) => {
+        problemDeleteMutation.mutate(problemId);
+    }
+
+    // common
+    const closeDrawer = () => {
+        setOpenDrawer(false);
+    }
+
     return (
-        <Tabs defaultActiveKey="0" items={dataSource.map((topic, index) => ({
-            key: index.toString(),
-            label: topic.name,
-            children: (
+        <>
+        {isLoading ? (
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+        ) : (
+            <>
+                {
+                    auth && auth.role === 'SYS_ADMIN' && (
+                        <Button type="primary" onClick={showCreateProblemDrawer}><PlusOutlined />Thêm bài</Button>
+                    )
+                }
+                <Divider orientation="left"><p>{data?.length} Bài tập</p></Divider>
                 <Card>
                     <List
                         size="large"
@@ -259,27 +224,181 @@ export default function ProblemList() {
                         pagination={{
                             pageSize: 10
                         }}
-                        dataSource={topic.posts} 
+                        dataSource={data} 
                         renderItem={(item) => (
                             <List.Item
                                 className="px-0"
                                 actions={[
-                                    <Tag key='1' color={getTopicColor(topic.name)}>{topic.name}</Tag>,
-                                    <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />,
-                                    <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                                    <Tag key='1' color={getTopicColor(item.difficulty)}>{item.difficulty}</Tag>,
+                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                        <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />
+                                    </Button>,
+                                    <Button className="border-none px-2 shadow-none" key="list-vertical-message">
+                                        <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
+                                    </Button>,
+                                    auth?.username == item.author.username ? (
+                                        <Popconfirm
+                                            title="Tuỳ chọn"
+                                            onConfirm={() => handleDeleteProblem(item.id)}
+                                            onCancel={() => showUpdateProblemDrawer(item)}
+                                            okText="Xoá"
+                                            cancelText="Chỉnh sửa"
+                                            key="list-vertical-message"
+                                        >
+                                            <Button className="border-none px-2 shadow-none"><IconText icon={SettingOutlined} text=""/></Button>
+                                        </Popconfirm>
+                                    ) : <></>
                                 ]}
                             >
                                 <List.Item.Meta
-                                    title={<Link href={`/problem/${stringToSlug(item.header)}?id=${item.id}`}><strong>{item.header}</strong></Link>}
-                                    description={<strong><ClockCircleOutlined /> {item.createAt}</strong>}
+                                    title={<Link href={`/problem/${stringToSlug(item.title)}?id=${item.id}`}><strong>{item.title}</strong></Link>}
+                                    description={(
+                                        <>
+                                            <strong className="mr-6"><Link href={`/user?id=${item.author.id}`}><UserOutlined /> {item.author.username}</Link></strong>
+                                            <strong><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
+                                        </>
+                                    )}
                                 />
-                                {item.description}
+                                <Typography className="relative max-h-[160px] overflow-hidden">
+                                    <div 
+                                        dangerouslySetInnerHTML={{ __html: item.description }} 
+                                        className="break-words"
+                                    />
+                                </Typography>
                             </List.Item>
                         )}
                     />
                 </Card>
-            )
-        }))}>
-        </Tabs>
+                <Drawer
+                    width={720}
+                    onClose={closeDrawer}
+                    open={openDrawer}
+                    styles={{
+                    body: {
+                        paddingBottom: 80,
+                    },
+                    }}
+                    extra={
+                    <Space>
+                        <Button onClick={closeDrawer}>Hủy</Button>
+                        {problemId === '' ? (
+                            <Button onClick={handleCreateProblem} type="primary" loading={problemCreateLoading}>
+                                Thêm
+                            </Button>
+                        ) : (
+                            <Button onClick={handleUpdateProblem} type="primary" loading={problemUpdateLoading}>
+                                Cập nhật
+                            </Button>
+                        )}
+                    </Space>
+                    }
+                >
+                    <Form form={form} layout="vertical">
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    name="title"
+                                    label="Tiêu đề"
+                                    rules={[{ required: true, message: 'Nhập tiêu đề bài Post' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setProblemTitle(e.target.value)} value={problemTitle} placeholder="Nhập tiêu đề" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Nội dung"
+                                    rules={[
+                                    {
+                                        required: true,
+                                        message: 'Nhập nội dung',
+                                    },
+                                    ]}
+                                >
+                                    <CKEditor
+                                        editor={ ClassicEditor }
+                                        onChange={(event, editor) => setProblemDescription(editor.getData())}
+                                        data={problemDescription}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Ví dụ"
+                                    rules={[
+                                    {
+                                        required: true,
+                                        message: 'Nhập ví dụ',
+                                    },
+                                    ]}
+                                >
+                                    <CKEditor
+                                        editor={ ClassicEditor }
+                                        onChange={(event, editor) => setExample(editor.getData())}
+                                        data={example}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    name="tag"
+                                    label="Tags"
+                                    rules={[{ required: true, message: 'Nhập tags' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTags(e.target.value)} value={tags} placeholder="Nhập tags" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    label="Độ khó"
+                                    rules={[{ required: true, message: 'Chọn độ khó' }]}
+                                >
+                                    <Select
+                                        style={{ width: '100%' }} 
+                                        value={difficulty} 
+                                        onChange={(value) => setDifficulty(value)} 
+                                        placeholder="Chọn độ khó"
+                                    >
+                                        <Select.Option value={ProblemType.EASY}>Dễ</Select.Option>
+                                        <Select.Option value={ProblemType.MEDIUM}>Trung bình</Select.Option>
+                                        <Select.Option value={ProblemType.HARD}>Khó</Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    name="testcase"
+                                    label="Test cases"
+                                    rules={[{ required: true, message: 'Nhập test cases. Vd: 1,1;2|2,2;4 Với input: 1, 1; 2, 2 và output: 2; 4' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTestCases(e.target.value)} value={testCases} placeholder="Nhập test cases" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={16}>
+                            <Col span={22}>
+                                <Form.Item
+                                    name="totalscore"
+                                    label="Tổng điểm"
+                                    rules={[{ required: true, message: 'Nhập tổng điểm' }]}
+                                >
+                                    <Input style={{width: '100%'}} onChange={(e) => setTotalScore(Number(e.target.value))} value={totalScore} placeholder="Nhập tổng điểm" />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Drawer>
+            </>
+            )}
+        </>
     )
 }

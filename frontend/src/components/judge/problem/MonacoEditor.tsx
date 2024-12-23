@@ -1,23 +1,14 @@
 'use client'
 import { Editor, OnChange } from "@monaco-editor/react";
-import { useState } from "react";
 
 interface MonacoEditorProps {
     language: string;
     code: string;
-    setCode: string,
-    forPreview: boolean,
-    editorOpen: boolean,
-    setEditorOpen: boolean,
+    setCode: (value: string) => void;
 }
 
-export default function MonacoEditor() {
 
-    const [language, setLanguage] = useState('cpp')
-    const [code, setCode] = useState('')
-    const [stdIn, setStdIn] = useState('')
-    const [ouput, setOutput] = useState('')
-
+export default function MonacoEditor({ language, code, setCode }: MonacoEditorProps) {
     const handleEditorChange: OnChange = (value, e) => {
         setCode(value || '')
     }

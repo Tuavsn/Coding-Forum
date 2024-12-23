@@ -24,48 +24,53 @@ import {
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, message, Popconfirm, Row, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
+import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, message, Popconfirm, Row, Skeleton, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
+const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
-        {React.createElement(icon)}
+        {React.createElement(icon, {style: {fontSize: '18px'}})}
         {text}
     </Space>
 );
 
 export default function PostDetail() {
-    const {auth, setAuth} = useContext(AuthContext)
+    const {auth, setAuth} = useContext(AuthContext);
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
     
-    const postId = useSearchParams().get('id')
+    const postId = useSearchParams().get('id');
 
-    const router = useRouter()
+    const router = useRouter();
 
-    const { data, isLoading } = useQuery<Post>('getPostDetail', () => getPostDetail(postId))
+    const { data, isLoading } = useQuery<Post>(
+        ['getPostDetail', postId], () => getPostDetail(postId),
+    );
 
-    const [openDrawer, setOpenDrawer] = useState(false)
+    const [openDrawer, setOpenDrawer] = useState(false);
 
-    const [postUpdateLoading, setPostUpdateLoading] = useState(false)
+    const [postUpdateLoading, setPostUpdateLoading] = useState(false);
 
-    const [postDeleteLoading, setPostDeleteLoading] = useState(false)
+    const [postDeleteLoading, setPostDeleteLoading] = useState(false);
 
-    const [postHeader, setPostHeader] = useState('')
+    const [postHeader, setPostHeader] = useState('');
 
-    const [postContent, setPostContent] = useState('')
+    const [postContent, setPostContent] = useState('');
 
-    const [postImage, setPostImage] = useState<PostImage[]>([])
+    const [postImage, setPostImage] = useState<PostImage[]>([]);
 
-    const [previewOpen, setPreviewOpen] = useState(false)
+    const [previewOpen, setPreviewOpen] = useState(false);
 
-    const [previewImage, setPreviewImage] = useState('')
+    const [previewImage, setPreviewImage] = useState('');
 
-    const [fileList, setFileList] = useState<UploadFile[]>([])
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+    const [form] = Form.useForm();
 
     // update Post
     const postUpdateMutation = useMutation(updatePost, {
@@ -85,15 +90,20 @@ export default function PostDetail() {
         }
     })
 
-    const handleUpdatePost = () => {
-        postUpdateMutation.mutate({
-            postId: postId ? postId: '',
-            newPost: {
-                header: postHeader,
-                content: postContent,
-                postImage: postImage
-            }
-        })
+    const handleUpdatePost = async () => {
+        try {
+            await form.validateFields();
+            postUpdateMutation.mutate({
+                postId: postId ? postId: '',
+                newPost: {
+                    header: postHeader,
+                    content: postContent,
+                    postImage: postImage
+                }
+            })
+        } catch (error: any) {
+            message.error(error);
+        }
     }
 
     const showUpdatePostDrawer = (post:Post) => {
@@ -183,10 +193,13 @@ export default function PostDetail() {
 
         setPostImage(postImages);
     }
-    
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [postId]);
 
     if(isLoading) {
-        return (<Loading />)
+        return <Skeleton active />
     }
 
     return (
@@ -239,7 +252,9 @@ export default function PostDetail() {
                             <div>
                                 <p className="text-xl">{data.header}</p>
                                 <p className="text-sm text-slate-400 mt-1">
-                                    <Link href="/user"><UserOutlined /> {data.user.username}</Link>
+                                    <Link href={`/profile/${data.user.id}`} className="text-blue-500 hover:underline">
+                                        {data.user.username}
+                                    </Link>
                                     <ClockCircleOutlined className="ml-4" /> {formatDate(data.createdAt.toString())}
                                 </p>
                             </div>

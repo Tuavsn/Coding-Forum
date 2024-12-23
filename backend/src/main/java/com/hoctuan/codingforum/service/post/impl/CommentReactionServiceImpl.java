@@ -10,7 +10,6 @@ import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.post.CommentReaction;
 import com.hoctuan.codingforum.model.entity.post.PostComment;
-import com.hoctuan.codingforum.model.mapper.CommentReactionMapper;
 import com.hoctuan.codingforum.repository.post.CommentReactionRepository;
 import com.hoctuan.codingforum.repository.post.PostCommentRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
@@ -24,8 +23,6 @@ public class CommentReactionServiceImpl implements CommentReactionService {
     private CommentReactionRepository commentReactionRepository;
     @Autowired
     private PostCommentRepository postCommentRepository;
-    @Autowired
-    private CommentReactionMapper commentReactionMapper;
     @Autowired
     private AuthContext authContext;
 

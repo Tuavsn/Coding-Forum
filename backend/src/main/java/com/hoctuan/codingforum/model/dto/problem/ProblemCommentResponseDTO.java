@@ -1,8 +1,7 @@
 package com.hoctuan.codingforum.model.dto.problem;
 
 import com.hoctuan.codingforum.common.BaseResponseDTO;
-import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.model.entity.problem.Problem;
+import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class ProblemCommentResponseDTO extends BaseResponseDTO {
-    private Problem problem;
-
-    private User user;
+    private AuthResponseDTO user;
 
     private String content;
 }

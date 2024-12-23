@@ -1,16 +1,17 @@
 package com.hoctuan.codingforum.service.account.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hoctuan.codingforum.config.AppConstant;
 import com.hoctuan.codingforum.constant.AccountAchievement;
 import com.hoctuan.codingforum.constant.AccountRole;
 import com.hoctuan.codingforum.constant.AccountStatus;
+import com.hoctuan.codingforum.constant.AppConstant;
 import com.hoctuan.codingforum.constant.AuthProvider;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;
@@ -18,7 +19,6 @@ import com.hoctuan.codingforum.model.dto.auth.AuthRequestDTO;
 import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.model.mapper.UserMapper;
 import com.hoctuan.codingforum.repository.account.UserRepository;
 import com.hoctuan.codingforum.service.account.AuthService;
 import com.hoctuan.codingforum.service.common.AuthContext;
@@ -111,6 +111,7 @@ public class AuthServiceImpl implements AuthService {
                 .role(savedUser.getRole())
                 .avatar(savedUser.getAvatar())
                 .achievement(savedUser.getAchievement())
+                .totalSubmissionPoint(savedUser.getTotalSubmissionPoint())
                 .address(savedUser.getAddress())
                 .phone(savedUser.getPhone())
                 .status(savedUser.getStatus())
@@ -132,6 +133,7 @@ public class AuthServiceImpl implements AuthService {
                 .role(user.getRole())
                 .avatar(user.getAvatar())
                 .achievement(user.getAchievement())
+                .totalSubmissionPoint(user.getTotalSubmissionPoint())
                 .address(user.getAddress())
                 .phone(user.getPhone())
                 .status(user.getStatus())

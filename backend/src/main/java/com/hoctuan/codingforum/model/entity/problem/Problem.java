@@ -38,9 +38,6 @@ public class Problem extends BaseEntity {
     private ProblemType difficulty;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String otherProps;
-
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String testCases;
     
     @ManyToOne(optional = false)
@@ -49,11 +46,11 @@ public class Problem extends BaseEntity {
     @Column(nullable = false)
     private double totalScore;
     
-    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ProblemSubmission> problemSubmissions;
     
-    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ProblemComment> comments;
 }

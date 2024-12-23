@@ -1,16 +1,26 @@
 'use client'
+import { ProblemSubmissionLanguageType } from "@/libs/enum";
 import { DownOutlined } from "@ant-design/icons"
 import { Button, Dropdown, MenuProps, Space } from "antd"
-import { useState } from "react"
 
-const languages = ["C++", "C", "Python", "Java", "C#", "Javascript"]
+const languages = [
+    ProblemSubmissionLanguageType.C,
+    ProblemSubmissionLanguageType.CPLUSPLUS,
+    ProblemSubmissionLanguageType.CSHARP,
+    ProblemSubmissionLanguageType.PYTHON,
+    ProblemSubmissionLanguageType.JAVA,
+    ProblemSubmissionLanguageType.JAVASCRIPT
+]
 
-export default function LanguageMenu() {
+interface LanguageMenuProps {
+    language: string;
+    setLanguage: (value: ProblemSubmissionLanguageType) => void;
+}
 
-    const [currentLanguage, setCurrentLanguage] = useState(languages[0])
+export default function LanguageMenu({ language, setLanguage }: LanguageMenuProps) {
 
     const onClick: MenuProps['onClick'] = ({ key }) => {
-        setCurrentLanguage(key)
+        setLanguage(key as ProblemSubmissionLanguageType)
     };    
 
     return (
@@ -27,7 +37,7 @@ export default function LanguageMenu() {
         >
             <Button size="large" onClick={(e) => e.preventDefault()}>
                 <Space>
-                    {currentLanguage}
+                    {language}
                     <DownOutlined />
                 </Space>
             </Button>

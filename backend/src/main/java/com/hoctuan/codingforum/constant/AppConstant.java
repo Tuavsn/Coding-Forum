@@ -1,4 +1,4 @@
-package com.hoctuan.codingforum.config;
+package com.hoctuan.codingforum.constant;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

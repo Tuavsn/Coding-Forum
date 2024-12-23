@@ -7,7 +7,7 @@ import React from "react"
 import { useQuery, useQueryClient } from "react-query"
 import Link from "next/link"
 import { formatDate, stringToSlug } from "@/libs/utils"
-import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MessageFilled, MessageOutlined, UserOutlined } from "@ant-design/icons"
+import { AimOutlined, ClockCircleOutlined, DislikeFilled, DislikeOutlined, FireOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MailOutlined, MessageFilled, MessageOutlined, PhoneOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons"
 import { ReactionType } from "@/libs/enum"
 import { useSearchParams } from "next/navigation"
 
@@ -62,10 +62,21 @@ export default function UserProfile() {
                                 <div className="flex flex-col">
                                     <span className="text-gray-700 uppercase font-bold tracking-wider mb-2">Thông tin</span>
                                     <ul>
-                                        <li className="mb-2"><strong>Email:</strong> {userProfile?.email}</li>
-                                        <li className="mb-2"><strong>Giới tính:</strong> {userProfile?.gender === "MALE" ? "Nam" : "Nữ"}</li>
-                                        <li className="mb-2"><strong>Số điện thoại:</strong> {userProfile?.phone}</li>
-                                        <li className="mb-2"><strong>Địa chỉ:</strong> {userProfile?.address}</li>
+                                        <li className="flex gap-2 items-center mb-2">
+                                            <MailOutlined /><strong>Email:</strong> {userProfile?.email}
+                                        </li>
+                                        <li className="flex gap-2 items-center mb-2">
+                                            <QuestionCircleOutlined /><strong>Giới tính:</strong> {userProfile?.gender === "MALE" ? "Nam" : "Nữ"}
+                                        </li>
+                                        <li className="flex gap-2 items-center mb-2">
+                                            <PhoneOutlined /><strong>Số điện thoại:</strong> {userProfile?.phone}
+                                        </li>
+                                        <li className="flex gap-2 items-center mb-2">
+                                            <AimOutlined /><strong>Địa chỉ:</strong> {userProfile?.address}
+                                        </li>
+                                        <li className="flex gap-2 items-center mb-2">
+                                            <FireOutlined /><strong>Tổng điểm:</strong> {userProfile?.totalSubmissionPoint}
+                                        </li>
                                     </ul>
                                 </div>
                                 <hr className="my-6 border-t border-gray-300"/>
