@@ -126,7 +126,7 @@ export default function PersonalProfile() {
                         <div className="col-span-4 sm:col-span-3">
                             <div className="bg-white shadow rounded-lg p-6">
                                 <div className="flex flex-col items-center">
-                                    <img src={auth?.avatar} className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"/>
+                                    <Avatar shape="square" size={120} src={auth?.avatar}/>
                                     <h1 className="text-xl font-bold">{auth?.username}</h1>
                                     <div className="flex">
                                         <Tag color={auth?.role === "SYS_ADMIN" ? '#108ee9' : '#87d068'}>{auth?.role}</Tag>

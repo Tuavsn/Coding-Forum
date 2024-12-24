@@ -58,7 +58,7 @@ export default function RankingList() {
                                     />
                                 }
                                 title={
-                                    <Link href={`/profile/${user.id}`} className="text-blue-500 hover:underline">
+                                    <Link href={`/user?id=${user.id}`} className="text-blue-500 hover:underline">
                                         <strong>{user.username}</strong>
                                     </Link>
                                 }

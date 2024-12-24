@@ -33,7 +33,7 @@ export default function UserProfile() {
                         <div className="col-span-4 sm:col-span-3">
                             <div className="bg-white shadow rounded-lg p-6">
                                 <div className="flex flex-col items-center">
-                                    <img src={userProfile?.avatar} className="w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0"/>
+                                    <Avatar shape="square" size={120} src={userProfile?.avatar}/>
                                     <h1 className="text-xl font-bold">{userProfile?.username}</h1>
                                     <div className="flex">
                                         <Tag color={userProfile?.role === "SYS_ADMIN" ? '#108ee9' : '#87d068'}>{userProfile?.role}</Tag>

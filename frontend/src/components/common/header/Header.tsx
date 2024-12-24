@@ -63,7 +63,7 @@ export default function Header() {
         },
         {
             label: (
-                <Link href="/problem">Problem Solving</Link>
+                <Link href="/problem">Luyện Code</Link>
             ),
             key: "problem",
             icon: <CodeOutlined />
