@@ -2,13 +2,14 @@
 import { Editor, OnChange } from "@monaco-editor/react";
 
 interface MonacoEditorProps {
+    theme: string;
     language: string;
     code: string;
     setCode: (value: string) => void;
 }
 
 
-export default function MonacoEditor({ language, code, setCode }: MonacoEditorProps) {
+export default function MonacoEditor({ theme, language, code, setCode }: MonacoEditorProps) {
     const handleEditorChange: OnChange = (value, e) => {
         setCode(value || '')
     }
@@ -18,7 +19,7 @@ export default function MonacoEditor({ language, code, setCode }: MonacoEditorPr
             <Editor
                 value={code}
                 language={language}
-                theme="vs-light"
+                theme={theme}
                 width="100%"
                 className="max-w-full"
                 height="100%"

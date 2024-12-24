@@ -219,7 +219,7 @@ export default function Comment({post}:{post: Post}) {
                                 avatar={<Avatar shape="square" size={60} src={item.user?.avatar} />}
                                 description={(
                                     <>
-                                        <strong className="mr-2 text-sm"><Link href="/user"><UserOutlined /> {item.user.username}</Link></strong>
+                                        <strong className="mr-2 text-sm"><Link href={`/user?id=${item.user.id}`}><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
                                         <Typography className="mt-2">
                                             <div dangerouslySetInnerHTML={{ __html:item.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />

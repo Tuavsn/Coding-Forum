@@ -12,15 +12,11 @@ import {
     ClockCircleOutlined, 
     DislikeFilled, 
     DislikeOutlined, 
-    HeartOutlined, 
     LikeFilled, 
     LikeOutlined, 
     MessageFilled, 
     MessageOutlined, 
     SettingOutlined, 
-    SmileOutlined, 
-    UploadOutlined, 
-    UserOutlined 
 } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -272,7 +268,7 @@ export default function PostDetail() {
                             <div>
                                 <p className="text-xl">{data.header}</p>
                                 <p className="text-sm text-slate-400 mt-1">
-                                    <Link href={`/profile/${data.user.id}`} className="text-blue-500 hover:underline">
+                                    <Link href={`/user?id=${data.user.id}`} className="text-blue-500 hover:underline">
                                         {data.user.username}
                                     </Link>
                                     <ClockCircleOutlined className="ml-4" /> {formatDate(data.createdAt.toString())}

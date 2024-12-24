@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
+import com.hoctuan.codingforum.constant.AccountRole;
 import com.hoctuan.codingforum.constant.ProblemResult;
 import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.exception.CustomException;
@@ -75,7 +76,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         // check if user is problem author
         if(dto.getId() != null) {
             Problem existedProblem = problemRepository.findById(dto.getId()).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
-            if(existedProblem.getAuthor().getId() != user.getId()) {
+            if(existedProblem.getAuthor().getId() != user.getId() && !user.getRole().equals(AccountRole.SYS_ADMIN)) {
                 throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
             }
             if(dto.getThumbnail().isEmpty()) {

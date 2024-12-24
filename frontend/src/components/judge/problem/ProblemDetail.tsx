@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getProblemDetail, getSubmission, runSolution, submitSolution } from "@/libs/actions/problem.actions";
 import { Problem, ProblemSubmission, SubmissionResult } from "@/libs/types";
 import { ProblemSubmissionLanguageType, ProblemType } from "@/libs/enum";
+import ThemeMenu from "./ThemeMenu";
 
 function getTopicColor(str: string): string {
     switch(str) {
@@ -54,6 +55,12 @@ export default function ProblemDetail() {
     const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1); // Initialize page to 1
+
+    const [editorTheme, setEditorTheme] = useState("vs-light");
+
+    const [bgColor, setBgColor] = useState("#1E1E1E");
+
+    const [textColor, setTextColor] = useState("white");
 
     // run solution
     const runSolutionMutation = useMutation(runSolution, {
@@ -137,6 +144,18 @@ export default function ProblemDetail() {
         setCurrentPage(page); // Update the current page when the user clicks a page number
     };
 
+    const handleThemeChange = (theme: string) => {
+        if (theme === "vs-dark") {
+            setEditorTheme("vs-dark");
+            setBgColor("bg-[#1E1E1E]");
+            setTextColor("text-white");
+        } else {
+            setEditorTheme("vs-light");
+            setBgColor("bg-white");
+            setTextColor("text-black");
+        }
+    }
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [problemId]);
@@ -152,6 +171,7 @@ export default function ProblemDetail() {
                     <Button size="large" type="primary" loading={runLoading} disabled={runLoading || submitLoading} onClick={handleRunSolution}><PlayCircleOutlined /><p>Run</p></Button>
                     <Button size="large" type="primary" loading={submitLoading} disabled={runLoading || submitLoading} onClick={handleSubmitSolution}><CloudServerOutlined /><p>Submit</p></Button>
                     <LanguageMenu language={language} setLanguage={setLanguage} />
+                    <ThemeMenu editorTheme={editorTheme} onThemeChange={handleThemeChange} />
                     <Button size="large" type="dashed" loading={historyLoading} disabled={runLoading || submitLoading} onClick={handleGetSubmissions}><HistoryOutlined />History</Button>
                 </Flex>
                 <Flex gap={4}>
@@ -160,34 +180,36 @@ export default function ProblemDetail() {
                     className="h-[800px] w-[40%] drop-shadow"
                     gap={4}>
                         <div className="h-[500px]">
-                            <Card title={data.title} className="h-full w-full rounded-none overflow-y-scroll scrollbar-thin">
-                                <p><strong>Độ khó: </strong><Tag className="mx-2" key='1' color={getTopicColor(data.difficulty)}>{data.difficulty}</Tag></p>
-                                <p><strong>Mô tả:</strong></p>
-                                <Typography className="mt-2">
+                            <Card title={<span className={`${textColor} break-words whitespace-pre-wrap`}>{data.title}</span>} className={`h-full w-full rounded-none overflow-y-scroll scrollbar-thin ${bgColor}`}>
+                                <p className={`${textColor}`}><strong>Độ khó: </strong><Tag className="mx-2" key='1' color={getTopicColor(data.difficulty)}>{data.difficulty}</Tag></p>
+                                <p className={`${textColor}`}><strong>Mô tả:</strong></p>
+                                <Typography className={`mt-2 ${textColor}`}>
                                     <div dangerouslySetInnerHTML={{ __html:data.description }} style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}} />
                                 </Typography>
-                                <p><strong>Ví dụ:</strong></p>
-                                <Typography className="mt-2">
+                                <p className={`${textColor}`}><strong>Ví dụ:</strong></p>
+                                <Typography className={`mt-2 ${textColor}`}>
                                     <div dangerouslySetInnerHTML={{ __html:data.example }} style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}} />
                                 </Typography>
                             </Card>
                         </div>
                         <div className="h-[200px]">
                             <Card title={
-                                `Ouput: ${runResult?.submitError
+                                <span className={`${textColor} break-words whitespace-pre-wrap`}>
+                                    Kết quả: {runResult?.submitError
                                     ? runResult.submitError
                                     : runResult?.submitResult ? runResult.submitResult
-                                    : ''}`
-                            } className="h-full w-full rounded-none overflow-y-scroll scrollbar-thin">
-                                <pre><strong>Stdout: </strong>{runResult?.stdout}</pre>
-                                <pre><strong>Thời gian: </strong>{runResult?.time} giây</pre>
-                                <pre><strong>Bộ nhớ: </strong>{runResult?.memory} KB</pre>
+                                    : ''}
+                                </span>
+                            } className={`h-full w-full rounded-none overflow-y-scroll scrollbar-thin ${bgColor}`}>
+                                <pre className={`${textColor}`}><strong>Stdout: </strong>{runResult?.stdout}</pre>
+                                <pre className={`${textColor}`}><strong>Thời gian: </strong>{runResult?.time} giây</pre>
+                                <pre className={`${textColor}`}><strong>Bộ nhớ: </strong>{runResult?.memory} KB</pre>
                             </Card>
                         </div>
                     </Flex>
                     <div className="h-[704px] w-[60%] drop-shadow">
-                        <Card title="Code Editor" className="h-full w-full rounded-none overflow-hidden" styles={{ body: { height: "100%", padding: "24px 0" } }}>
-                            <MonacoEditor language={language.toLowerCase()} code={code} setCode={setCode} />
+                        <Card title={<span className={`${textColor}`}>Code Editor</span>} className={`h-full w-full rounded-none overflow-hidden ${bgColor}`} styles={{ body: { height: "100%", padding: "24px 0" } }}>
+                            <MonacoEditor theme={editorTheme} language={language.toLowerCase()} code={code} setCode={setCode} />
                         </Card>
                     </div>
                 </Flex>

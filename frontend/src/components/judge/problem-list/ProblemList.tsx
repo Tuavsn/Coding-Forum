@@ -300,7 +300,7 @@ export default function ProblemList() {
                                     <Button className="border-none px-2 shadow-none" key="list-vertical-message">
                                         <IconText icon={MessageOutlined} text="244" key="list-vertical-message" />
                                     </Button>,
-                                    auth?.username == item.author.username ? (
+                                    auth?.role == "SYS_ADMIN" ? (
                                         <Popconfirm
                                             title="Tuỳ chọn"
                                             onConfirm={() => handleDeleteProblem(item.id)}
