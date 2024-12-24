@@ -230,11 +230,9 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     }
 
     private String formatInput(String input) {
-        List<String> result = Utils.splitStringByComma(input);
+        List<String> stringSplitByComma = Utils.splitStringByComma(input);
 
-        result = result.stream()
-            .map(string -> Utils.separateDigitsWithSpace(string)) // Sửa: trả về kết quả từ phương thức
-            .collect(Collectors.toList());
+        List<String> result = Utils.splitStringBySpace(stringSplitByComma);
         
         return Utils.joinListWithNewLine(result);
     }
