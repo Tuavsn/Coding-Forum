@@ -78,6 +78,9 @@ public class ProblemServiceImpl extends BaseServiceImpl<
             if(existedProblem.getAuthor().getId() != user.getId()) {
                 throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
             }
+            if(dto.getThumbnail().isEmpty()) {
+                dto.setThumbnail(existedProblem.getThumbnail());
+            }
         }
 
         UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();

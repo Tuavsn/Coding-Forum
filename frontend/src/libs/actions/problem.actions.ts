@@ -32,12 +32,12 @@ export const getSubmissionDetail = async(submissionId: string): Promise<ProblemS
     return result.Data;
 }
 
-export const createProblem = async({ newProblem }: { newProblem: { title: string, description: string, example: string, tags: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
+export const createProblem = async({ newProblem }: { newProblem: { title: string, description: string, example: string, tags: string, thumbnail: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
     const result = await postData('api/problem', newProblem);
     return result;
 }
 
-export const updateProblem = async({ problemId, newProblem }: { problemId: string, newProblem: { title: string, description: string, example: string, tags: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
+export const updateProblem = async({ problemId, newProblem }: { problemId: string, newProblem: { title: string, description: string, example: string, tags: string, thumbnail: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
     const result = await putData(`api/problem/${problemId}`, newProblem);
     return result;
 }

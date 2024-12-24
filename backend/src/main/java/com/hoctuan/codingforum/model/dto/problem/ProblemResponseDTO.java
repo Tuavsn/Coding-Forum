@@ -26,6 +26,8 @@ public class ProblemResponseDTO extends BaseResponseDTO {
 
     private String tags;
 
+    private String thumbnail;
+
     private ProblemType difficulty;
 
     private String testCases;

@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.hoctuan.codingforum.common.BaseMapper;
+import com.hoctuan.codingforum.model.dto.post.PostImageDTO;
 import com.hoctuan.codingforum.model.dto.post.PostRequestDTO;
 import com.hoctuan.codingforum.model.dto.post.PostResponseDTO;
 import com.hoctuan.codingforum.model.entity.post.Post;
+import com.hoctuan.codingforum.model.entity.post.PostImage;
 
 import java.util.List;
 
@@ -34,5 +36,13 @@ public class PostMapper implements BaseMapper<Post, PostResponseDTO, PostRequest
     @Override
     public List<Post> toModel(List<PostRequestDTO> requestDTOs) {
         return requestDTOs.stream().map(this::toModel).toList();
+    }
+
+    public PostImageDTO toImageDTO(PostImage postImages) {
+        return modelMapper.map(postImages, PostImageDTO.class);
+    }
+
+    public List<PostImageDTO> toImageDTOs(List<PostImage> postImages) {
+        return postImages.stream().map(this::toImageDTO).toList();
     }
 }

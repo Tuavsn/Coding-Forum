@@ -77,7 +77,7 @@ export default function PostList({posts, topic}: postList) {
     })
 
     const handleCreatePost = async () => {
-        if (validateInput()) {
+        if (validateInput("create")) {
             postCreateMutation.mutate({
                 topicId: topic.id,
                 newPost: {
@@ -113,7 +113,7 @@ export default function PostList({posts, topic}: postList) {
     })
 
     const handleUpdatePost = async () => {
-        if (validateInput()) {
+        if (validateInput("update")) {
             postUpdateMutation.mutate({
                 postId: postId,
                 newPost: {
@@ -182,8 +182,11 @@ export default function PostList({posts, topic}: postList) {
         resetInput();
     }
 
-    const validateInput = () => {
-        if (!postHeader || !postContent) {
+    const validateInput = (type: string) => {
+        if (type === "create" && !postHeader || !postContent) {
+            message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
+            return false;
+        } else if (!postHeader || !postContent) {
             message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
             return false;
         }

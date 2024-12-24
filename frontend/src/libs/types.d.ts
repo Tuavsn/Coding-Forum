@@ -111,6 +111,7 @@ declare type Problem = {
     description: string;
     example: string;
     tags: string;
+    thumbnail: string;
     difficulty: ProblemType;
     testCases: string;
     author: User;

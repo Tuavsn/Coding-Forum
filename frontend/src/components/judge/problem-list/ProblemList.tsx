@@ -1,19 +1,20 @@
 'use client'
 
-import { Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography } from "antd";
+import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Select, Space, Spin, Tag, Typography, Upload, UploadFile, UploadProps } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { Problem } from "@/libs/types";
+import { FileType, Problem } from "@/libs/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/actions/problem.actions";
-import { formatDate } from "@/libs/utils";
+import { formatDate, getBase64 } from "@/libs/utils";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { ProblemType } from "@/libs/enum";
 import { AuthContext } from "@/context/AuthContextProvider";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import dynamic from "next/dynamic";
+import { uploadButton } from "@/components/common/upload/UploadButton";
 
 function stringToSlug(str: string) {
    // Chuyển tất cả các ký tự thành chữ thường
@@ -83,6 +84,12 @@ export default function ProblemList() {
 
     const [totalScore, setTotalScore] = useState(0);
 
+    const [thumbnail, setThumbnail] = useState('');
+
+    const [previewImage, setPreviewImage] = useState('');
+    
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+
     // create problem
     const problemCreateMutation = useMutation(createProblem, {
         onMutate: () => {
@@ -107,13 +114,14 @@ export default function ProblemList() {
     };
 
     const handleCreateProblem = async () => {
-        if (validateInput()) {
+        if (validateInput("create")) {
             problemCreateMutation.mutate({
                 newProblem: {
                     title: problemTitle,
                     description: problemDescription,
                     example: example,
                     tags: tags,
+                    thumbnail: thumbnail,
                     difficulty: difficulty,
                     testCases: testCases,
                     totalScore: totalScore
@@ -148,7 +156,7 @@ export default function ProblemList() {
     }
 
     const handleUpdateProblem = async () => {
-        if (validateInput()) {
+        if (validateInput("update")) {
             problemUpdateMutation.mutate({
                 problemId: problemId,
                 newProblem: {
@@ -156,6 +164,7 @@ export default function ProblemList() {
                     description: problemDescription,
                     example: example,
                     tags: tags,
+                    thumbnail: thumbnail,
                     difficulty: difficulty,
                     testCases: testCases,
                     totalScore: totalScore
@@ -188,8 +197,11 @@ export default function ProblemList() {
         resetInput();
     }
 
-    const validateInput = () => {
-        if (!problemTitle || !problemDescription || !example || !tags || !testCases) {
+    const validateInput = (type: string) => {
+        if (type == "create" && !problemTitle || !problemDescription || !example || !tags || !testCases) {
+            message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
+            return false;
+        } else if (!problemTitle || !problemDescription || !example || !tags || !testCases) {
             message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
             return false;
         }
@@ -217,6 +229,36 @@ export default function ProblemList() {
         setTestCases('');
         setTotalScore(0);
     }
+
+    const handlePreview = async (file: UploadFile) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj as FileType);
+        }
+    
+        setPreviewImage(file.url || (file.preview as string));
+    }
+
+    const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
+        const updatedFileList = await Promise.all(
+            newFileList.map(async (file) => {
+                if (file.originFileObj && !file.url && !file.preview) {
+                    const base64 = await getBase64(file.originFileObj as FileType);
+                    return {
+                        ...file,
+                        url: base64,
+                    }
+                }
+                return file;
+            })
+        );
+    
+        setFileList(updatedFileList);
+    
+        const thumbnail = updatedFileList[0]?.url || '';
+    
+        setThumbnail(thumbnail);
+    };
+    
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -247,9 +289,11 @@ export default function ProblemList() {
                         dataSource={data} 
                         renderItem={(item) => (
                             <List.Item
-                                className="px-0"
+                                className="px-0 items-center"
                                 actions={[
                                     <Tag key='1' color={getTopicColor(item.difficulty)}>{item.difficulty}</Tag>,
+                                    <Tag key='1' color={getTopicColor(item.difficulty)}>{item.tags}</Tag>,
+                                    <Tag key='1' color={getTopicColor(item.difficulty)}>Tổng điểm: {item.totalScore}</Tag>,
                                     <Button className="border-none px-2 shadow-none" key="list-vertical-message">
                                         <IconText icon={PlayCircleOutlined} text="232" key="list-vertical-message" />
                                     </Button>,
@@ -269,9 +313,19 @@ export default function ProblemList() {
                                         </Popconfirm>
                                     ) : <></>
                                 ]}
+                                extra={
+                                    item.thumbnail && (
+                                        <img 
+                                            style={{objectFit: "contain", width: "300px", height: "150px"}}
+                                            alt={item.thumbnail}
+                                            src={item.thumbnail}
+                                        />
+                                    )
+                                }
                             >
                                 <List.Item.Meta
                                     title={<Link href={`/problem/${stringToSlug(item.title)}?id=${item.id}`}><strong>{item.title}</strong></Link>}
+                                    avatar={<Avatar shape="square" size={60} src={item.author.avatar}/>}
                                     description={(
                                         <>
                                             <strong className="mr-6"><Link href={`/user?id=${item.author.id}`}><UserOutlined /> {item.author.username}</Link></strong>
@@ -284,6 +338,14 @@ export default function ProblemList() {
                                         dangerouslySetInnerHTML={{ __html: item.description }} 
                                         className="break-words"
                                     />
+                                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent">
+                                        <Link 
+                                            href={`/problem/${stringToSlug(item.title)}?id=${item.id}`} 
+                                            className="absolute inset-0 flex items-center justify-center bg-white/80 text-gray-600 font-medium shadow-lg cursor-pointer hover:shadow-xl"
+                                        >
+                                            Xem thêm
+                                        </Link>
+                                    </div>
                                 </Typography>
                             </List.Item>
                         )}
@@ -411,6 +473,32 @@ export default function ProblemList() {
                                 </Form.Item>
                             </Col>
                         </Row>
+                        <Row gutter={16}>
+                        <Col span={22}>
+                            <Form.Item
+                                label="Hình ảnh"
+                                rules={[
+                                {
+                                    required: true,
+                                    message: 'Upload ảnh bài viết',
+                                },
+                                ]}
+                            >
+                                <Upload
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                    onPreview={handlePreview}
+                                    onChange={handleChange}
+                                    beforeUpload={() => false}
+                                >
+                                    {fileList.length >= 1 ? null : uploadButton}
+                                </Upload>
+                                {previewImage && (
+                                    <img src={previewImage} width={100} alt="preview" />
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     </Form>
                 </Drawer>
             </>

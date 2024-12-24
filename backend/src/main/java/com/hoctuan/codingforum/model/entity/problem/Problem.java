@@ -34,6 +34,9 @@ public class Problem extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String tags;
 
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String thumbnail;
+
     @Column(nullable = false)
     private ProblemType difficulty;
 

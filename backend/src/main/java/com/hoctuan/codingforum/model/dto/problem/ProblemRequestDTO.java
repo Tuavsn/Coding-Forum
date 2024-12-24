@@ -24,6 +24,8 @@ public class ProblemRequestDTO extends BaseRequestDTO {
 
     private String tags;
 
+    private String thumbnail;
+
     private ProblemType difficulty;
 
     private String testCases;
