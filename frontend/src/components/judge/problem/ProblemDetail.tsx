@@ -159,7 +159,7 @@ export default function ProblemDetail() {
                     vertical={true}
                     className="h-[800px] w-[40%] drop-shadow"
                     gap={4}>
-                        <div className="h-[450px]">
+                        <div className="h-[500px]">
                             <Card title={data.title} className="h-full w-full rounded-none overflow-y-scroll scrollbar-thin">
                                 <p><strong>Độ khó: </strong><Tag className="mx-2" key='1' color={getTopicColor(data.difficulty)}>{data.difficulty}</Tag></p>
                                 <p><strong>Mô tả:</strong></p>
@@ -172,7 +172,7 @@ export default function ProblemDetail() {
                                 </Typography>
                             </Card>
                         </div>
-                        <div className="h-[250px]">
+                        <div className="h-[200px]">
                             <Card title={
                                 `Ouput: ${runResult?.submitError
                                     ? runResult.submitError
