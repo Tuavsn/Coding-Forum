@@ -29,7 +29,7 @@ public class AppConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowedOrigins(Arrays.asList(GlobalVariables.CLIENT_URL,"http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(GlobalVariables.CLIENT_URL, "https://codingforum.trinhhoctuan.io.vn", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
