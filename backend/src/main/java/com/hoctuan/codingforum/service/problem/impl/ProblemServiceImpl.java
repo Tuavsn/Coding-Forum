@@ -117,7 +117,9 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         double totalTestCases = submissionResults.size();
         
-        long passedTestCases = submissionResults.stream().count();
+        long passedTestCases = submissionResults.stream()
+            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
+            .count();
 
         double totalTime = 0;
 
