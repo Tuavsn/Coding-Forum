@@ -70,29 +70,27 @@ export default function PostDetail() {
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-    const [form] = Form.useForm();
-
     // update Post
     const postUpdateMutation = useMutation(updatePost, {
         onMutate: () => {
-            setPostUpdateLoading(true)
+            setPostUpdateLoading(true);
         },
 
         onSuccess: (data) => {
-            setPostUpdateLoading(false)
-            setOpenDrawer(false)
-            queryClient.invalidateQueries('getPostDetail')
-            setPostHeader('')
-            setPostContent('')
-            setPostImage([])
-            setFileList([])
+            setPostUpdateLoading(false);
+
+            setOpenDrawer(false);
+
+            queryClient.invalidateQueries('getPostDetail');
+            
+            resetInput();
+
             message.success(data.Message)
         }
     })
 
     const handleUpdatePost = async () => {
-        try {
-            await form.validateFields();
+        if (validateInput()) {
             postUpdateMutation.mutate({
                 postId: postId ? postId: '',
                 newPost: {
@@ -101,15 +99,13 @@ export default function PostDetail() {
                     postImage: postImage
                 }
             })
-        } catch (error: any) {
-            message.error(error);
         }
     }
 
     const showUpdatePostDrawer = (post:Post) => {
         setOpenDrawer(true);
-        setPostHeader(post.header)
-        setPostContent(post.content)
+        
+        updateInput(post);
     }
 
     // delete Post
@@ -120,8 +116,11 @@ export default function PostDetail() {
 
         onSuccess: (data) => {
             setPostDeleteLoading(false)
+
             queryClient.invalidateQueries('getTopic')
+
             router.push("/home")
+
             message.success(data.Message)
         }
     })
@@ -134,6 +133,7 @@ export default function PostDetail() {
     const postLikeMutation = useMutation(likePost, {
         onSuccess: (data) => {
             queryClient.invalidateQueries('getPostDetail')
+
             message.success(data.Message)
         }
     })
@@ -146,6 +146,7 @@ export default function PostDetail() {
     const postDislikeMutation = useMutation(dislikePost, {
         onSuccess: (data) => {
             queryClient.invalidateQueries('getPostDetail')
+            
             message.success(data.Message)
         }
     })
@@ -157,10 +158,29 @@ export default function PostDetail() {
     // common
     const closeDrawer = () => {
         setOpenDrawer(false);
-        setPostHeader('')
-        setPostContent('')
-        setPostImage([])
+        
+        resetInput();
     };
+
+    const validateInput = () => {
+        if (!postHeader || !postContent) {
+            message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
+            return false;
+        }
+        return true;
+    }
+
+    const updateInput = (object: Post) => {
+        setPostHeader(object.header);
+        setPostContent(object.content);
+    }
+
+    const resetInput = () => {
+        setPostHeader('');
+        setPostContent('');
+        setPostImage([]);
+        setFileList([]);
+    }
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
@@ -294,7 +314,7 @@ export default function PostDetail() {
                     </Space>
                     }
                 >
-                    <Form layout="vertical" hideRequiredMark>
+                    <Form layout="vertical">
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item

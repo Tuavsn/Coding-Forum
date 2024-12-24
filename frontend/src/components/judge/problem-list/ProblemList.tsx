@@ -83,8 +83,6 @@ export default function ProblemList() {
 
     const [totalScore, setTotalScore] = useState(0);
 
-    const [form] = Form.useForm();
-
     // create problem
     const problemCreateMutation = useMutation(createProblem, {
         onMutate: () => {
@@ -93,15 +91,13 @@ export default function ProblemList() {
 
         onSuccess: (data) => {
             setProblemCreateLoading(false);
+
             setOpenDrawer(false);
+
             queryClient.invalidateQueries('getProblem');
-            setProblemTitle('');
-            setProblemDescription('');
-            setExample('');
-            setTags('');
-            setDifficulty(ProblemType.EASY);
-            setTestCases('');
-            setTotalScore(0);
+
+            resetInput();
+
             message.success(data.Message);
         }
     })
@@ -111,8 +107,7 @@ export default function ProblemList() {
     };
 
     const handleCreateProblem = async () => {
-        try {
-            await form.validateFields();
+        if (validateInput()) {
             problemCreateMutation.mutate({
                 newProblem: {
                     title: problemTitle,
@@ -124,7 +119,6 @@ export default function ProblemList() {
                     totalScore: totalScore
                 }
             })
-        } catch (error: any) {
         }
     }
 
@@ -136,36 +130,27 @@ export default function ProblemList() {
 
         onSuccess: (data) => {
             setProblemUpdateLoading(false);
+
             setOpenDrawer(false);
+
             queryClient.invalidateQueries('getProblem');
-            setProblemId('');
-            setProblemTitle('');
-            setProblemDescription('');
-            setExample('');
-            setTags('');
-            setDifficulty(ProblemType.EASY);
-            setTestCases('');
-            setTotalScore(0);
+
+            resetInput();
+            
             message.success(data.Message);
         }
     })
 
     const showUpdateProblemDrawer = (problem:Problem) => {
         setOpenDrawer(true);
-        setProblemId(problem.id);
-        setProblemTitle(problem.title);
-        setProblemDescription(problem.description);
-        setExample(problem.example);
-        setTags(problem.tags);
-        setDifficulty(problem.difficulty);
-        setTestCases(problem.testCases);
-        setTotalScore(problem.totalScore);
+        
+        updateInput(problem);
     }
 
     const handleUpdateProblem = async () => {
-        try {
-            await form.validateFields();
+        if (validateInput()) {
             problemUpdateMutation.mutate({
+                problemId: problemId,
                 newProblem: {
                     title: problemTitle,
                     description: problemDescription,
@@ -176,7 +161,6 @@ export default function ProblemList() {
                     totalScore: totalScore
                 }
             })
-        } catch (error: any) {
         }
     }
 
@@ -200,6 +184,38 @@ export default function ProblemList() {
     // common
     const closeDrawer = () => {
         setOpenDrawer(false);
+        
+        resetInput();
+    }
+
+    const validateInput = () => {
+        if (!problemTitle || !problemDescription || !example || !tags || !testCases) {
+            message.error('Vui lòng điền đầy đủ các trường bắt buộc.');
+            return false;
+        }
+        return true;
+    }
+
+    const updateInput = (object: Problem) => {
+        setProblemId(object.id);
+        setProblemTitle(object.title);
+        setProblemDescription(object.description);
+        setExample(object.example);
+        setTags(object.tags);
+        setDifficulty(object.difficulty);
+        setTestCases(object.testCases);
+        setTotalScore(object.totalScore);
+    }
+
+    const resetInput = () => {
+        setProblemId('');
+        setProblemTitle('');
+        setProblemDescription('');
+        setExample('');
+        setTags('');
+        setDifficulty(ProblemType.EASY);
+        setTestCases('');
+        setTotalScore(0);
     }
 
     useEffect(() => {
@@ -297,13 +313,12 @@ export default function ProblemList() {
                     </Space>
                     }
                 >
-                    <Form form={form} layout="vertical">
+                    <Form layout="vertical">
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
-                                    name="title"
                                     label="Tiêu đề"
-                                    rules={[{ required: true, message: 'Nhập tiêu đề bài Post' }]}
+                                    rules={[{ required: true, message: 'Nhập tiêu đề bài' }]}
                                 >
                                     <Input style={{width: '100%'}} onChange={(e) => setProblemTitle(e.target.value)} value={problemTitle} placeholder="Nhập tiêu đề" />
                                 </Form.Item>
@@ -350,7 +365,6 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
-                                    name="tag"
                                     label="Tags"
                                     rules={[{ required: true, message: 'Nhập tags' }]}
                                 >
@@ -380,7 +394,6 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
-                                    name="testcase"
                                     label="Test cases"
                                     rules={[{ required: true, message: 'Nhập test cases. Vd: 1,1;2|2,2;4 Với input: 1, 1; 2, 2 và output: 2; 4' }]}
                                 >
@@ -391,7 +404,6 @@ export default function ProblemList() {
                         <Row gutter={16}>
                             <Col span={22}>
                                 <Form.Item
-                                    name="totalscore"
                                     label="Tổng điểm"
                                     rules={[{ required: true, message: 'Nhập tổng điểm' }]}
                                 >

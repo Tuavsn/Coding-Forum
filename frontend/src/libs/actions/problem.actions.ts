@@ -37,8 +37,8 @@ export const createProblem = async({ newProblem }: { newProblem: { title: string
     return result;
 }
 
-export const updateProblem = async({ newProblem }: { newProblem: { title: string, description: string, example: string, tags: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
-    const result = await putData('api/problem', newProblem);
+export const updateProblem = async({ problemId, newProblem }: { problemId: string, newProblem: { title: string, description: string, example: string, tags: string, difficulty: ProblemType, testCases: string, totalScore: number } }) => {
+    const result = await putData(`api/problem/${problemId}`, newProblem);
     return result;
 }
 
