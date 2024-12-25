@@ -12,7 +12,6 @@ import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { ProblemType } from "@/libs/enum";
 import { AuthContext } from "@/context/AuthContextProvider";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import dynamic from "next/dynamic";
 import { uploadButton } from "@/components/common/upload/UploadButton";
 import TextEditor from "@/components/common/editor/TextEditor";
