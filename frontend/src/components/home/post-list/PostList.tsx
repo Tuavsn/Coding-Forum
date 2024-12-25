@@ -14,9 +14,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import TextEditor from "@/components/common/editor/TextEditor";
 
-import parse from "html-react-parser"
-import HTMLReactParser from "html-react-parser/lib/index";
-
 interface postList {
     posts: Post[];
     topic: Topic;
