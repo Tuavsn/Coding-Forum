@@ -15,13 +15,12 @@ import {
     SettingOutlined,
     UserOutlined 
 } from "@ant-design/icons";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Avatar, Button, List, Space, Form, Divider, Drawer, Row, Col, message, Card, Popconfirm, Typography } from "antd";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import TextEditor from "../editor/TextEditor";
 
 const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
@@ -222,7 +221,7 @@ export default function Comment({post}:{post: Post}) {
                                         <strong className="mr-2 text-sm"><Link href={`/user?id=${item.user.id}`}><UserOutlined /> {item.user.username}</Link></strong>
                                         <strong className="text-sm"><ClockCircleOutlined /> {formatDate(item.createdAt.toString())}</strong>
                                         <Typography className="mt-2">
-                                            <div dangerouslySetInnerHTML={{ __html:item.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />
+                                            <div dangerouslySetInnerHTML={{ __html:item.content }} className="ck-content break-words whitespace-pre-wrap" />
                                         </Typography>
                                     </>
                                 )}
@@ -269,11 +268,7 @@ export default function Comment({post}:{post: Post}) {
                             },
                             ]}
                         >
-                            <CKEditor
-                                editor={ ClassicEditor }
-                                data={commentContent}
-                                onChange={(event, editor) => setCommentContent(editor.getData())}
-                            />
+                            <TextEditor data={commentContent} setData={setCommentContent} />
                         </Form.Item>
                         </Col>
                     </Row>

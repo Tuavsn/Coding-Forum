@@ -1,7 +1,6 @@
 'use client'
 
 import Comment from "@/components/common/comment/Comment";
-import Loading from "@/components/common/loading/Loading";
 import { uploadButton } from "@/components/common/upload/UploadButton";
 import { AuthContext } from "@/context/AuthContextProvider";
 import { deletePost, dislikePost, getPostDetail, likePost, updatePost } from "@/libs/actions/post.acttion";
@@ -18,8 +17,6 @@ import {
     MessageOutlined, 
     SettingOutlined, 
 } from "@ant-design/icons";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Avatar, Button, Card, Carousel, Col, Divider, Drawer, Form, Input, message, Popconfirm, Row, Skeleton, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import Link from "next/link";
@@ -27,6 +24,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import TextEditor from "@/components/common/editor/TextEditor";
 
 const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
@@ -287,7 +285,7 @@ export default function PostDetail() {
                         </Carousel>
                     )}
                     <Typography className="mt-2">
-                        <div dangerouslySetInnerHTML={{ __html:data.content }} style={{wordBreak: "break-word", overflowWrap: "break-word"}} />
+                        <div dangerouslySetInnerHTML={{ __html:data.content }} className="ck-content break-words whitespace-pre-wrap" />
                     </Typography>
                 </Card>
                 <Comment post={data}/>
@@ -332,11 +330,7 @@ export default function PostDetail() {
                                     },
                                     ]}
                                 >
-                                    <CKEditor
-                                        editor={ ClassicEditor }
-                                        onChange={(event, editor) => setPostContent(editor.getData())}
-                                        data={postContent}
-                                    />
+                                    <TextEditor data={postContent} setData={setPostContent} />
                                 </Form.Item>
                             </Col>
                         </Row>

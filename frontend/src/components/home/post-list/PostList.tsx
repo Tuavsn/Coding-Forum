@@ -7,13 +7,15 @@ import { ReactionType } from "@/libs/enum";
 import { FileType, Post, PostImage, Topic } from "@/libs/types";
 import { formatDate, getBase64, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, DislikeFilled, DislikeOutlined, HeartOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined, PlusOutlined, RightCircleOutlined, SettingOutlined, SmileOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message, Popconfirm, Row, Space, Typography, Upload, UploadFile, UploadProps } from "antd";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import TextEditor from "@/components/common/editor/TextEditor";
+
+import parse from "html-react-parser"
+import HTMLReactParser from "html-react-parser/lib/index";
 
 interface postList {
     posts: Post[];
@@ -322,7 +324,7 @@ export default function PostList({posts, topic}: postList) {
                             <Typography className="relative max-h-[160px] overflow-hidden">
                                 <div 
                                     dangerouslySetInnerHTML={{ __html: item.content }} 
-                                    className="break-words"
+                                    className="ck-content break-words whitespace-pre-wrap"
                                 />
                                 <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent">
                                     <Link 
@@ -384,11 +386,7 @@ export default function PostList({posts, topic}: postList) {
                                 },
                                 ]}
                             >
-                                <CKEditor
-                                    editor={ ClassicEditor }
-                                    onChange={(event, editor) => setPostContent(editor.getData())}
-                                    data={postContent}
-                                />
+                                <TextEditor data={postContent} setData={setPostContent} />
                             </Form.Item>
                         </Col>
                     </Row>

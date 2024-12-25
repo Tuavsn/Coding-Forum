@@ -15,6 +15,7 @@ import { AuthContext } from "@/context/AuthContextProvider";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import dynamic from "next/dynamic";
 import { uploadButton } from "@/components/common/upload/UploadButton";
+import TextEditor from "@/components/common/editor/TextEditor";
 
 function stringToSlug(str: string) {
    // Chuyển tất cả các ký tự thành chữ thường
@@ -336,7 +337,7 @@ export default function ProblemList() {
                                 <Typography className="relative max-h-[160px] overflow-hidden">
                                     <div 
                                         dangerouslySetInnerHTML={{ __html: item.description }} 
-                                        className="break-words"
+                                        className="ck-content break-words whitespace-pre-wrap"
                                     />
                                     <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent">
                                         <Link 
@@ -397,11 +398,7 @@ export default function ProblemList() {
                                     },
                                     ]}
                                 >
-                                    <CKEditor
-                                        editor={ ClassicEditor }
-                                        onChange={(event, editor) => setProblemDescription(editor.getData())}
-                                        data={problemDescription}
-                                    />
+                                    <TextEditor data={problemDescription} setData={setProblemDescription} />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -416,11 +413,7 @@ export default function ProblemList() {
                                     },
                                     ]}
                                 >
-                                    <CKEditor
-                                        editor={ ClassicEditor }
-                                        onChange={(event, editor) => setExample(editor.getData())}
-                                        data={example}
-                                    />
+                                    <TextEditor data={example} setData={setExample} />
                                 </Form.Item>
                             </Col>
                         </Row>

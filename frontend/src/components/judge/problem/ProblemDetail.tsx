@@ -188,7 +188,7 @@ export default function ProblemDetail() {
                                 </Typography>
                                 <p className={`${textColor}`}><strong>Ví dụ:</strong></p>
                                 <Typography className={`mt-2 ${textColor}`}>
-                                    <div dangerouslySetInnerHTML={{ __html:data.example }} style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}} />
+                                    <div dangerouslySetInnerHTML={{ __html:data.example }} className="ck-content break-words whitespace-pre-wrap" />
                                 </Typography>
                             </Card>
                         </div>
