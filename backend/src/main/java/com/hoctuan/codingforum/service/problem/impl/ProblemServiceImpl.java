@@ -73,12 +73,11 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     public ProblemResponseDTO save(ProblemRequestDTO dto) {
         User user = authContext.getUserAuthenticated();
 
-        // check if user is problem author
         if(dto.getId() != null) {
-            Problem existedProblem = problemRepository.findById(dto.getId()).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
-            if(existedProblem.getAuthor().getId() != user.getId() && !user.getRole().equals(AccountRole.SYS_ADMIN)) {
-                throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
-            }
+            Problem existedProblem = getExistedProblem(dto.getId());
+            // check if user is problem author
+            checkAuthorPermission(user, existedProblem);
+            // check if new thumbnail
             if(dto.getThumbnail().isEmpty()) {
                 dto.setThumbnail(existedProblem.getThumbnail());
             }
@@ -94,7 +93,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     @Override
     @Transactional
     public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
-        Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        Problem existedProblem = getExistedProblem(id);
 
         User submitUser = authContext.getUserAuthenticated();
 
@@ -115,63 +114,19 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type, savedProblemSubmission);
 
-        savedProblemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
-
-        existedProblem.getProblemSubmissions().add(savedProblemSubmission);
-
-        double totalTestCases = submissionResults.size();
-        
-        long passedTestCases = submissionResults.stream()
-            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
-            .count();
-
-        double totalTime = 0;
-
-        double totalMemory = 0;
-
-        for(SubmissionResult submissionResult : submissionResults) {
-            totalTime += submissionResult.getTime();
-            totalMemory += submissionResult.getMemory();
-        }
-
-        double avarageTime = 0;
-
-        double avarageMemory = 0;
-
-        if(totalTime > 0) avarageTime = (totalTime / totalTestCases);
-
-        if(totalMemory > 0) avarageMemory = (totalMemory / totalTestCases);
-        
-        double score = (passedTestCases / totalTestCases) * existedProblem.getTotalScore();
-        
-        savedProblemSubmission.setScore(score);
-
-        savedProblemSubmission.setTime(avarageTime);
-
-        savedProblemSubmission.setMemory(avarageMemory);
-
-        double userScore = submitUser.getTotalSubmissionPoint() + score;
-
-        submitUser.setTotalSubmissionPoint(userScore);
-
-        if (passedTestCases == totalTestCases) {
-            savedProblemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
-        } else {
-            savedProblemSubmission.setResult(ProblemResult.WRONG_ANSWER.getDisplayName());
-        }
-
-        existedProblem.getProblemSubmissions().add(savedProblemSubmission);
-
-        problemRepository.save(existedProblem);
-
-        userRepository.save(submitUser);
-
-        return problemSubmissonMapper.toDTO(savedProblemSubmission);
+        return problemSubmissonMapper.toDTO(
+            saveProblemSubmissionResult(
+                savedProblemSubmission,
+                existedProblem,
+                submissionResults,
+                submitUser
+            )
+        );
     }
 
     @Override
     public SubmissionResultResponseDTO runSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
-        Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        Problem existedProblem = getExistedProblem(id);
 
         List<Judge0RequestDTO> judge0RequestDTO = getSubmitRequest(existedProblem, solutions);
 
@@ -189,7 +144,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
     @Override
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
-        ProblemSubmission existedProblemSubmission = problemSubmissionRepository.findById(problemSubmissionId).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        ProblemSubmission existedProblemSubmission = getExistedProblemSubmission(problemSubmissionId);
         
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
@@ -198,9 +153,9 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
         User submitUser = authContext.getUserAuthenticated();
 
-        Problem existedProblem = problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        Problem existedProblem = getExistedProblem(id);
 
-        return problemSubmissionRepository.findByProblem(pageable, existedProblem, submitUser).map(problemSubmissonMapper::toDTO);
+        return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser).map(problemSubmissonMapper::toDTO);
     }
 
     @Override
@@ -236,5 +191,87 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         List<String> result = Utils.splitStringBySpace(stringSplitByComma);
         
         return Utils.joinListWithNewLine(result);
+    }
+
+    private void checkAuthorPermission(User author, Problem problem) {
+        if(problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
+            throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
+    private Problem getExistedProblem(UUID id) {
+        return problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Bài test không tồn tại!"));
+    }
+
+    private ProblemSubmission getExistedProblemSubmission(UUID id) {
+        return problemSubmissionRepository.findById(id).orElseThrow(() -> new NotFoundException("Bài nộp không tồn tại!"));
+    }
+
+    @Transactional
+    private ProblemSubmission saveProblemSubmissionResult(
+        ProblemSubmission problemSubmission,
+        Problem problem,
+        List<SubmissionResult> submissionResults,
+        User submitUser
+    ) {
+        problemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
+
+        problem.getProblemSubmissions().add(problemSubmission);
+
+        double totalTestCases = submissionResults.size();
+        
+        long passedTestCases = submissionResults.stream()
+            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
+            .count();
+
+        double totalTime = 0;
+
+        double totalMemory = 0;
+
+        for(SubmissionResult submissionResult : submissionResults) {
+            totalTime += submissionResult.getTime();
+            totalMemory += submissionResult.getMemory();
+        }
+
+        double avarageTime = 0;
+
+        double avarageMemory = 0;
+
+        if(totalTime > 0) avarageTime = (totalTime / totalTestCases);
+
+        if(totalMemory > 0) avarageMemory = (totalMemory / totalTestCases);
+        
+        double score = (passedTestCases / totalTestCases) * problem.getTotalScore();
+        
+        problemSubmission.setScore(score);
+
+        problemSubmission.setTime(avarageTime);
+
+        problemSubmission.setMemory(avarageMemory);
+
+        if (passedTestCases == totalTestCases) {
+            problemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
+        } else {
+            problemSubmission.setResult(ProblemResult.WRONG_ANSWER.getDisplayName());
+        }
+
+        problem.getProblemSubmissions().add(problemSubmission);
+
+        problemRepository.save(problem);
+
+        updateUserPoint(problem, submitUser, score);
+
+        return problemSubmission;
+    }
+
+    private void updateUserPoint(Problem problem, User submitUser, double score) {
+        List<ProblemSubmission> existedSubmission = problemSubmissionRepository.findByProblemAndUser(problem, submitUser);
+        if (existedSubmission.size() == 1) {
+            double userScore = submitUser.getTotalSubmissionPoint() + score;
+
+            submitUser.setTotalSubmissionPoint(userScore);
+
+            userRepository.save(submitUser);
+        }
     }
 }
