@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,11 +60,13 @@ public class ProblemController extends BaseController<
     }
 
     @Override
+    @PreAuthorize("hasRole('SYS_ADMIN')")
     public ResponseEntity<BaseResponse> create(@Valid @RequestBody ProblemRequestDTO DTO) {
         return super.create(DTO);
     }
 
     @Override
+    @PreAuthorize("hasRole('SYS_ADMIN')")
     public ResponseEntity<BaseResponse> update(
         @PathVariable UUID id,
         @Valid @RequestBody ProblemRequestDTO DTO
@@ -72,6 +75,7 @@ public class ProblemController extends BaseController<
     }
 
     @Override
+    @PreAuthorize("hasRole('SYS_ADMIN')")
     public ResponseEntity<BaseResponse> delete(@PathVariable UUID id) {
         return super.delete(id);
     }
