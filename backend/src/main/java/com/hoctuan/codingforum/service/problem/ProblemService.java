@@ -21,6 +21,4 @@ public interface ProblemService extends BaseService<ProblemResponseDTO, ProblemR
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId);
 
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable);
-
-    public void deleteSubmitReuslt(String token);
 }
