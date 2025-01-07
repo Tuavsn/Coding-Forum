@@ -337,7 +337,7 @@ export default function ProblemDetail() {
 
                                                     {/* Displaying details of each submissionResult */}
                                                     <Typography.Text className="font-semibold">Chi tiết các Test Case:</Typography.Text>
-                                                    {submission.submissionResults?.map((testCase, index) => (
+                                                    {submission.submissionResults?.sort((a, b) => a.testCaseNum - b.testCaseNum).map((testCase, index) => (
                                                         <div key={testCase.id} className="mb-4 p-3 border rounded-md shadow-sm bg-gray-50">
                                                             <div className="flex justify-between">
                                                                 <Typography.Text className="font-semibold text-gray-700">Test Case {testCase.testCaseNum}</Typography.Text>
