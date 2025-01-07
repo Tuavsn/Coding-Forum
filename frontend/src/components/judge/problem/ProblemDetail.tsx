@@ -340,7 +340,7 @@ export default function ProblemDetail() {
                                                     {submission.submissionResults?.map((testCase, index) => (
                                                         <div key={testCase.id} className="mb-4 p-3 border rounded-md shadow-sm bg-gray-50">
                                                             <div className="flex justify-between">
-                                                                <Typography.Text className="font-semibold text-gray-700">Test Case {index + 1}</Typography.Text>
+                                                                <Typography.Text className="font-semibold text-gray-700">Test Case {testCase.testCaseNum}</Typography.Text>
                                                                 <Typography.Text
                                                                     className={`font-semibold ${testCase.submitResult === "Kết quả hợp lệ" ? "text-blue-600" : "text-red-500"}`}
                                                                 >
