@@ -48,7 +48,7 @@ Welcome to **Coding Forum**, a platform where developers and enthusiasts can sha
    ```bash
    docker-compose up -d --build
 
-### Access the live product here: **[Coding Forum Live]([https://your-live-product-url.com](https://codingforum.trinhhoctuan.io.vn/))**
+### Access the live product here: **[Coding Forum Live]([https://codingforum.trinhhoctuan.io.vn/](https://codingforum.trinhhoctuan.io.vn/))**
 **User Account:**
 - username: user@gmail.com
 - password: 123456
