@@ -52,3 +52,18 @@ Welcome to **Coding Forum**, a platform where developers and enthusiasts can sha
 **User Account:**
 - username: user@gmail.com
 - password: 123456
+
+### View:
+**Home Page:**
+![image](https://github.com/user-attachments/assets/ecd87bbb-d459-46ea-ab69-d8603bc5325b)
+**Post Page:**
+![image](https://github.com/user-attachments/assets/710f7e67-29f7-45fc-83df-70f303a5e196)
+**Problem Page:**
+![image](https://github.com/user-attachments/assets/df889d8d-8db1-4c95-b8ba-f5f98f3eeedb)
+![image](https://github.com/user-attachments/assets/412e1e46-1c14-4a64-9646-dd12fc99ff0b)
+**Rank Page:**
+![image](https://github.com/user-attachments/assets/7cda7667-c67b-4c6a-8eb4-c7a7af64bdc2)
+**Profile Page:**
+![image](https://github.com/user-attachments/assets/0e17065d-ca9a-4861-a476-cd011dce31e1)
+
+
