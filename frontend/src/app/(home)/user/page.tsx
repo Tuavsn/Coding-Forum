@@ -1,5 +1,5 @@
-import BreadCrumb from "@/components/common/breadcrumb/BreadCrumb";
-import Loading from "@/components/common/loading/Loading";
+import BreadCrumb from "@/components/common/BreadCrumb";
+import Loading from "@/components/common/Loading";
 import UserProfile from "@/components/profile/UserProfile";
 import { Suspense } from "react";
 

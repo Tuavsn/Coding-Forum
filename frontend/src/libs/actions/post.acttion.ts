@@ -1,11 +1,15 @@
-import { deleteData, getData, postData, putData } from "@/utils/FetchData";
+import { deleteData, getData, getPublicData, postData, putData } from "@/utils/FetchData";
 import { Post, PostImage, Topic } from "../types";
 
 // Topic
 export const getTopic = async(): Promise<Topic[]> => {
-    const result = await getData('api/topic');
+    const result = await getPublicData('api/topic');
     return result.Data;
 }
+// export const getTopic = async(): Promise<Topic[]> => {
+//     const result = await getData('api/topic');
+//     return result.Data;
+// }
 
 // Post
 

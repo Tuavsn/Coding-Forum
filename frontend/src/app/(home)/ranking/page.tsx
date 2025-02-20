@@ -1,5 +1,5 @@
-import RankingWelcomeCard from "@/components/home/ranking-welcome-card/RankingWelcomeCard";
-import RankingList from "@/components/home/ranking-list/RankingList";
+import RankingList from "@/components/home/RankingList";
+import RankingWelcomeCard from "@/components/home/RankingWelcomeCard";
 import { AreaChartOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Card, Divider, Empty } from "antd";
 

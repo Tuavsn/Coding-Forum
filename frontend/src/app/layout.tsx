@@ -1,11 +1,11 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "../context/ReactQueryProvider";
-import MyHeader from "@/components/common/header/Header";
-import MyFooter from "@/components/common/footer/Footer";
 import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import CustomHeader from "@/components/layout/Header";
+import CustomFooter from "@/components/layout/Footer";
 
 const inter = Inter({ subsets: ["vietnamese"] });
 
@@ -22,7 +22,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <Layout className="min-h-screen pt-20">
               <Header className="bg-white fixed top-0 left-0 right-0 z-10">
-                <MyHeader/>
+                <CustomHeader />
               </Header>
               <Layout>
                 <Content className="container mx-auto p-6">
@@ -30,7 +30,7 @@ export default function RootLayout({
                 </Content>
               </Layout>
               <Footer className="p-0">
-                <MyFooter />
+                <CustomFooter />
               </Footer>
             </Layout>
           </ReactQueryProvider>

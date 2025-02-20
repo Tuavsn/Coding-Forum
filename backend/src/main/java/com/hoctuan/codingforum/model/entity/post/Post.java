@@ -14,6 +14,7 @@ import com.hoctuan.codingforum.constant.PostStatus;
 import com.hoctuan.codingforum.model.entity.account.User;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -22,8 +23,13 @@ import java.util.List;
 @Setter
 @SuperBuilder
 public class Post extends BaseEntity {
-    @ManyToOne(optional = false)
-    private Topic topic;
+    @ManyToMany
+    @JoinTable(
+        name = "post_topic",
+        joinColumns = @JoinColumn(name = "id"),
+        inverseJoinColumns = @JoinColumn(name = "id")
+    )
+    private Set<Topic> topics;
 
     @ManyToOne(optional = false)
     private User user;

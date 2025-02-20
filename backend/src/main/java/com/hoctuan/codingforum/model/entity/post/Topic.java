@@ -24,7 +24,7 @@ public class Topic extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "topics")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Post> posts = new HashSet<>();
 }

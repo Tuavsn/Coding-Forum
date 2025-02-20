@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 import com.hoctuan.codingforum.common.BaseRequestDTO;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
@@ -19,9 +20,9 @@ import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 @Setter
 @SuperBuilder
 public class PostRequestDTO extends BaseRequestDTO {
-    private TopicRequestDTO topic;
-
     private UserRequestDTO user;
+    
+    private Set<TopicRequestDTO> topic;
 
     @NotBlank(message = "Bạn chưa nhập header")
     @Size(max = 100, message = "Header quá dài")

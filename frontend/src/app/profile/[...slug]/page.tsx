@@ -1,4 +1,4 @@
-import BreadCrumb from "@/components/common/breadcrumb/BreadCrumb";
+import BreadCrumb from "@/components/common/BreadCrumb";
 import PersonalProfile from "@/components/profile/PersonalProfile";
 
 export default function ProfilePage() {

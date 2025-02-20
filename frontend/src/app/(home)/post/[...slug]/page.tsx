@@ -1,5 +1,5 @@
-import BreadCrumb from "@/components/common/breadcrumb/BreadCrumb";
-import PostDetail from "@/components/home/post/PostDetail";
+import BreadCrumb from "@/components/common/BreadCrumb";
+import PostDetail from "@/components/posts/PostDetail";
 
 export default function PostPage() {
     return (

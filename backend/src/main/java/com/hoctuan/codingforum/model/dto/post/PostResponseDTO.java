@@ -26,6 +26,8 @@ public class PostResponseDTO extends BaseResponseDTO {
 
     private PostStatus status;
 
+    private List<TopicResponseDTO> topics;
+
     private List<PostImageDTO> postImage;
 
     private List<PostCommentResponseDTO> postComment;

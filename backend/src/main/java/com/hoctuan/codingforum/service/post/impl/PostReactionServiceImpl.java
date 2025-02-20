@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import com.hoctuan.codingforum.constant.ReactionType;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;
+import com.hoctuan.codingforum.model.dto.post.PostReactionResponseDTO;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.post.Post;
 import com.hoctuan.codingforum.model.entity.post.PostReaction;
+import com.hoctuan.codingforum.model.mapper.PostReactionMapper;
 import com.hoctuan.codingforum.repository.post.PostReactionRepository;
 import com.hoctuan.codingforum.repository.post.PostRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
@@ -33,7 +35,7 @@ public class PostReactionServiceImpl implements PostReactionService {
 
         if(!existedPost.getPostReactions().isEmpty()) {
             boolean isLiked = existedPost.getPostReactions().stream().anyMatch(
-                    (reaction) -> reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.LIKE)
+                (reaction) -> reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.LIKE)
             );
 
             if (isLiked) {
@@ -41,11 +43,11 @@ public class PostReactionServiceImpl implements PostReactionService {
             }
 
             existedPost.getPostReactions().forEach(
-                    (reaction) -> {
-                        if(reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.DISLIKE)) {
-                            postReactionRepository.delete(reaction);
-                        }
+                (reaction) -> {
+                    if(reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.DISLIKE)) {
+                        postReactionRepository.delete(reaction);
                     }
+                }
             );
         }
 
@@ -65,7 +67,7 @@ public class PostReactionServiceImpl implements PostReactionService {
 
         if(!existedPost.getPostReactions().isEmpty()) {
             boolean isDisliked = existedPost.getPostReactions().stream().anyMatch(
-                    (reaction) -> reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.DISLIKE)
+                (reaction) -> reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.DISLIKE)
             );
 
             if (isDisliked) {
@@ -73,11 +75,11 @@ public class PostReactionServiceImpl implements PostReactionService {
             }
 
             existedPost.getPostReactions().forEach(
-                    (reaction) -> {
-                        if(reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.LIKE)) {
-                            postReactionRepository.delete(reaction);
-                        }
+                (reaction) -> {
+                    if(reaction.getUser().equals(user) && reaction.getReactionType().equals(ReactionType.LIKE)) {
+                        postReactionRepository.delete(reaction);
                     }
+                }
             );
         }
 

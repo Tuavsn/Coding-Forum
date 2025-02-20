@@ -36,19 +36,15 @@ public class TokenServiceImpl implements TokenService {
     public String buildToken(User user, HttpServletRequest request) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expiresAt = now.plusDays(appConstant.getExpiresTime());
-
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
-                .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
-                .subject(user.getId().toString())
-                .claim("ROLE", user.getRole())
-                .build();
-
+            .issuer("self")
+            .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
+            .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
+            .subject(user.getId().toString())
+            .claim("ROLE", user.getRole())
+            .build();
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-
         deviceService.add(user.getId().toString(), hashString(token), request, expiresAt, now);
-
         return token;
     }
 
@@ -58,7 +54,7 @@ public class TokenServiceImpl implements TokenService {
         if(user == null) { return false; }
         if(!user.getRole().equals(AccountRole.USER)) { return true; }
         return user.getDevices().stream().anyMatch(
-                d -> d.getToken().equals(hashString(token))
+            d -> d.getToken().equals(hashString(token))
         );
     }
 
@@ -69,8 +65,8 @@ public class TokenServiceImpl implements TokenService {
 
     private String hashString(String str) {
         return Hashing
-                .sha256()
-                .hashString(str, StandardCharsets.UTF_8)
-                .toString();
+            .sha256()
+            .hashString(str, StandardCharsets.UTF_8)
+            .toString();
     }
 }

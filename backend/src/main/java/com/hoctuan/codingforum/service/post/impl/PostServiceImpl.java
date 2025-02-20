@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.exception.NotFoundException;
-import com.hoctuan.codingforum.model.dto.post.PostImageDTO;
 import com.hoctuan.codingforum.model.dto.post.PostRequestDTO;
 import com.hoctuan.codingforum.model.dto.post.PostResponseDTO;
 import com.hoctuan.codingforum.model.dto.post.TopicRequestDTO;
@@ -25,7 +24,6 @@ import com.hoctuan.codingforum.service.post.PostService;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl extends BaseServiceImpl<

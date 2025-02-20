@@ -1,6 +1,6 @@
 'use client'
 
-import Loading from "@/components/common/loading/Loading"
+import Loading from "@/components/common/Loading"
 import { AuthContext } from "@/context/AuthContextProvider"
 import { login } from "@/libs/actions/user.actions"
 import { isValidEmail } from "@/libs/utils"

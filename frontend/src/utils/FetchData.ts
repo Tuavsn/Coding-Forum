@@ -1,5 +1,17 @@
 const server_url = process.env.NEXT_PUBLIC_API_URL || 'https://codingforumapi.trinhhoctuan.io.vn'
 
+export const getPublicData = async(url: string) => {
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    const results = await fetch(`${server_url}/${url}`, {
+        method: 'GET',
+        headers: headers,
+        cache: "no-store"
+    });
+    return results.json();
+}
+
 export const getData = async(url: string) => {
     const token = localStorage.getItem('userToken') || undefined;
     const headers = {

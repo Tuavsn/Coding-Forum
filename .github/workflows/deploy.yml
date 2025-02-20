@@ -1,0 +1,46 @@
+# name: Docker Compose CI/CD
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build-and-deploy:
+#     name: Build and Deploy Docker Compose
+#     runs-on: self-hosted
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v3
+
+#       - name: Set Environment Variables and Write to .env File
+#         run: |
+#           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+#           echo "SPRING_DATA_SOURCE_PASSWORD=${{ secrets.SPRING_DATA_SOURCE_PASSWORD }}" >> .env
+#           echo "SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}" >> .env
+#           echo "SPRING_APPLICATION_NAME=${{ secrets.SPRING_APPLICATION_NAME }}" >> .env
+#           echo "SPRING_APPLICATION_PORT=${{ secrets.SPRING_APPLICATION_PORT }}" >> .env
+#           echo "SPRING_JPA_HIBERNATE_DDL_AUTO=${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }}" >> .env
+#           echo "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=${{ secrets.SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT }}" >> .env
+#           echo "SPRING_DATA_SOURCE_URL=${{ secrets.SPRING_DATA_SOURCE_URL }}" >> .env
+#           echo "SPRING_DATA_SOURCE_USERNAME=${{ secrets.SPRING_DATA_SOURCE_USERNAME }}" >> .env
+#           echo "SPRING_DATA_SOURCE_DRIVER_CLASSNAME=${{ secrets.SPRING_DATA_SOURCE_DRIVER_CLASSNAME }}" >> .env
+#           echo "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" >> .env
+#           echo "PUBLIC_KEY=${{ secrets.PUBLIC_KEY }}" >> .env
+#           echo "EXPIRES_TIME=${{ secrets.EXPIRES_TIME }}" >> .env
+#           echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> .env
+#           echo "SERVER_URL=${{ secrets.SERVER_URL }}" >> .env
+#           echo "JUDGE0_URL=${{ secrets.JUDGE0_URL }}" >> .env
+#           echo "JUDGE0_AUTH_TOKEN=${{ secrets.JUDGE0_AUTH_TOKEN }}" >> .env
+#           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+#           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+#           echo "OPEN_API_LOCAL_SERVER_URL=${{ secrets.OPEN_API_LOCAL_SERVER_URL }}" >> .env
+#           echo "OPEN_API_HOST_SERVER_URL=${{ secrets.OPEN_API_HOST_SERVER_URL }}" >> .env
+#           echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
+#           echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+#           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+
+#       - name: Build and Deploy Docker Compose
+#         run: |
+#           docker-compose --env-file .env build
+#           docker-compose --env-file .env up -d

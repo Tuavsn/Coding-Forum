@@ -10,7 +10,7 @@ import Link from "next/link"
 import { formatDate, getBase64, stringToSlug } from "@/libs/utils"
 import { AimOutlined, ClockCircleOutlined, DislikeFilled, DislikeOutlined, FireOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MailOutlined, MessageFilled, MessageOutlined, PhoneOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons"
 import { Gender, ReactionType } from "@/libs/enum"
-import { uploadButton } from "../common/upload/UploadButton"
+import UploadButton from "../common/UploadButton"
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
     <Space>
@@ -310,7 +310,7 @@ export default function PersonalProfile() {
                                     beforeUpload={() => false}
                                     maxCount={1}
                                 >
-                                    {fileList.length >= 1 ? null : uploadButton}
+                                    {fileList.length >= 1 ? null : <UploadButton />}
                                 </Upload>
                             </Form.Item>
                         </Col>
