@@ -1,11 +1,9 @@
 package com.hoctuan.codingforum.service.common;
 
-import com.hoctuan.codingforum.model.entity.account.User;
+import java.util.Optional;
 
 public interface AuthContext {
-    public String getCurrentUserId();
-
-    public User getCurrentUserDetails();
+    public Optional<String> getCurrentUserLogin();
 
     public void clearUserAuthenticated();
 }

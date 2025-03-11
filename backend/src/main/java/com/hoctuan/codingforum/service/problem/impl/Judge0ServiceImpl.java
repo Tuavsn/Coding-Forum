@@ -3,7 +3,6 @@ package com.hoctuan.codingforum.service.problem.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hoctuan.codingforum.constant.GlobalVariables;
@@ -19,11 +18,13 @@ import com.hoctuan.codingforum.service.rest.RestTemplateService;
 
 @Service
 public class Judge0ServiceImpl implements Judge0Service {
-    @Autowired
-    private RestTemplateService restTemplateService;
+    private final RestTemplateService restTemplateService;
+    private final Judge0SubmitFactory judge0SubmitFactory;
 
-    @Autowired
-    private Judge0SubmitFactory judge0SubmitFactory;
+    public Judge0ServiceImpl(RestTemplateService restTemplateService, Judge0SubmitFactory judge0SubmitFactory) {
+        this.restTemplateService = restTemplateService;
+        this.judge0SubmitFactory = judge0SubmitFactory;
+    }
 
     @Override
     public List<SubmissionResult> submitSolution(List<Judge0RequestDTO> solutions, SubmitType type, ProblemSubmission problemSubmission) {

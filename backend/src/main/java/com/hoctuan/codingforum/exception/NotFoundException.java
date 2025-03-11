@@ -1,7 +1,8 @@
 package com.hoctuan.codingforum.exception;
 
 public class NotFoundException extends RuntimeException {
-    public NotFoundException() {}
+    public NotFoundException() {
+    }
 
     public NotFoundException(String message) {
         super(message);
@@ -15,7 +16,8 @@ public class NotFoundException extends RuntimeException {
         super(message, cause);
     }
 
-    protected NotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected NotFoundException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

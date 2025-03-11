@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,11 @@ import java.io.IOException;
 @Component
 @Order(1)
 public class TokenFilter extends OncePerRequestFilter {
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
+
+    public TokenFilter(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @Override
     protected void doFilterInternal(

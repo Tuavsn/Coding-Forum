@@ -25,6 +25,11 @@ import java.util.Arrays;
 
 @Configuration
 public class AppConfig {
+    /**
+     * Cors Configuration
+     * 
+     * @return
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -36,6 +41,12 @@ public class AppConfig {
         return source;
     }
 
+    /**
+     * Jwt Encoder Configuration
+     * 
+     * @param appConstant
+     * @return
+     */
     @Bean
     JwtEncoder jwtEncoder(AppConstant appConstant) {
         JWK jwk = new RSAKey
@@ -46,11 +57,22 @@ public class AppConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+    /**
+     * Jwt Decoder Configuration
+     * 
+     * @param appConstant
+     * @return
+     */
     @Bean
     JwtDecoder jwtDecoder(AppConstant appConstant) {
         return NimbusJwtDecoder.withPublicKey(appConstant.getPublicKey()).build();
     }
 
+    /**
+     * Rest Template Configuration
+     * 
+     * @return
+     */
     @Bean
 	RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate();

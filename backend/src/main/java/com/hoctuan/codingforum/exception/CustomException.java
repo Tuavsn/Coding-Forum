@@ -1,9 +1,10 @@
 package com.hoctuan.codingforum.exception;
 
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
     private int statusCode;
 
-    public CustomException() {}
+    public CustomException() {
+    }
 
     public CustomException(String message, int statusCode) {
         super(message);
@@ -20,7 +21,8 @@ public class CustomException extends RuntimeException{
         this.statusCode = statusCode;
     }
 
-    protected CustomException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, int statusCode) {
+    protected CustomException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace,
+            int statusCode) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.statusCode = statusCode;
     }

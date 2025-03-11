@@ -24,49 +24,43 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/user")
-public class UserController extends BaseController<
-        User,
-        UserResponseDTO,
-        UserRequestDTO,
-        UUID> {
-    private UserService userService;
-    @Autowired
-    private DeviceService deviceService;
-    @Autowired
-    private PostService postService;
+public class UserController extends BaseController<User, UserResponseDTO, UserRequestDTO, UUID> {
+    private final UserService userService;
+    private final DeviceService deviceService;
+    private final PostService postService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, DeviceService deviceService, PostService postService) {
         super(userService);
         this.userService = userService;
+        this.deviceService = deviceService;
+        this.postService = postService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/device")
     public ResponseEntity<BaseResponse> getAllDevices(
-            @ParameterObject Pageable pageable
+        @ParameterObject Pageable pageable
     ) {
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy danh sách thiết bị thành công")
-                        .data(deviceService.getAllByUserId(pageable))
-                        .status(HttpStatus.OK.value())
-                        .build()
-                , HttpStatus.OK
-        );
+        BaseResponse.builder()
+            .message("Lấy danh sách thiết bị thành công")
+            .data(deviceService.getAllByUserId(pageable))
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/posts")
     public ResponseEntity<BaseResponse> getAllPostsByUser(
-            @PathVariable UUID userId
+        @PathVariable UUID userId
     ) {
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy danh sách Post thành công")
-                        .data(postService.findPostByUser(userId))
-                        .status(HttpStatus.OK.value())
-                        .build()
-                , HttpStatus.OK
-        );
+        BaseResponse.builder()
+            .message("Lấy danh sách Post thành công")
+            .data(postService.findPostByUser(userId))
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/profile")
@@ -74,24 +68,22 @@ public class UserController extends BaseController<
             @PathVariable UUID userId
     ) {
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy profile thành công")
-                        .data(userService.getById(userId))
-                        .status(HttpStatus.OK.value())
-                        .build()
-                , HttpStatus.OK
-        );
+        BaseResponse.builder()
+            .message("Lấy profile thành công")
+            .data(userService.getById(userId))
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @GetMapping("/ranking")
     public ResponseEntity<BaseResponse> getUserRanking() {
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy bảng xếp hạng thành công")
-                        .data(userService.getUserRanking())
-                        .status(HttpStatus.OK.value())
-                        .build()
-                , HttpStatus.OK
-        );
+        BaseResponse.builder()
+            .message("Lấy bảng xếp hạng thành công")
+            .data(userService.getUserRanking())
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 }

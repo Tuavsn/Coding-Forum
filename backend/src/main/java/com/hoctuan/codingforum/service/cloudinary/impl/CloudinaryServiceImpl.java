@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.hoctuan.codingforum.config.TikaAnalysis;
 import com.hoctuan.codingforum.service.cloudinary.CloudinaryService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,11 +12,13 @@ import java.util.Map;
 
 @Service
 public class CloudinaryServiceImpl implements CloudinaryService {
-    @Autowired
-    private Cloudinary cloudinary;
-    @Autowired
-    private TikaAnalysis tikaAnalysis;
+    private final Cloudinary cloudinary;
+    private final TikaAnalysis tikaAnalysis;
 
+    public CloudinaryServiceImpl(Cloudinary cloudinary, TikaAnalysis tikaAnalysis) {
+        this.cloudinary = cloudinary;
+        this.tikaAnalysis = tikaAnalysis;
+    }
 
     @Override
     public String upload(MultipartFile file) throws IOException {

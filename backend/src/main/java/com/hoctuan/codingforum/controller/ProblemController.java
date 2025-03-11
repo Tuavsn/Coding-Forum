@@ -34,11 +34,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/problem")
-public class ProblemController extends BaseController<
-        Problem,
-        ProblemResponseDTO,
-        ProblemRequestDTO,
-        UUID> {
+public class ProblemController extends BaseController<Problem, ProblemResponseDTO, ProblemRequestDTO, UUID> {
     private final ProblemService problemService;
 
     public ProblemController(ProblemService problemService) {
@@ -88,12 +84,12 @@ public class ProblemController extends BaseController<
     ) {
         ProblemSubmissionResponseDTO data = problemService.submitSolution(id, DTO, SubmitType.getByName(type));
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                            .message("Submit thành công")
-                            .data(data)
-                            .status(HttpStatus.OK.value())
-                            .build()
-                        , HttpStatus.OK);
+        BaseResponse.builder()
+            .message("Submit thành công")
+            .data(data)
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @PostMapping("/{id}/run")
@@ -104,12 +100,12 @@ public class ProblemController extends BaseController<
     ) {
         SubmissionResultResponseDTO data = problemService.runSolution(id, DTO, SubmitType.getByName(type));
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                            .message("Run thành công")
-                            .data(data)
-                            .status(HttpStatus.OK.value())
-                            .build()
-                        , HttpStatus.OK);
+        BaseResponse.builder()
+            .message("Run thành công")
+            .data(data)
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @GetMapping("/{id}/submissions")
@@ -120,12 +116,12 @@ public class ProblemController extends BaseController<
     ) {
         Page<ProblemSubmissionResponseDTO> data = problemService.getSubmissions(id, pageable);
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy submission thành công")
-                        .data(data)
-                        .status(HttpStatus.OK.value())
-                        .build()
-                    , HttpStatus.OK);
+        BaseResponse.builder()
+            .message("Lấy submission thành công")
+            .data(data)
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @GetMapping("/submissions/{submissionId}")
@@ -134,12 +130,12 @@ public class ProblemController extends BaseController<
     ) {
         ProblemSubmissionResponseDTO data = problemService.getSubmitResult(submissionId);
         return new ResponseEntity<>(
-                BaseResponse.builder()
-                        .message("Lấy submission thành công")
-                        .data(data)
-                        .status(HttpStatus.OK.value())
-                        .build()
-                    , HttpStatus.OK);
+        BaseResponse.builder()
+            .message("Lấy submission thành công")
+            .data(data)
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     @PutMapping("/update-judge0-result")
@@ -151,15 +147,15 @@ public class ProblemController extends BaseController<
 
     // @GetMapping("/{id}/delete-submissions")
     // public ResponseEntity<BaseResponse> deleteSubmissionResult(
-    //     @PathVariable UUID id,
-    //     @RequestParam MultiValueMap<String, String> params
+    // @PathVariable UUID id,
+    // @RequestParam MultiValueMap<String, String> params
     // ) {
-    //     return new ResponseEntity<>(
-    //             BaseResponse.builder()
-    //                     .message("Xóa submission thành công")
-    //                     .data(null)
-    //                     .status(HttpStatus.OK.value())
-    //                     .build()
-    //             , HttpStatus.OK);
+    // return new ResponseEntity<>(
+    // BaseResponse.builder()
+    // .message("Xóa submission thành công")
+    // .data(null)
+    // .status(HttpStatus.OK.value())
+    // .build()
+    // , HttpStatus.OK);
     // }
 }

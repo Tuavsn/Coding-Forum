@@ -14,13 +14,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl extends BaseServiceImpl<
-        User,
-        UserResponseDTO,
-        UserRequestDTO,
-        UUID> implements UserService {
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+public class UserServiceImpl extends BaseServiceImpl<User, UserResponseDTO, UserRequestDTO, UUID>
+        implements UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         super(userRepository, userMapper);

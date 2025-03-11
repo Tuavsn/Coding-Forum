@@ -32,19 +32,22 @@ import java.util.UUID;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private DeviceRepository deviceRepository;
-    @Autowired
-    private AuthContext authContext;
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final UserRepository userRepository;
+    private final DeviceRepository deviceRepository;
+    private final AuthContext authContext;
+    private final DeviceMapper deviceMapper;
+
+    public DeviceServiceImpl(UserRepository userRepository, DeviceRepository deviceRepository, AuthContext authContext,
+            DeviceMapper deviceMapper) {
+        this.userRepository = userRepository;
+        this.deviceRepository = deviceRepository;
+        this.authContext = authContext;
+        this.deviceMapper = deviceMapper;
+    }
 
     @Override
     public Page<DeviceResponseDTO> getAllByUserId(Pageable pageable) {
         User user = authContext.getUserAuthenticated();
-
         return deviceMapper.toDTO(deviceRepository.findByUserId(user.getId(), pageable));
     }
 
@@ -52,34 +55,29 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional
     public void add(String userId, String token, HttpServletRequest request, LocalDateTime expireAt, LocalDateTime lastLoginTime) {
         User user = userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
-
+            .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
         String info = getDeviceDetail(request.getHeader("user-agent"));
-
         String ip = extractIp(request);
-
         // Check if device already existed
         Device existingDevice = findExistingDevice(user.getDevices(), info, ip);
-
         if(existingDevice == null) {
             Device savedDevice = deviceRepository.save(Device.builder()
-                    .user(user)
-                    .token(token)
-                    .info(info)
-                    .ip(ip)
-                    .expireAt(expireAt)
-                    .lastLoginTime(lastLoginTime)
-                    .isDeleted(false)
-                    .createdBy("System")
-                    .updatedBy("System")
-                    .build()
+                .user(user)
+                .token(token)
+                .info(info)
+                .ip(ip)
+                .expireAt(expireAt)
+                .lastLoginTime(lastLoginTime)
+                .isDeleted(false)
+                .createdBy("System")
+                .updatedBy("System")
+                .build()
             );
             user.getDevices().add(savedDevice);
         } else {
             existingDevice.setToken(token);
             existingDevice.setExpireAt(expireAt);
             existingDevice.setLastLoginTime(lastLoginTime);
-        }
 
         userRepository.save(user);
     }
@@ -88,21 +86,15 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional
     public void revoke(String deviceId, HttpServletRequest request) {
         User user = authContext.getUserAuthenticated();
-
         Device device = user.getDevices().stream().filter(
-                d -> d.getId().equals(UUID.fromString(deviceId))
-        ).findFirst().orElseThrow(() -> new NotFoundException("Không tìm thấy thiết bị"));
-
+                d -> d.getId().equals(UUID.fromString(deviceId))).findFirst()
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy thiết bị"));
         String info = getDeviceDetail(request.getHeader("user-agent"));
-
         String ip = extractIp(request);
-
-        if(Objects.equals(device.getInfo(), info) && Objects.equals(device.getIp(), ip)) {
+        if (Objects.equals(device.getInfo(), info) && Objects.equals(device.getIp(), ip)) {
             throw new CustomException("Không thể xoá thiết bị hiện tại", HttpStatus.BAD_REQUEST.value());
         }
-
         device.setRevoked(true);
-
         deviceRepository.save(device);
     }
 
@@ -110,7 +102,7 @@ public class DeviceServiceImpl implements DeviceService {
         String deviceDetail = "UNKNOWN";
         Parser parser = new Parser();
         Client client = parser.parse(userAgent);
-        if(Objects.nonNull(client)) {
+        if (Objects.nonNull(client)) {
             deviceDetail = client.userAgent.family
                     + " " + client.userAgent.major + "."
                     + client.userAgent.minor + " - "
@@ -123,13 +115,11 @@ public class DeviceServiceImpl implements DeviceService {
     private String extractIp(HttpServletRequest request) {
         String clientIp;
         String clientXForwardedForIp = request.getHeader("X-Forwarded-For");
-
-        if(clientXForwardedForIp != null) {
+        if (clientXForwardedForIp != null) {
             clientIp = clientXForwardedForIp.split(",")[0];
         } else {
             clientIp = request.getRemoteAddr();
         }
-
         try {
             return convertIpv6ToIpv4(clientIp);
         } catch (UnknownHostException e) {
@@ -142,7 +132,6 @@ public class DeviceServiceImpl implements DeviceService {
         if ("0:0:0:0:0:0:0:1".equals(ipv6) || "::1".equals(ipv6)) {
             return "127.0.0.1";
         }
-
         InetAddress address = InetAddress.getByName(ipv6);
         // Kiểm tra nếu địa chỉ IPv6 là địa chỉ IPv4-mapped
         if (address instanceof java.net.Inet6Address) {
@@ -165,14 +154,12 @@ public class DeviceServiceImpl implements DeviceService {
                 }
             }
         }
-
         return ipv6; // Trả về địa chỉ gốc nếu không thể chuyển đổi
     }
 
-
     private Device findExistingDevice(Set<Device> devices, String info, String ip) {
         return devices.stream().filter(
-                device -> Objects.equals(device.getInfo(), info) && Objects.equals(ip, device.getIp())
-        ).findFirst().orElse(null);
+                device -> Objects.equals(device.getInfo(), info) && Objects.equals(ip, device.getIp())).findFirst()
+                .orElse(null);
     }
 }

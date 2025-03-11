@@ -14,8 +14,7 @@ import java.util.UUID;
 
 @NoRepositoryBean
 @Transactional
-public interface BaseRepository<Model extends BaseEntity,
-        ID extends UUID> extends JpaRepository<Model, ID> {
+public interface BaseRepository<Model extends BaseEntity, ID extends UUID> extends JpaRepository<Model, ID> {
     @Override
     @Query("select x from #{#entityName} x where x.isDeleted = false order by x.createdAt desc")
     List<Model> findAll();

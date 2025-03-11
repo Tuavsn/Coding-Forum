@@ -20,29 +20,33 @@ import com.hoctuan.codingforum.service.token.TokenService;
 
 @Service
 public class TokenServiceImpl implements TokenService {
-    @Autowired
-    private AppConstant appConstant;
-    @Autowired
-    private JwtEncoder jwtEncoder;
-    @Autowired
-    private AuthContext authContext;
-    @Autowired
-    private DeviceService deviceService;
+    private final AppConstant appConstant;
+    private final JwtEncoder jwtEncoder;
+    private final AuthContext authContext;
+    private final DeviceService deviceService;
     @Qualifier("jwtDecoder")
-    @Autowired
-    private JwtDecoder jwtDecoder;
+    private final JwtDecoder jwtDecoder;
+
+    public TokenServiceImpl(AppConstant appConstant, JwtEncoder jwtEncoder, AuthContext authContext,
+            DeviceService deviceService, JwtDecoder jwtDecoder) {
+        this.appConstant = appConstant;
+        this.jwtEncoder = jwtEncoder;
+        this.authContext = authContext;
+        this.deviceService = deviceService;
+        this.jwtDecoder = jwtDecoder;
+    }
 
     @Override
     public String buildToken(User user, HttpServletRequest request) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expiresAt = now.plusDays(appConstant.getExpiresTime());
         JwtClaimsSet claims = JwtClaimsSet.builder()
-            .issuer("self")
-            .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
-            .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
-            .subject(user.getId().toString())
-            .claim("ROLE", user.getRole())
-            .build();
+                .issuer("self")
+                .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
+                .expiresAt(expiresAt.atZone(ZoneId.systemDefault()).toInstant())
+                .subject(user.getId().toString())
+                .claim("ROLE", user.getRole())
+                .build();
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
         deviceService.add(user.getId().toString(), hashString(token), request, expiresAt, now);
         return token;
@@ -51,11 +55,14 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public boolean validateToken(String token) {
         User user = authContext.getUserAuthenticated();
-        if(user == null) { return false; }
-        if(!user.getRole().equals(AccountRole.USER)) { return true; }
+        if (user == null) {
+            return false;
+        }
+        if (!user.getRole().equals(AccountRole.USER)) {
+            return true;
+        }
         return user.getDevices().stream().anyMatch(
-            d -> d.getToken().equals(hashString(token))
-        );
+                d -> d.getToken().equals(hashString(token)));
     }
 
     @Override
@@ -65,8 +72,8 @@ public class TokenServiceImpl implements TokenService {
 
     private String hashString(String str) {
         return Hashing
-            .sha256()
-            .hashString(str, StandardCharsets.UTF_8)
-            .toString();
+                .sha256()
+                .hashString(str, StandardCharsets.UTF_8)
+                .toString();
     }
 }

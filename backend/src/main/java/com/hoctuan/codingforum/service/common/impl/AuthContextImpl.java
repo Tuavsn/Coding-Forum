@@ -1,49 +1,26 @@
 package com.hoctuan.codingforum.service.common.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import com.hoctuan.codingforum.exception.NotFoundException;
-import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.repository.account.UserRepository;
 import com.hoctuan.codingforum.service.common.AuthContext;
 
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class AuthContextImpl implements AuthContext {
-    @Autowired
-    private UserRepository userRepository;
-
     /**
      * Get current authenticated user's id
-     * @return {UserId} | {null}
+     * 
+     * @return {UserId} | {non-null}
      */
     @Override
-    public String getCurrentUserId() {
+    public Optional<String> getCurrentUserLogin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                return ((UserDetails) principal).getUsername();
-            }
-            return principal.toString();
-        }
-        return null;
-    }
-
-    /**
-     * Get current authenticated user's info
-     * @return {User}
-     */
-    @Override
-    public User getCurrentUserDetails() {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findById(UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+        return Optional.ofNullable(ExtractPrincipal(authentication));
     }
 
     /**
@@ -52,5 +29,22 @@ public class AuthContextImpl implements AuthContext {
     @Override
     public void clearUserAuthenticated() {
         SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    /**
+     * Extract Principal from Security Context
+     */
+    private String ExtractPrincipal(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                return ((UserDetails) principal).getUsername();
+            } else if (principal instanceof Jwt) {
+                return ((Jwt) principal).getSubject();
+            } else if (principal instanceof String) {
+                return principal.toString();
+            }
+        }
+        return null;
     }
 }

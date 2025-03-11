@@ -6,7 +6,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +15,11 @@ import java.util.List;
 
 @Configuration
 public class OpenAPIConfig {
-    @Autowired
-    private AppConstant appConstant;
+    private final AppConstant appConstant;
+
+    public OpenAPIConfig(AppConstant appConstant) {
+        this.appConstant = appConstant;
+    }
 
     @Bean
     public OpenAPI customOpenAPI() {

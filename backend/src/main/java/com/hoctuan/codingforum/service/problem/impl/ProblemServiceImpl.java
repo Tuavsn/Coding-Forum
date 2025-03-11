@@ -43,34 +43,35 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ProblemServiceImpl extends BaseServiceImpl<
-        Problem,
-        ProblemResponseDTO,
-        ProblemRequestDTO,
-        UUID> implements ProblemService {
+public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponseDTO, ProblemRequestDTO, UUID>
+        implements ProblemService {
     private static final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
-    
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
-    @Autowired
-    private Judge0Service judge0Service;
-    @Autowired
-    private ProblemSubmissionRepository problemSubmissionRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AuthContext authContext;
-    @Autowired
-    private ProblemSubmissonMapper problemSubmissonMapper;
+    private final Judge0Service judge0Service;
+    private final ProblemSubmissionRepository problemSubmissionRepository;
+    private final UserRepository userRepository;
+    private final AuthContext authContext;
+    private final ProblemSubmissonMapper problemSubmissonMapper;
 
-    public ProblemServiceImpl(ProblemRepository problemRepository, ProblemMapper problemMapper) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, ProblemMapper problemMapper,
+            Judge0Service judge0Service,
+            ProblemSubmissionRepository problemSubmissionRepository, UserRepository userRepository,
+            AuthContext authContext,
+            ProblemSubmissonMapper problemSubmissonMapper) {
         super(problemRepository, problemMapper);
         this.problemRepository = problemRepository;
         this.problemMapper = problemMapper;
+        this.judge0Service = judge0Service;
+        this.problemSubmissionRepository = problemSubmissionRepository;
+        this.userRepository = userRepository;
+        this.authContext = authContext;
+        this.problemSubmissonMapper = problemSubmissonMapper;
     }
 
     /**
      * Save new Problem
+     * 
      * @param dto
      * @return New Problem
      * @throws BadRequest if invalid permission request
@@ -80,12 +81,12 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     public ProblemResponseDTO save(ProblemRequestDTO dto) {
         User user = authContext.getUserAuthenticated();
 
-        if(dto.getId() != null) {
+        if (dto.getId() != null) {
             Problem existedProblem = getExistedProblem(dto.getId());
             // check if user is problem author
             checkAuthorPermission(user, existedProblem);
             // check if new thumbnail
-            if(dto.getThumbnail().isEmpty()) {
+            if (dto.getThumbnail().isEmpty()) {
                 dto.setThumbnail(existedProblem.getThumbnail());
             }
         }
@@ -99,15 +100,17 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
     /**
      * Submit solution
-     * @param id            Problem's id
-     * @param solutions     User solution
-     * @param type          [Synchronous] or [Asynchronous]
+     * 
+     * @param id        Problem's id
+     * @param solutions User solution
+     * @param type      [Synchronous] or [Asynchronous]
      * @return Submit result
      * @throws NotFound if existed Problem or existed User not found
      */
     @Override
     @Transactional
-    public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
+    public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions,
+            SubmitType type) {
         Problem existedProblem = getExistedProblem(id);
 
         User submitUser = authContext.getUserAuthenticated();
@@ -115,35 +118,34 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         List<Judge0RequestDTO> judge0RequestDTOs = getSubmitRequest(existedProblem, solutions);
 
         ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
-            ProblemSubmission.builder()
-                .problem(existedProblem)
-                .code(solutions.getCode())
-                .languageType(solutions.getLanguageType())
-                .user(submitUser)
-                .result(ProblemResult.PROCESSING.getDisplayName())
-                .time(0)
-                .memory(0)
-                .score(0)
-                .build()
-        );
+                ProblemSubmission.builder()
+                        .problem(existedProblem)
+                        .code(solutions.getCode())
+                        .languageType(solutions.getLanguageType())
+                        .user(submitUser)
+                        .result(ProblemResult.PROCESSING.getDisplayName())
+                        .time(0)
+                        .memory(0)
+                        .score(0)
+                        .build());
 
-        List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type, savedProblemSubmission);
+        List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type,
+                savedProblemSubmission);
 
         return problemSubmissonMapper.toDTO(
-            saveProblemSubmissionResult(
-                savedProblemSubmission,
-                existedProblem,
-                submissionResults,
-                submitUser
-            )
-        );
+                saveProblemSubmissionResult(
+                        savedProblemSubmission,
+                        existedProblem,
+                        submissionResults,
+                        submitUser));
     }
 
     /**
      * Run solution
-     * @param id            Problem's id
-     * @param solutions     User solution
-     * @param type          [Synchronous] or [Asynchronous]
+     * 
+     * @param id        Problem's id
+     * @param solutions User solution
+     * @param type      [Synchronous] or [Asynchronous]
      * @return Run result
      * @throws NotFound if existed Problem not found
      */
@@ -156,13 +158,13 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         SubmissionResult submissionResult = judge0Service.runSolution(judge0RequestDTO.get(0), type);
 
         return SubmissionResultResponseDTO.builder()
-            .submitToken(submissionResult.getSubmitToken())
-            .submitResult(submissionResult.getSubmitResult())
-            .submitError(submissionResult.getSubmitError())
-            .stdout(submissionResult.getStdout())
-            .time(submissionResult.getTime())
-            .memory(submissionResult.getMemory())
-            .build();
+                .submitToken(submissionResult.getSubmitToken())
+                .submitResult(submissionResult.getSubmitResult())
+                .submitError(submissionResult.getSubmitError())
+                .stdout(submissionResult.getStdout())
+                .time(submissionResult.getTime())
+                .memory(submissionResult.getMemory())
+                .build();
     }
 
     /**
@@ -172,11 +174,12 @@ public class ProblemServiceImpl extends BaseServiceImpl<
      * Problem's testcase [5,1 2 3 4 5;15|3,1 2 3;6]
      * Valid request after convert from testcase:
      * - Request 1:
-     *  + Input: [5\n1 2 3 4 5]
-     *  + Expected ouput: 15
+     * + Input: [5\n1 2 3 4 5]
+     * + Expected ouput: 15
      * - Request 2:
-     *  + Input: [3\n1 2 3]
-     *  + Output: 6
+     * + Input: [3\n1 2 3]
+     * + Output: 6
+     * 
      * @param problem
      * @param solutions
      * @return List of Judge0's request
@@ -186,7 +189,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         return Utils.splitStringByPipe(problem.getTestCases()).stream().map(testCase -> {
             List<String> separatedStringBySemicolon = Utils.splitStringBySemicolon(testCase);
 
-            if(separatedStringBySemicolon.size() < 2) {
+            if (separatedStringBySemicolon.size() < 2) {
                 throw new CustomException("Test case không hợp lệ", HttpStatus.BAD_REQUEST.value());
             }
 
@@ -195,17 +198,18 @@ public class ProblemServiceImpl extends BaseServiceImpl<
             String output = separatedStringBySemicolon.get(1);
 
             return Judge0RequestDTO.builder()
-                .source_code(solutions.getCode())
-                .language_id(solutions.getLanguageType().getCode())
-                .stdin(input)
-                .expected_output(output)
-                .build();
-        }).collect(Collectors.toList()); 
+                    .source_code(solutions.getCode())
+                    .language_id(solutions.getLanguageType().getCode())
+                    .stdin(input)
+                    .expected_output(output)
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     /**
      * Convert from inline string to valid Judge0 argument input
      * Example: 5,1 2 3 4 5 -> 5\n1 2 3 4 5
+     * 
      * @param input
      * @return valid input string
      */
@@ -213,12 +217,13 @@ public class ProblemServiceImpl extends BaseServiceImpl<
         List<String> stringSplitByComma = Utils.splitStringByComma(input);
 
         List<String> result = Utils.splitStringBySpace(stringSplitByComma);
-        
+
         return Utils.joinListWithNewLine(result);
     }
 
     /**
      * caclculate result
+     * 
      * @param problemSubmission
      * @param problem
      * @param submissionResults
@@ -227,26 +232,25 @@ public class ProblemServiceImpl extends BaseServiceImpl<
      */
     @Transactional
     private ProblemSubmission saveProblemSubmissionResult(
-        ProblemSubmission problemSubmission,
-        Problem problem,
-        List<SubmissionResult> submissionResults,
-        User submitUser
-    ) {
+            ProblemSubmission problemSubmission,
+            Problem problem,
+            List<SubmissionResult> submissionResults,
+            User submitUser) {
         problemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
 
         problem.getProblemSubmissions().add(problemSubmission);
 
         double totalTestCases = submissionResults.size();
-        
+
         long passedTestCases = submissionResults.stream()
-            .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
-            .count();
+                .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
+                .count();
 
         double totalTime = 0;
 
         double totalMemory = 0;
 
-        for(SubmissionResult submissionResult : submissionResults) {
+        for (SubmissionResult submissionResult : submissionResults) {
             totalTime += submissionResult.getTime();
             totalMemory += submissionResult.getMemory();
         }
@@ -255,12 +259,14 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         double avarageMemory = 0;
 
-        if(totalTime > 0) avarageTime = (totalTime / totalTestCases);
+        if (totalTime > 0)
+            avarageTime = (totalTime / totalTestCases);
 
-        if(totalMemory > 0) avarageMemory = (totalMemory / totalTestCases);
-        
+        if (totalMemory > 0)
+            avarageMemory = (totalMemory / totalTestCases);
+
         double score = (passedTestCases / totalTestCases) * problem.getTotalScore();
-        
+
         problemSubmission.setScore(score);
 
         problemSubmission.setTime(avarageTime);
@@ -284,22 +290,23 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
     /**
      * Save User point
+     * 
      * @param problem
      * @param submitUser
      * @param score
      */
     private void updateUserPoint(Problem problem, User submitUser, double score) {
-        List<ProblemSubmission> existedSubmission = problemSubmissionRepository.findByProblemAndUser(problem, submitUser);
+        List<ProblemSubmission> existedSubmission = problemSubmissionRepository.findByProblemAndUser(problem,
+                submitUser);
 
         if (existedSubmission.isEmpty()) { // Save new score
-            submitUser.setTotalSubmissionPoint( submitUser.getTotalSubmissionPoint() + score );
-        } else {  // Save highest score
-            submitUser.setTotalSubmissionPoint( existedSubmission
-                .stream()
-                .max(Comparator.comparingDouble(result -> result.getScore()))
-                .orElse(existedSubmission.get(0))
-                .getScore()
-            );
+            submitUser.setTotalSubmissionPoint(submitUser.getTotalSubmissionPoint() + score);
+        } else { // Save highest score
+            submitUser.setTotalSubmissionPoint(existedSubmission
+                    .stream()
+                    .max(Comparator.comparingDouble(result -> result.getScore()))
+                    .orElse(existedSubmission.get(0))
+                    .getScore());
         }
 
         userRepository.save(submitUser);
@@ -307,6 +314,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
     /**
      * Get all Submission results
+     * 
      * @param id
      * @param pageable
      * @return Page of submit results
@@ -318,11 +326,13 @@ public class ProblemServiceImpl extends BaseServiceImpl<
 
         Problem existedProblem = getExistedProblem(id);
 
-        return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser).map(problemSubmissonMapper::toDTO);
+        return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser)
+                .map(problemSubmissonMapper::toDTO);
     }
 
     /**
      * Get submit result by id
+     * 
      * @param problemSubmissionId
      * @return Submit result
      * @throws Notfound if existed Problem not found
@@ -330,12 +340,12 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     @Override
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
         ProblemSubmission existedProblemSubmission = getExistedProblemSubmission(problemSubmissionId);
-        
+
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
 
     private void checkAuthorPermission(User author, Problem problem) {
-        if(problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
+        if (problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
             throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
         }
     }
@@ -345,6 +355,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<
     }
 
     private ProblemSubmission getExistedProblemSubmission(UUID id) {
-        return problemSubmissionRepository.findById(id).orElseThrow(() -> new NotFoundException("Bài nộp không tồn tại!"));
+        return problemSubmissionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Bài nộp không tồn tại!"));
     }
 }

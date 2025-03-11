@@ -38,6 +38,11 @@ public class PostMapper implements BaseMapper<Post, PostResponseDTO, PostRequest
         return requestDTOs.stream().map(this::toModel).toList();
     }
 
+    // @Override
+    public Post updateModel(PostRequestDTO requestDTO, Post post) {
+        return modelMapper.map(requestDTO, post.getClass());
+    }
+
     public PostImageDTO toImageDTO(PostImage postImages) {
         return modelMapper.map(postImages, PostImageDTO.class);
     }

@@ -13,13 +13,10 @@ import com.hoctuan.codingforum.service.group.GroupService;
 import java.util.UUID;
 
 @Service
-public class GroupServiceImpl extends BaseServiceImpl<
-        Group,
-        GroupResponseDTO,
-        GroupRequestDTO,
-        UUID> implements GroupService {
-    private GroupRepository groupRepository;
-    private GroupMapper groupMapper;
+public class GroupServiceImpl extends BaseServiceImpl<Group, GroupResponseDTO, GroupRequestDTO, UUID>
+        implements GroupService {
+    private final GroupRepository groupRepository;
+    private final GroupMapper groupMapper;
 
     public GroupServiceImpl(GroupRepository groupRepository, GroupMapper groupMapper) {
         super(groupRepository, groupMapper);

@@ -47,14 +47,18 @@ public abstract class BaseEntity implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) { return true; }
-        if (!(obj instanceof BaseEntity other)) { return false; }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof BaseEntity other)) {
+            return false;
+        }
         return id.equals(other.id)
-                && createdBy.equals(other.createdBy)
-                && updatedBy.equals(other.updatedBy)
-                && createdAt == other.createdAt
-                && updatedAt == other.updatedAt
-                && isDeleted == other.isDeleted;
+            && createdBy.equals(other.createdBy)
+            && updatedBy.equals(other.updatedBy)
+            && createdAt == other.createdAt
+            && updatedAt == other.updatedAt
+            && isDeleted == other.isDeleted;
     }
 
     @Override
@@ -65,11 +69,11 @@ public abstract class BaseEntity implements Serializable {
     @Override
     public String toString() {
         return "BaseEntity [id=" + id
-                + ", createdBy=" + createdBy
-                + ", updatedBy=" + updatedBy
-                + ", createdAt=" + createdAt
-                + ", updatedAt=" + updatedAt
-                + ", isDeleted=" + isDeleted
-                + "]";
+            + ", createdBy=" + createdBy
+            + ", updatedBy=" + updatedBy
+            + ", createdAt=" + createdAt
+            + ", updatedAt=" + updatedAt
+            + ", isDeleted=" + isDeleted
+            + "]";
     }
 }

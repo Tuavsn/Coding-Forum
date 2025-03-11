@@ -21,31 +21,35 @@ import com.hoctuan.codingforum.service.post.PostCommentService;
 import java.util.UUID;
 
 @Service
-public class PostCommentServiceImpl extends BaseServiceImpl<
-        PostComment,
-        PostCommentResponseDTO,
-        PostCommentRequestDTO,
-        UUID> implements PostCommentService {
-    private PostCommentRepository postCommentRepository;
-    private PostCommentMapper postCommentMapper;
-    @Autowired
-    private AuthContext authContext;
+public class PostCommentServiceImpl
+        extends BaseServiceImpl<PostComment, PostCommentResponseDTO, PostCommentRequestDTO, UUID>
+        implements PostCommentService {
+    private final PostCommentRepository postCommentRepository;
+    private final PostCommentMapper postCommentMapper;
+    private final AuthContext authContext;
 
-    public PostCommentServiceImpl(PostCommentRepository postCommentRepository, PostCommentMapper postCommentMapper) {
+    public PostCommentServiceImpl(PostCommentRepository postCommentRepository, PostCommentMapper postCommentMapper,
+            AuthContext authContext) {
         super(postCommentRepository, postCommentMapper);
         this.postCommentRepository = postCommentRepository;
         this.postCommentMapper = postCommentMapper;
+        this.authContext = authContext;
     }
 
     @Override
     @Transactional
     public PostCommentResponseDTO save(PostCommentRequestDTO dto) {
+        UUID userId = UUID.fromString(authContext.getCurrentUserId());
+        User existedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException("Tài khoản không tồn tại", HttpStatus.BAD_REQUEST.value()));
+
         User user = authContext.getUserAuthenticated();
 
         // check if user is comment author
-        if(dto.getId() != null) {
-            PostComment existedComment = postCommentRepository.findById(dto.getId()).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
-            if(existedComment.getUser().getId() != user.getId()) {
+        if (dto.getId() != null) {
+            PostComment existedComment = postCommentRepository.findById(dto.getId())
+                    .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+            if (existedComment.getUser().getId() != user.getId()) {
                 throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
             }
         }
@@ -62,9 +66,10 @@ public class PostCommentServiceImpl extends BaseServiceImpl<
     public void delete(UUID id) {
         User user = authContext.getUserAuthenticated();
 
-        PostComment existedComment = postCommentRepository.findById(id).orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+        PostComment existedComment = postCommentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
 
-        if(existedComment.getUser().getId() != user.getId()) {
+        if (existedComment.getUser().getId() != user.getId()) {
             throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
         }
 

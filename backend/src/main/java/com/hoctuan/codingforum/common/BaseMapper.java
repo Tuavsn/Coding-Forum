@@ -10,4 +10,6 @@ public interface BaseMapper<Model extends BaseEntity, ResponseDTO extends BaseRe
     List<ResponseDTO> toDTO(List<Model> models);
 
     List<Model> toModel(List<RequestDTO> requestDTOs);
+
+    // Model updateModel(RequestDTO requestDTO, Model model);
 }

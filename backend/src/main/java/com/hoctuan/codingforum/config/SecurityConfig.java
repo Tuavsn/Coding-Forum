@@ -1,6 +1,5 @@
 package com.hoctuan.codingforum.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -21,20 +20,25 @@ import com.hoctuan.codingforum.constant.AppConstant;
 @EnableWebSecurity
 @EnableMethodSecurity()
 public class SecurityConfig {
-    @Autowired
-    private AppConstant appConstant;
-    @Autowired
-    private OAuth2SuccessHandler successHandler;
-    @Autowired
-    private OAuth2FailureHandler failureHandler;
-    @Autowired
-    private DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
-    @Autowired
-    private JwtEncoder jwtEncoder;
-    @Autowired
-    private JwtDecoder jwtDecoder;
-    @Autowired
-    private CorsConfigurationSource corsConfigurationSource;
+    private final AppConstant appConstant;
+    private final OAuth2SuccessHandler successHandler;
+    private final OAuth2FailureHandler failureHandler;
+    private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
+    private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
+    private final CorsConfigurationSource corsConfigurationSource;
+
+    public SecurityConfig(AppConstant appConstant, OAuth2SuccessHandler successHandler,
+            OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint,
+            JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, CorsConfigurationSource corsConfigurationSource) {
+        this.appConstant = appConstant;
+        this.successHandler = successHandler;
+        this.failureHandler = failureHandler;
+        this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
+        this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
+        this.corsConfigurationSource = corsConfigurationSource;
+    }
 
     private String[] whiteList = {
             "/v3/api-docs/**",
@@ -52,7 +56,6 @@ public class SecurityConfig {
             "/api/user/**",
             "/api/problem/**"
     };
-
 
     @Bean
     Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
@@ -74,11 +77,9 @@ public class SecurityConfig {
                 })
                 .oauth2Login(auth -> {
                     auth.authorizationEndpoint(
-                            point -> point.baseUri("/oauth2/authorize")
-                    );
+                            point -> point.baseUri("/oauth2/authorize"));
                     auth.redirectionEndpoint(
-                            redirect -> redirect.baseUri("/oauth2/callback/*")
-                    );
+                            redirect -> redirect.baseUri("/oauth2/callback/*"));
                     auth.successHandler(successHandler);
                     auth.failureHandler(failureHandler);
                 })

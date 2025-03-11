@@ -23,12 +23,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/topic")
-public class TopicController extends BaseController<
-        Topic,
-        TopicResponseDTO,
-        TopicRequestDTO,
-        UUID> {
-    private TopicService topicService;
+public class TopicController extends BaseController<Topic, TopicResponseDTO, TopicRequestDTO, UUID> {
+    private final TopicService topicService;
 
     public TopicController(TopicService topicService) {
         super(topicService);
@@ -46,8 +42,8 @@ public class TopicController extends BaseController<
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<BaseResponse> update(
-            @PathVariable UUID id,
-            @Valid @RequestBody TopicRequestDTO DTO
+        @PathVariable UUID id,
+        @Valid @RequestBody TopicRequestDTO DTO
     ) {
         return super.update(id, DTO);
     }

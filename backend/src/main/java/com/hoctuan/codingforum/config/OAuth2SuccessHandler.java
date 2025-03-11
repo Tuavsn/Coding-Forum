@@ -3,7 +3,6 @@ package com.hoctuan.codingforum.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -24,14 +23,18 @@ import java.util.Map;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Autowired
-    private AppConstant appConstant;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private Encoder encoder;
+    private final AppConstant appConstant;
+    private final UserRepository userRepository;
+    private final TokenService tokenService;
+    private final Encoder encoder;
+
+    public OAuth2SuccessHandler(AppConstant appConstant, UserRepository userRepository, TokenService tokenService,
+            Encoder encoder) {
+        this.appConstant = appConstant;
+        this.userRepository = userRepository;
+        this.tokenService = tokenService;
+        this.encoder = encoder;
+    }
 
     private User user = null;
     private String message = "Đăng nhập thành công";
@@ -41,8 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
-            Authentication authentication
-    ) throws IOException, ServletException {
+            Authentication authentication) throws IOException, ServletException {
         String targetUrl = appConstant.getClientUrl() + "/oauth2/redirect";
 
         DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();

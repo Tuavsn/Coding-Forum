@@ -35,4 +35,9 @@ public class CommentReactionMapper implements BaseMapper<CommentReaction, Commen
     public List<CommentReaction> toModel(List<CommentReactionRequestDTO> requestDTOs) {
         return requestDTOs.stream().map(this::toModel).toList();
     }
+
+    // @Override
+    // public CommentReaction updateModel(CommentReactionRequestDTO requestDTO, CommentReaction commentReaction) {
+    //     return modelMapper.map(requestDTO, commentReaction.getClass());
+    // }
 }

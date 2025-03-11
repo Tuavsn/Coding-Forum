@@ -13,13 +13,10 @@ import com.hoctuan.codingforum.service.chat.MessageService;
 import java.util.UUID;
 
 @Service
-public class MessageServiceImpl extends BaseServiceImpl<
-        Message,
-        MessageResponseDTO,
-        MessageRequestDTO,
-        UUID> implements MessageService {
-    private MessageRepository messageRepository;
-    private MessageMapper messageMapper;
+public class MessageServiceImpl extends BaseServiceImpl<Message, MessageResponseDTO, MessageRequestDTO, UUID>
+        implements MessageService {
+    private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
 
     public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper) {
         super(messageRepository, messageMapper);

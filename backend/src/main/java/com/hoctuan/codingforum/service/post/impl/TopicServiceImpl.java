@@ -13,14 +13,10 @@ import com.hoctuan.codingforum.service.post.TopicService;
 import java.util.UUID;
 
 @Service
-public class TopicServiceImpl extends BaseServiceImpl<
-        Topic,
-        TopicResponseDTO,
-        TopicRequestDTO,
-        UUID
-        > implements TopicService {
-    private TopicRepository topicRepository;
-    private TopicMapper topicMapper;
+public class TopicServiceImpl extends BaseServiceImpl<Topic, TopicResponseDTO, TopicRequestDTO, UUID>
+        implements TopicService {
+    private final TopicRepository topicRepository;
+    private final TopicMapper topicMapper;
 
     public TopicServiceImpl(TopicRepository topicRepository, TopicMapper topicMapper) {
         super(topicRepository, topicMapper);

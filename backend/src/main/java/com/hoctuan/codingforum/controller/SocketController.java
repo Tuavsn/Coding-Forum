@@ -1,6 +1,5 @@
 package com.hoctuan.codingforum.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,8 +12,11 @@ import com.hoctuan.codingforum.model.entity.post.PostReaction;
 
 @RestController
 public class SocketController {
-    @Autowired
-    private SimpMessagingTemplate template;
+    private final SimpMessagingTemplate template;
+
+    public SocketController(SimpMessagingTemplate template) {
+        this.template = template;
+    }
 
     @MessageMapping("/comment")
     public void getComment(@Payload PostComment comment) {

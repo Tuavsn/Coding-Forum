@@ -21,9 +21,11 @@ import com.hoctuan.codingforum.service.rest.RestTemplateService;
 @Service
 public class RestTemplateServiceImpl implements RestTemplateService {
     private static final Logger logger = LoggerFactory.getLogger(RestTemplateServiceImpl.class);
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    public RestTemplateServiceImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public <T> T get(String url, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
@@ -35,7 +37,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
             logger.info(">>> GET successful. Response: {}", response);
             return response.getBody();
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            logger.error(">>> HTTP Error during GET request. Status: {}, Response: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            logger.error(">>> HTTP Error during GET request. Status: {}, Response: {}", ex.getStatusCode(),
+                    ex.getResponseBodyAsString());
         } catch (Exception e) {
             logger.error(">>> Unexpected error during GET request: {}", e.getMessage(), e);
             e.printStackTrace();
@@ -44,7 +47,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     }
 
     @Override
-    public <T> T post(String url, Object requestBody, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
+    public <T> T post(String url, Object requestBody, Map<String, String> params,
+            ParameterizedTypeReference<T> responseType) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-type", "application/json;charset=UTF-8");
@@ -55,7 +59,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
             logger.info(">>> POST successful. Response: {}", response);
             return response.getBody();
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            logger.error(">>> HTTP Error during POST request. Status: {}, Response: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            logger.error(">>> HTTP Error during POST request. Status: {}, Response: {}", ex.getStatusCode(),
+                    ex.getResponseBodyAsString());
         } catch (Exception e) {
             logger.error(">>> Unexpected error during POST request: {}", e.getMessage(), e);
             e.printStackTrace();
@@ -64,7 +69,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
     }
 
     @Override
-    public <T> T put(String url, Object requestBody, Map<String, String> params, ParameterizedTypeReference<T> responseType) {
+    public <T> T put(String url, Object requestBody, Map<String, String> params,
+            ParameterizedTypeReference<T> responseType) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -75,7 +81,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
             logger.info(">>> PUT successful. Response: {}", response);
             return response.getBody();
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            logger.error(">>> HTTP Error during PUT request. Status: {}, Response: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            logger.error(">>> HTTP Error during PUT request. Status: {}, Response: {}", ex.getStatusCode(),
+                    ex.getResponseBodyAsString());
         } catch (Exception e) {
             logger.error(">>> Unexpected error during PUT request: {}", e.getMessage(), e);
             e.printStackTrace();
@@ -91,7 +98,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
             restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
             logger.info(">>> DELETE successful");
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            logger.error(">>> HTTP Error during DELETE request. Status: {}, Response: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+            logger.error(">>> HTTP Error during DELETE request. Status: {}, Response: {}", ex.getStatusCode(),
+                    ex.getResponseBodyAsString());
         } catch (Exception e) {
             logger.error(">>> Unexpected error during DELETE request: {}", e.getMessage(), e);
             e.printStackTrace();
@@ -107,5 +115,5 @@ public class RestTemplateServiceImpl implements RestTemplateService {
         }
         return requestUrl.toString();
     }
-    
+
 }

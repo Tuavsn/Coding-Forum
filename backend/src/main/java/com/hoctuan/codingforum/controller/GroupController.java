@@ -13,11 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/group")
-public class GroupController extends BaseController<
-        Group,
-        GroupResponseDTO,
-        GroupRequestDTO,
-        UUID> {
+public class GroupController extends BaseController<Group, GroupResponseDTO, GroupRequestDTO, UUID> {
     private final GroupService groupService;
 
     public GroupController(GroupService groupService) {

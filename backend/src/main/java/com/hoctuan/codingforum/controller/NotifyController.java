@@ -13,11 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/notify")
-public class NotifyController extends BaseController<
-        Notify,
-        NotifyResponseDTO,
-        NotifyRequestDTO,
-        UUID> {
+public class NotifyController extends BaseController<Notify, NotifyResponseDTO, NotifyRequestDTO, UUID> {
     private final NotifyService notifyService;
 
     public NotifyController(NotifyService notifyService) {
