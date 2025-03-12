@@ -45,7 +45,8 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
     @Override
     @Transactional
     public PostResponseDTO save(PostRequestDTO dto) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserId());
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
         User existedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Tài khoản không tồn tại", HttpStatus.BAD_REQUEST.value()));
         dto.setUser(
@@ -85,7 +86,8 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
     @Override
     @Transactional
     public PostResponseDTO update(PostRequestDTO dto) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserId());
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
         UUID postId = dto.getId();
         Post existedPost = postRepository.findById(dto.getId()).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy bài viết hợp lệ với ID: " + postId));
@@ -100,7 +102,8 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
     @Override
     @Transactional
     public void delete(UUID id) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserId());
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
         Post existedPost = postRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy bài viết hợp lệ với ID: " + id));
         // check if user is post author

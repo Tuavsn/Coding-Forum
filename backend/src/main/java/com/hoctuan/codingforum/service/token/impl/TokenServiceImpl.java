@@ -3,16 +3,19 @@ package com.hoctuan.codingforum.service.token.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.UUID;
 
 import com.google.common.hash.Hashing;
 import com.hoctuan.codingforum.constant.AccountRole;
 import com.hoctuan.codingforum.constant.AppConstant;
+import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.service.account.DeviceService;
 import com.hoctuan.codingforum.service.common.AuthContext;
@@ -54,7 +57,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public boolean validateToken(String token) {
-        User user = authContext.getUserAuthenticated();
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
+        User user = userRepository.findById()
         if (user == null) {
             return false;
         }

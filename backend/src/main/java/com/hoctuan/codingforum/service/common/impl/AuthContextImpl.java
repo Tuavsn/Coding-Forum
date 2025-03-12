@@ -33,6 +33,8 @@ public class AuthContextImpl implements AuthContext {
 
     /**
      * Extract Principal from Security Context
+     * 
+     * @return {Principal}
      */
     private String ExtractPrincipal(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {

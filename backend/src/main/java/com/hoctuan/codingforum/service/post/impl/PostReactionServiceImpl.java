@@ -33,7 +33,8 @@ public class PostReactionServiceImpl implements PostReactionService {
     }
 
     public void likePost(UUID postId) {
-        User user = authContext.getUserAuthenticated();
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
         Post existedPost = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy bài Post"));
         if (!existedPost.getPostReactions().isEmpty()) {
@@ -59,7 +60,8 @@ public class PostReactionServiceImpl implements PostReactionService {
     }
 
     public void dislikePost(UUID postId) {
-        User user = authContext.getUserAuthenticated();
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
         Post existedPost = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy bài Post"));
         if (!existedPost.getPostReactions().isEmpty()) {
