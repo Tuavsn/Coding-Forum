@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
 import com.hoctuan.codingforum.constant.AccountRole;
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.constant.ProblemResult;
 import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemResponseDTO;
@@ -59,7 +59,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
             ProblemSubmissionRepository problemSubmissionRepository, UserRepository userRepository,
             AuthContext authContext,
             ProblemSubmissonMapper problemSubmissonMapper) {
-        super(problemRepository, problemMapper);
+        super(problemRepository, problemMapper, Problem.class);
         this.problemRepository = problemRepository;
         this.problemMapper = problemMapper;
         this.judge0Service = judge0Service;
@@ -79,12 +79,11 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     @Override
     @Transactional
     public ProblemResponseDTO save(ProblemRequestDTO dto) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
-                .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
+        User user = authContext.getCurrentUserEntityLogin();
         if (dto.getId() != null) {
             Problem existedProblem = getExistedProblem(dto.getId());
             // check if user is problem author
-            checkAuthorPermission(user, existedProblem);
+            checkAuthorPermission(existedProblem, user);
             // check if new thumbnail
             if (dto.getThumbnail().isEmpty()) {
                 dto.setThumbnail(existedProblem.getThumbnail());
@@ -92,8 +91,10 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         }
         UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
         dto.setAuthor(userDTO);
-        return super.forceSave(dto);
+        return super.save(dto);
     }
+
+    // *Todo: update function
 
     /**
      * Submit solution
@@ -109,7 +110,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions,
             SubmitType type) {
         Problem existedProblem = getExistedProblem(id);
-        User submitUser = authContext.getUserAuthenticated();
+        User submitUser = authContext.getCurrentUserEntityLogin();
         List<Judge0RequestDTO> judge0RequestDTOs = getSubmitRequest(existedProblem, solutions);
         ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
                 ProblemSubmission.builder()
@@ -178,7 +179,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         return Utils.splitStringByPipe(problem.getTestCases()).stream().map(testCase -> {
             List<String> separatedStringBySemicolon = Utils.splitStringBySemicolon(testCase);
             if (separatedStringBySemicolon.size() < 2) {
-                throw new CustomException("Test case không hợp lệ", HttpStatus.BAD_REQUEST.value());
+                throw new CustomException(ErrorCode.INVALID_TEST_CASE);
             }
             String input = formatInput(separatedStringBySemicolon.get(0));
             String output = separatedStringBySemicolon.get(1);
@@ -284,7 +285,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
      */
     @Override
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
-        User submitUser = authContext.getUserAuthenticated();
+        User submitUser = authContext.getCurrentUserEntityLogin();
         Problem existedProblem = getExistedProblem(id);
         return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser)
                 .map(problemSubmissonMapper::toDTO);
@@ -303,18 +304,18 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
 
-    private void checkAuthorPermission(User author, Problem problem) {
+    private void checkAuthorPermission(Problem problem, User author) {
         if (problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
-            throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
+            throw new CustomException(ErrorCode.WRONG_AUTHOR);
         }
     }
 
     private Problem getExistedProblem(UUID id) {
-        return problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Bài test không tồn tại!"));
+        return problemRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROBLEM_NOT_FOUND));
     }
 
     private ProblemSubmission getExistedProblemSubmission(UUID id) {
         return problemSubmissionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Bài nộp không tồn tại!"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBMISSION_NOT_FOUND));
     }
 }

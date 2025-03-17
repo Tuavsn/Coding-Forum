@@ -12,7 +12,7 @@ import com.hoctuan.codingforum.service.group.GroupService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/group")
+@RequestMapping("${spring.api.prefix}/group")
 public class GroupController extends BaseController<Group, GroupResponseDTO, GroupRequestDTO, UUID> {
     private final GroupService groupService;
 

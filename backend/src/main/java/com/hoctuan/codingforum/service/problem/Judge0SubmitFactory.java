@@ -1,9 +1,9 @@
 package com.hoctuan.codingforum.service.problem;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.service.problem.impl.AsynchronousSubmitStrategy;
@@ -24,7 +24,7 @@ public class Judge0SubmitFactory {
             case SYNCHRONOUS:
                 return synchronousSubmitStrategy;
             default:
-                throw new CustomException("Unsupported submit type", HttpStatus.BAD_REQUEST.value());
+                throw new CustomException(ErrorCode.UNSUPPORTED_SUBMIT_TYPE);
         }
     }
 }

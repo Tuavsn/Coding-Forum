@@ -12,7 +12,7 @@ import com.hoctuan.codingforum.service.notify.NotifyService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/notify")
+@RequestMapping("${spring.api.prefix}/notify")
 public class NotifyController extends BaseController<Notify, NotifyResponseDTO, NotifyRequestDTO, UUID> {
     private final NotifyService notifyService;
 

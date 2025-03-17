@@ -3,7 +3,6 @@ package com.hoctuan.codingforum.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import java.io.IOException;
 
 @Component
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver resolver;
 
     public DelegatedAuthenticationEntryPoint(HandlerExceptionResolver resolver) {
@@ -24,8 +22,7 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
     public void commence(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException authException
-    ) throws IOException, ServletException {
+            AuthenticationException authException) throws IOException, ServletException {
         resolver.resolveException(request, response, null, authException);
     }
 }

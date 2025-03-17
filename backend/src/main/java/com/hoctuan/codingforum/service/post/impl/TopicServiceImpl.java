@@ -19,7 +19,7 @@ public class TopicServiceImpl extends BaseServiceImpl<Topic, TopicResponseDTO, T
     private final TopicMapper topicMapper;
 
     public TopicServiceImpl(TopicRepository topicRepository, TopicMapper topicMapper) {
-        super(topicRepository, topicMapper);
+        super(topicRepository, topicMapper, Topic.class);
         this.topicRepository = topicRepository;
         this.topicMapper = topicMapper;
     }

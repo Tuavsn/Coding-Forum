@@ -1,6 +1,7 @@
 package com.hoctuan.codingforum.common;
 
-import com.hoctuan.codingforum.exception.NotFoundException;
+import com.hoctuan.codingforum.constant.ErrorCode;
+import com.hoctuan.codingforum.exception.CustomException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,10 +17,13 @@ public abstract class BaseServiceImpl<Model extends BaseEntity, ResponseDTO exte
         implements BaseService<ResponseDTO, RequestDTO, ID> {
     protected final BaseRepository<Model, ID> repository;
     protected final BaseMapper<Model, ResponseDTO, RequestDTO> mapper;
+    private final Class<Model> modelClass;
 
-    public BaseServiceImpl(BaseRepository<Model, ID> repository, BaseMapper<Model, ResponseDTO, RequestDTO> mapper) {
+    public BaseServiceImpl(BaseRepository<Model, ID> repository, BaseMapper<Model, ResponseDTO, RequestDTO> mapper,
+            Class<Model> modelClass) {
         this.repository = repository;
         this.mapper = mapper;
+        this.modelClass = modelClass;
     }
 
     /**
@@ -65,7 +69,8 @@ public abstract class BaseServiceImpl<Model extends BaseEntity, ResponseDTO exte
     public ResponseDTO update(RequestDTO dto) {
         ID id = (ID) dto.getId();
         Model entity = repository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Không tìm thấy phần tử với ID: " + id));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND,
+                        modelClass.getSimpleName() + " with ID: " + id));
         entity = mapper.toModel(dto);
         return mapper.toDTO(repository.save(entity));
     }
@@ -78,7 +83,7 @@ public abstract class BaseServiceImpl<Model extends BaseEntity, ResponseDTO exte
     @Transactional
     public void delete(ID id) {
         if (!repository.existsById(id)) {
-            throw new NotFoundException("Id không tìm thấy");
+            throw new CustomException(ErrorCode.NOT_FOUND, modelClass.getSimpleName() + " with ID: " + id);
         }
         repository.deleteById(id);
     };
@@ -91,7 +96,7 @@ public abstract class BaseServiceImpl<Model extends BaseEntity, ResponseDTO exte
      */
     public ResponseDTO getById(ID id) {
         Model model = repository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, modelClass.getSimpleName() + " with ID: " + id));
         return mapper.toDTO(model);
     };
 }

@@ -24,19 +24,15 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler successHandler;
     private final OAuth2FailureHandler failureHandler;
     private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
-    private final JwtEncoder jwtEncoder;
-    private final JwtDecoder jwtDecoder;
     private final CorsConfigurationSource corsConfigurationSource;
 
     public SecurityConfig(AppConstant appConstant, OAuth2SuccessHandler successHandler,
             OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint,
-            JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, CorsConfigurationSource corsConfigurationSource) {
+            CorsConfigurationSource corsConfigurationSource) {
         this.appConstant = appConstant;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
-        this.jwtEncoder = jwtEncoder;
-        this.jwtDecoder = jwtDecoder;
         this.corsConfigurationSource = corsConfigurationSource;
     }
 

@@ -1,7 +1,6 @@
 package com.hoctuan.codingforum.controller;
 
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ import com.hoctuan.codingforum.service.post.PostService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("${spring.api.prefix}/user")
 public class UserController extends BaseController<User, UserResponseDTO, UserRequestDTO, UUID> {
     private final UserService userService;
     private final DeviceService deviceService;

@@ -1,11 +1,14 @@
 package com.hoctuan.codingforum.controller;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.hoctuan.codingforum.common.BaseResponse;
+import com.hoctuan.codingforum.constant.ReactionType;
 import com.hoctuan.codingforum.model.dto.post.*;
 import com.hoctuan.codingforum.service.post.CommentReactionService;
 import com.hoctuan.codingforum.service.post.PostCommentService;
@@ -15,7 +18,7 @@ import com.hoctuan.codingforum.service.post.PostService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("${spring.api.prefix}")
 public class PostController {
     private final PostService postService;
     private final PostCommentService postCommentService;
@@ -68,7 +71,6 @@ public class PostController {
         @Valid @RequestBody PostRequestDTO DTO
     ) {
         DTO.setId(null);
-        DTO.setTopic(TopicRequestDTO.builder().id(topicId).build());
         PostResponseDTO data = postService.save(DTO);
         return new ResponseEntity<>(
         BaseResponse.builder()
@@ -144,11 +146,12 @@ public class PostController {
         , HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/post/{postId}/like")
-    public ResponseEntity<BaseResponse> likePost(
-        @PathVariable UUID postId
+    @PostMapping("/post/{postId}/react")
+    public ResponseEntity<BaseResponse> reactionPost(
+        @PathVariable UUID postId,
+        @RequestParam ReactionType reactionType
     ) {
-        postReactionService.likePost(postId);
+        postReactionService.reactionPost(postId, reactionType);
         return new ResponseEntity<>(
         BaseResponse.builder()
             .message("Like thành công")
@@ -158,42 +161,15 @@ public class PostController {
         , HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/post/{postId}/dislike")
-    public ResponseEntity<BaseResponse> unlikePost(
-        @PathVariable UUID postId
+    @PostMapping("/post/comment/{commentId}/react")
+    public ResponseEntity<BaseResponse> reactionComment(
+        @PathVariable UUID commentId,
+        @RequestParam ReactionType reactionType
     ) {
-        postReactionService.dislikePost(postId);
-        return new ResponseEntity<>(
-        BaseResponse.builder()
-            .message("Dislike thành công")
-            .data(null)
-            .status(HttpStatus.ACCEPTED.value())
-            .build()
-        , HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping("/post/comment/{commentId}/like")
-    public ResponseEntity<BaseResponse> likeComment(
-        @PathVariable UUID commentId
-    ) {
-        commentReactionService.likeComment(commentId);
+        commentReactionService.reactionComment(commentId, reactionType);
         return new ResponseEntity<>(
         BaseResponse.builder()
             .message("Like thành công")
-            .data(null)
-            .status(HttpStatus.ACCEPTED.value())
-            .build()
-        , HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping("/post/comment/{commentId}/dislike")
-    public ResponseEntity<BaseResponse> unlikeComment(
-        @PathVariable UUID commentId
-    ) {
-        commentReactionService.dislikeComment(commentId);
-        return new ResponseEntity<>(
-        BaseResponse.builder()
-            .message("Dislike thành công")
             .data(null)
             .status(HttpStatus.ACCEPTED.value())
             .build()

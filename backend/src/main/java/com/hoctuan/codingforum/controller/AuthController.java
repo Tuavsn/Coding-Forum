@@ -12,7 +12,7 @@ import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 import com.hoctuan.codingforum.service.account.AuthService;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("${spring.api.prefix}/auth")
 public class AuthController {
     private final AuthService authService;
 

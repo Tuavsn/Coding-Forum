@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/topic")
+@RequestMapping("${spring.api.prefix}/topic")
 public class TopicController extends BaseController<Topic, TopicResponseDTO, TopicRequestDTO, UUID> {
     private final TopicService topicService;
 

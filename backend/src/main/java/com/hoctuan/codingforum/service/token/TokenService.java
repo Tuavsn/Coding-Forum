@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface TokenService {
     public String buildToken(User user, HttpServletRequest request);
 
-    public boolean validateToken(String token);
+    // public boolean validateToken(String token);
     
     public boolean compareToken(String tokenHash, String tokenPlain);
 }

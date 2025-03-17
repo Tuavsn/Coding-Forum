@@ -3,8 +3,6 @@ package com.hoctuan.codingforum.service.account.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +12,8 @@ import com.hoctuan.codingforum.constant.AccountRole;
 import com.hoctuan.codingforum.constant.AccountStatus;
 import com.hoctuan.codingforum.constant.AppConstant;
 import com.hoctuan.codingforum.constant.AuthProvider;
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.auth.AuthRequestDTO;
 import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
@@ -46,15 +44,12 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponseDTO login(AuthRequestDTO authRequestDTO, HttpServletRequest request) {
         String email = authRequestDTO.getEmail().toLowerCase();
         String password = authRequestDTO.getPassword();
-        User user = userRepository.findByEmailAndAuthProvider(email, AuthProvider.LOCAL).orElse(null);
         return userRepository.findByEmailAndAuthProvider(
-                authRequestDTO.getEmail(), AuthProvider.LOCAL).map(user -> {
+                email, AuthProvider.LOCAL).map(user -> {
                     if (user.getIsDeleted() || user.getStatus().equals(AccountStatus.INACTIVE)) {
-                        throw new CustomException("Tài khoản của bạn đã bị xoá hoặc chưa được active",
-                                HttpStatus.BAD_REQUEST.value());
+                        throw new CustomException(ErrorCode.INVALID_ACCOUNT);
                     }
-
-                    if (BCrypt.checkpw(authRequestDTO.getPassword(), user.getPassword())) {
+                    if (BCrypt.checkpw(password, user.getPassword())) {
                         return AuthResponseDTO.builder()
                                 .id(user.getId())
                                 .email(user.getEmail())
@@ -73,10 +68,9 @@ public class AuthServiceImpl implements AuthService {
                                 .updatedBy(user.getUpdatedBy())
                                 .build();
                     } else {
-                        throw new CustomException("Tài khoản hoặc mật khẩu không chính xác",
-                                HttpStatus.UNAUTHORIZED.value());
+                        throw new CustomException(ErrorCode.INVALID_ACCOUNT);
                     }
-                }).orElseThrow(() -> new NotFoundException("Tài khoản hoặc mật khẩu không chính xác"));
+                }).orElseThrow(() -> new CustomException(ErrorCode.INVALID_ACCOUNT));
     }
 
     @Override
@@ -88,12 +82,11 @@ public class AuthServiceImpl implements AuthService {
 
         if (user != null) {
             if (user.getIsDeleted()) {
-                throw new CustomException("Tài khoản của bạn bị từ chối truy cập", HttpStatus.NOT_ACCEPTABLE.value());
+                throw new CustomException(ErrorCode.IS_DELETED_ACCOUNT);
             } else if (user.getStatus().equals(AccountStatus.INACTIVE)) {
-                throw new CustomException("Tài khoản của bạn chưa được kích hoạt email",
-                        HttpStatus.BAD_REQUEST.value());
+                throw new CustomException(ErrorCode.IS_NOT_ACTIVE_ACCOUNT);
             } else {
-                throw new CustomException("Email đăng ký tài khoản đã tồn tại", HttpStatus.BAD_REQUEST.value());
+                throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTED);
             }
         }
 
@@ -132,23 +125,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO getInfo() {
-        User user = authContext.getUserAuthenticated();
+        User existedUser = authContext.getCurrentUserEntityLogin();
         return AuthResponseDTO.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .gender(user.getGender())
-                .role(user.getRole())
-                .avatar(user.getAvatar())
-                .achievement(user.getAchievement())
-                .totalSubmissionPoint(user.getTotalSubmissionPoint())
-                .address(user.getAddress())
-                .phone(user.getPhone())
-                .status(user.getStatus())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .createdBy(user.getCreatedBy())
-                .updatedBy(user.getUpdatedBy())
+                .id(existedUser.getId())
+                .email(existedUser.getEmail())
+                .username(existedUser.getUsername())
+                .gender(existedUser.getGender())
+                .role(existedUser.getRole())
+                .avatar(existedUser.getAvatar())
+                .achievement(existedUser.getAchievement())
+                .totalSubmissionPoint(existedUser.getTotalSubmissionPoint())
+                .address(existedUser.getAddress())
+                .phone(existedUser.getPhone())
+                .status(existedUser.getStatus())
+                .createdAt(existedUser.getCreatedAt())
+                .updatedAt(existedUser.getUpdatedAt())
+                .createdBy(existedUser.getCreatedBy())
+                .updatedBy(existedUser.getUpdatedBy())
                 .build();
     }
 
@@ -164,21 +157,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void updateProfile(UserRequestDTO userRequestDTO) {
-        User user = authContext.getUserAuthenticated();
-
-        user.setUsername(userRequestDTO.getUsername());
-        user.setAvatar(userRequestDTO.getAvatar());
-        user.setAddress(userRequestDTO.getAddress());
-        user.setPhone(userRequestDTO.getPhone());
-        user.setGender(userRequestDTO.getGender());
+        User existedUser = authContext.getCurrentUserEntityLogin();
+        existedUser.setUsername(userRequestDTO.getUsername());
+        existedUser.setAvatar(userRequestDTO.getAvatar());
+        existedUser.setAddress(userRequestDTO.getAddress());
+        existedUser.setPhone(userRequestDTO.getPhone());
+        existedUser.setGender(userRequestDTO.getGender());
         if (userRequestDTO.getPassword() != null) {
-            user.setPassword(userRequestDTO.getPassword());
+            existedUser.setPassword(userRequestDTO.getPassword());
         }
-
-        userRepository.save(user);
-    }
-
-    private boolean validateUser(User user) {
-        
+        userRepository.save(existedUser);
     }
 }

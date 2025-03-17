@@ -26,8 +26,8 @@ public class Post extends BaseEntity {
     @ManyToMany
     @JoinTable(
         name = "post_topic",
-        joinColumns = @JoinColumn(name = "id"),
-        inverseJoinColumns = @JoinColumn(name = "id")
+        joinColumns = @JoinColumn(name = "post_id"),
+        inverseJoinColumns = @JoinColumn(name = "topic_id")
     )
     private Set<Topic> topics;
 
