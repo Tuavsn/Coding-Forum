@@ -1,12 +1,9 @@
 package com.hoctuan.codingforum.service.post.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.constant.ReactionType;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.post.CommentReaction;
 import com.hoctuan.codingforum.model.entity.post.PostComment;
@@ -30,57 +27,20 @@ public class CommentReactionServiceImpl implements CommentReactionService {
         this.authContext = authContext;
     }
 
-    public void likeComment(UUID commentId) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserLogin().orElseThrow(
-            () -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value()))); 
-        PostComment existedPostComment = postCommentRepository.findById(commentId).orElseThrow(
-            () -> new NotFoundException("Không tìm thấy comment hợp lệ với ID: " + commentId));
-        if (!existedPostComment.getCommentReactions().isEmpty()) {
-            existedPostComment.getCommentReactions().forEach(
-            (reaction) -> {
-                if (reaction.getUser().getId().equals(userId)
-                    && reaction.getReactionType().equals(ReactionType.DISLIKE)
-                    || reaction.getReactionType().equals(ReactionType.LIKE)) {
-                    commentReactionRepository.delete(reaction);
-                }
-            });
-        }
-        CommentReaction newCommentReaction = new CommentReaction();
-        newCommentReaction.setPostComment(existedPostComment);
-        newCommentReaction.setUser(user);
-        newCommentReaction.setReactionType(ReactionType.LIKE);
-        commentReactionRepository.save(newCommentReaction);
-    }
-
-    public void dislikeComment(UUID commentId) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserLogin().orElseThrow(
-            () -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value()))); 
-        PostComment existedPostComment = postCommentRepository.findById(commentId)
-            .orElseThrow(() -> new NotFoundException("Không tìm thấy comment"));
-        if (!existedPostComment.getCommentReactions().isEmpty()) {
-            boolean isDisliked = existedPostComment.getCommentReactions().stream().anyMatch(
-                (reaction) -> reaction.getUser().getId().equals(userId)
-                && reaction.getReactionType().equals(ReactionType.DISLIKE));
-            if (isDisliked) {
-                throw new CustomException("Bạn đã dislike comment", HttpStatus.BAD_REQUEST.value());
+    public void reactionComment(UUID commentId, ReactionType type) {
+        UUID userId = UUID.fromString(
+                authContext.getCurrentUserLogin().orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED)));
+        commentReactionRepository.findByUserIdAndCommentId(userId, commentId).ifPresentOrElse(existedReaction -> {
+            if (existedReaction.getReactionType().equals(type)) {
+                commentReactionRepository.delete(existedReaction);
+            } else {
+                existedReaction.setReactionType(type);
+                commentReactionRepository.save(existedReaction);
             }
-            existedPostComment.getCommentReactions().forEach(
-            (reaction) -> {
-                if (reaction.getUser().getId().equals(userId) && reaction.getReactionType().equals(ReactionType.LIKE)) {
-                    commentReactionRepository.delete(reaction);
-                }
-            });
-        }
-        CommentReaction newCommentReaction = new CommentReaction();
-        newCommentReaction.setPostComment(existedPostComment);
-        newCommentReaction.setUser(user);
-        newCommentReaction.setReactionType(ReactionType.DISLIKE);
-        commentReactionRepository.save(newCommentReaction);
-    }
-
-    public void removeReaction(PostComment existedPostComment, UUID userId) {
-        existedPostComment.getCommentReactions().stream()
-                .filter((reaction) -> reaction.getUser().getId().equals(userId))
-                .forEach(commentReactionRepository::delete);
+        }, () -> {
+            User user = User.builder().id(userId).build();
+            PostComment comment = PostComment.builder().id(commentId).build();
+            commentReactionRepository.save(CommentReaction.builder().user(user).postComment(comment).reactionType(type).build());
+        });
     }
 }

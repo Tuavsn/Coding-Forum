@@ -1,7 +1,6 @@
 package com.hoctuan.codingforum.service.token.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
@@ -11,10 +10,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import com.google.common.hash.Hashing;
-import com.hoctuan.codingforum.constant.AccountRole;
 import com.hoctuan.codingforum.constant.AppConstant;
+import com.hoctuan.codingforum.constant.TokenType;
 import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.service.account.DeviceService;
+// import com.hoctuan.codingforum.service.account.DeviceService;
 import com.hoctuan.codingforum.service.common.AuthContext;
 import com.hoctuan.codingforum.service.token.TokenService;
 
@@ -23,23 +22,27 @@ public class TokenServiceImpl implements TokenService {
     private final AppConstant appConstant;
     private final JwtEncoder jwtEncoder;
     private final AuthContext authContext;
-    private final DeviceService deviceService;
+    // private final DeviceService deviceService;
     @Qualifier("jwtDecoder")
     private final JwtDecoder jwtDecoder;
 
-    public TokenServiceImpl(AppConstant appConstant, JwtEncoder jwtEncoder, AuthContext authContext,
-            DeviceService deviceService, JwtDecoder jwtDecoder) {
+    // public TokenServiceImpl(AppConstant appConstant, JwtEncoder jwtEncoder, AuthContext authContext,
+    //         DeviceService deviceService, JwtDecoder jwtDecoder) {
+    public TokenServiceImpl(AppConstant appConstant, JwtEncoder jwtEncoder, AuthContext authContext, JwtDecoder jwtDecoder) {
         this.appConstant = appConstant;
         this.jwtEncoder = jwtEncoder;
         this.authContext = authContext;
-        this.deviceService = deviceService;
+        // this.deviceService = deviceService;
         this.jwtDecoder = jwtDecoder;
     }
 
     @Override
-    public String buildToken(User user, HttpServletRequest request) {
+    public String buildToken(User user, TokenType type, HttpServletRequest request) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expiresAt = now.plusDays(appConstant.getExpiresTime());
+        LocalDateTime expiresAt = now.plusDays(
+            type.equals(TokenType.ACCESS_TOKEN) ? appConstant.getAccessTokenExpireTime()
+            : appConstant.getRefreshTokenExpireTime()
+        );
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now.atZone(ZoneId.systemDefault()).toInstant())
@@ -48,22 +51,24 @@ public class TokenServiceImpl implements TokenService {
                 .claim("ROLE", user.getRole())
                 .build();
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        deviceService.add(user.getId().toString(), hashString(token), request, expiresAt, now);
+        // deviceService.add(user.getId().toString(), hashString(token), request, expiresAt, now);
         return token;
     }
 
-    @Override
-    public boolean validateToken(String token) {
-        User user = authContext.getUserAuthenticated();
-        if (user == null) {
-            return false;
-        }
-        if (!user.getRole().equals(AccountRole.USER)) {
-            return true;
-        }
-        return user.getDevices().stream().anyMatch(
-                d -> d.getToken().equals(hashString(token)));
-    }
+    // @Override
+    // public boolean validateToken(String token) {
+    //     UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+    //             .orElseThrow(() -> new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value())));
+    //     User user = userRepository.findById();
+    //     if (user == null) {
+    //         return false;
+    //     }
+    //     if (!user.getRole().equals(AccountRole.USER)) {
+    //         return true;
+    //     }
+    //     return user.getDevices().stream().anyMatch(
+    //             d -> d.getToken().equals(hashString(token)));
+    // }
 
     @Override
     public boolean compareToken(String tokenHash, String tokenPlain) {

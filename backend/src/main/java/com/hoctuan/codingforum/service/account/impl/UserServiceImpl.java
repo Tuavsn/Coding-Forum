@@ -20,7 +20,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserResponseDTO, User
     private final UserMapper userMapper;
 
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
-        super(userRepository, userMapper);
+        super(userRepository, userMapper, User.class);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }

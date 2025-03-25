@@ -6,10 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ReactionType {
-    LIKE(0, "like", "Thích"),
-    DISLIKE(1, "dislike", "Không thích");
+    LIKE("like", "Like"),
+    DISLIKE("dislike", "Dislike");
 
-    private final int code;
     private final String name;
     private final String displayName;
 }

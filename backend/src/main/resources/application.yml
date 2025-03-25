@@ -16,13 +16,18 @@ spring:
     username: ${SPRING_DATA_SOURCE_USERNAME}
     password: ${SPRING_DATA_SOURCE_PASSWORD}
     driver-class-name: ${SPRING_DATA_SOURCE_DRIVER_CLASSNAME}
+  api:
+    prefix: /api/v1
   jwt:
     rsa:
       private-key: ${PRIVATE_KEY}
       public-key: ${PUBLIC_KEY}
-    expires-time: ${EXPIRES_TIME}
-  cookie:
-    expires-time: ${EXPIRES_TIME}
+    access-token:
+      expire-time: ${ACCESS_TOKEN_EXPIRES_TIME}
+    refresh-token:
+      expire-time: ${REFRESH_TOKEN_EXPIRES_TIME}
+
+  
   cloudinary:
     cloud-name: ${CLOUDINARY_CLOUD_NAME}
     api-key: ${CLOUDINARY_API_KEY}
@@ -74,7 +79,7 @@ open:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
 
 bcrypt:
   log-rounds: 10

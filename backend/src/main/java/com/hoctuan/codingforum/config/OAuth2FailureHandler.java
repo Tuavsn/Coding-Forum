@@ -3,13 +3,13 @@ package com.hoctuan.codingforum.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.hoctuan.codingforum.constant.AppConstant;
+import com.hoctuan.codingforum.constant.ErrorCode;
 
 import java.io.IOException;
 
@@ -31,8 +31,8 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     ) throws IOException, ServletException {
         String targetUrl = this.appConstant.getClientUrl() + "/oauth2/redirect";
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
-            .queryParam("status", HttpStatus.UNAUTHORIZED.value())
-            .queryParam("message", encoder.encode("Quá trình xác thực đã thất bại! Vui lòng thử lại!"))
+            .queryParam("message", encoder.encode(ErrorCode.UNAUTHORIZED.getMessage()))
+            .queryParam("status", ErrorCode.UNAUTHORIZED.getHttpStatus().value())
             .build().toUriString();
         response.sendRedirect(targetUrl);
     }

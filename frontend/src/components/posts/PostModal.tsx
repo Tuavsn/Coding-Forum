@@ -5,6 +5,7 @@ import { FileType, PostImage } from "@/libs/types";
 import UploadButton from "../common/UploadButton";
 
 interface PostContent {
+    id: string;
     header: string;
     content: string;
     images: PostImage[];

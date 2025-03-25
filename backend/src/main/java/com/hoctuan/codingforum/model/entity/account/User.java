@@ -34,6 +34,7 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String avatar;
 
+    @Enumerated(EnumType.STRING)
     private AccountGender gender;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -43,18 +44,22 @@ public class User extends BaseEntity {
     private String address;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountRole role;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountAchievement achievement;
 
     @Column(nullable = false)
     private double totalSubmissionPoint;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.INACTIVE;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AuthProvider authProvider;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

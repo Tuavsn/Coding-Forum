@@ -1,7 +1,6 @@
 package com.hoctuan.codingforum.controller;
 
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,39 +15,45 @@ import com.hoctuan.codingforum.common.BaseResponse;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 import com.hoctuan.codingforum.model.dto.user.UserResponseDTO;
 import com.hoctuan.codingforum.model.entity.account.User;
-import com.hoctuan.codingforum.service.account.DeviceService;
+// import com.hoctuan.codingforum.service.account.DeviceService;
 import com.hoctuan.codingforum.service.account.UserService;
 import com.hoctuan.codingforum.service.post.PostService;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("${spring.api.prefix}/user")
 public class UserController extends BaseController<User, UserResponseDTO, UserRequestDTO, UUID> {
     private final UserService userService;
-    private final DeviceService deviceService;
+    // private final DeviceService deviceService;
     private final PostService postService;
 
-    public UserController(UserService userService, DeviceService deviceService, PostService postService) {
+    // public UserController(UserService userService, DeviceService deviceService, PostService postService) {
+    //     super(userService);
+    //     this.userService = userService;
+    //     this.deviceService = deviceService;
+    //     this.postService = postService;
+    // }
+
+    public UserController(UserService userService, PostService postService) {
         super(userService);
         this.userService = userService;
-        this.deviceService = deviceService;
         this.postService = postService;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/device")
-    public ResponseEntity<BaseResponse> getAllDevices(
-        @ParameterObject Pageable pageable
-    ) {
-        return new ResponseEntity<>(
-        BaseResponse.builder()
-            .message("Lấy danh sách thiết bị thành công")
-            .data(deviceService.getAllByUserId(pageable))
-            .status(HttpStatus.OK.value())
-            .build(),
-        HttpStatus.OK);
-    }
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // @GetMapping("/device")
+    // public ResponseEntity<BaseResponse> getAllDevices(
+    //     @ParameterObject Pageable pageable
+    // ) {
+    //     return new ResponseEntity<>(
+    //     BaseResponse.builder()
+    //         .message("Lấy danh sách thiết bị thành công")
+    //         .data(deviceService.getAllByUserId(pageable))
+    //         .status(HttpStatus.OK.value())
+    //         .build(),
+    //     HttpStatus.OK);
+    // }
 
     @GetMapping("/{userId}/posts")
     public ResponseEntity<BaseResponse> getAllPostsByUser(

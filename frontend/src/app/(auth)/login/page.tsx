@@ -2,6 +2,7 @@
 
 import Loading from "@/components/common/Loading"
 import { AuthContext } from "@/context/AuthContextProvider"
+import useAuth from "@/hooks/useAuth"
 import { login } from "@/libs/actions/user.actions"
 import { isValidEmail } from "@/libs/utils"
 import { message } from "antd"
@@ -10,63 +11,72 @@ import { useContext, useEffect, useState } from "react"
 import { useMutation } from "react-query"
 
 export default function LoginPage() {
-    const {auth, setAuth} = useContext(AuthContext)
 
-    const router = useRouter()
+    const {
+        authForm,
+        handleInputChange,
+        handleLogin,
+        handleLoginWithGoogle,
+        isLoading
+    } = useAuth();
 
-    const [isLoading, setIsloading] = useState(true)
+    // const {auth, setAuth} = useContext(AuthContext)
 
-    const [email, setEmail] = useState<string>('')
+    // const router = useRouter()
 
-    const [password, setPassword] = useState<string>('')
+    // const [isLoading, setIsloading] = useState(true)
 
-    const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
-    }
+    // const [email, setEmail] = useState<string>('')
 
-    const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value)
-    }
+    // const [password, setPassword] = useState<string>('')
 
-    const loginMutation = useMutation(() => login({email: email, password: password}), {
-        onMutate: () => {
-            setIsloading(true)
-        },
+    // const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setEmail(e.target.value)
+    // }
 
-        onSuccess: (data) => {
-            setAuth(data.Data)
-            message.success(data.Message)
-            router.push('/home')
-            setIsloading(false)
-        },
+    // const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setPassword(e.target.value)
+    // }
 
-        onError: (error) => {
-            setIsloading(false)
-            if (error instanceof Error) {
-                message.error(error.message);
-            } else {
-                message.error('Có lỗi xảy ra');
-            }
-        },
-    })
+    // const loginMutation = useMutation(() => login({email: email, password: password}), {
+    //     onMutate: () => {
+    //         setIsloading(true)
+    //     },
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if(isValidEmail(email)) {
-            loginMutation.mutate()
-        } else {
-            message.error("Email không hợp lệ")
-        }
-    }
+    //     onSuccess: (data) => {
+    //         setAuth(data.Data)
+    //         message.success(data.Message)
+    //         router.push('/home')
+    //         setIsloading(false)
+    //     },
 
-    // Login route guard
-    useEffect(() => {
-        if(auth) {
-            router.push('/home')
-        } else {
-            setIsloading(false)
-        }
-    }, [])
+    //     onError: (error) => {
+    //         setIsloading(false)
+    //         if (error instanceof Error) {
+    //             message.error(error.message);
+    //         } else {
+    //             message.error('Có lỗi xảy ra');
+    //         }
+    //     },
+    // })
+
+    // const handleLogin = async (e: React.FormEvent) => {
+    //     e.preventDefault()
+    //     if(isValidEmail(email)) {
+    //         loginMutation.mutate()
+    //     } else {
+    //         message.error("Email không hợp lệ")
+    //     }
+    // }
+
+    // // Login route guard
+    // useEffect(() => {
+    //     if(auth) {
+    //         router.push('/home')
+    //     } else {
+    //         setIsloading(false)
+    //     }
+    // }, [])
 
     if(isLoading) {
         return (<Loading />)
@@ -76,7 +86,7 @@ export default function LoginPage() {
         <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
             <h1 className="text-center text-4xl font-medium">Đăng nhập</h1>
             <div className="my-5">
-                <button className="w-full text-center py-3 my-3 border flex space-x-2 items-center justify-center border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150">
+                <button className="w-full text-center py-3 my-3 border flex space-x-2 items-center justify-center border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150" onClick={handleLoginWithGoogle}>
                     <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-6 h-6" alt="" /> <span>Đăng nhập với Google</span>
                 </button>
             </div>
@@ -84,11 +94,11 @@ export default function LoginPage() {
                 <div className="flex flex-col space-y-5">
                     <label htmlFor="email">
                         <p className="font-medium text-slate-700 pb-2">Email</p>
-                        <input id="email" name="email" type="email" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập email" onChange={handleSetEmail}/>
+                        <input id="email" name="email" type="email" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập email" value={authForm.email} onChange={(e) => handleInputChange('email', e.target.value)}/>
                     </label>
                     <label htmlFor="password">
                         <p className="font-medium text-slate-700 pb-2">Mật khẩu</p>
-                        <input id="password" name="password" type="password" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập mật khẩu" onChange={handleSetPassword}/>
+                        <input id="password" name="password" type="password" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập mật khẩu" value={authForm.password} onChange={(e) => handleInputChange('password', e.target.value)}/>
                     </label>
                     <div className="flex flex-row justify-between">
                         <div>

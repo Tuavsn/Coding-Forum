@@ -1,17 +1,14 @@
 package com.hoctuan.codingforum.service.post.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.post.PostCommentRequestDTO;
 import com.hoctuan.codingforum.model.dto.post.PostCommentResponseDTO;
 import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
-import com.hoctuan.codingforum.model.entity.account.User;
 import com.hoctuan.codingforum.model.entity.post.PostComment;
 import com.hoctuan.codingforum.model.mapper.PostCommentMapper;
 import com.hoctuan.codingforum.repository.post.PostCommentRepository;
@@ -30,7 +27,7 @@ public class PostCommentServiceImpl
 
     public PostCommentServiceImpl(PostCommentRepository postCommentRepository, PostCommentMapper postCommentMapper,
             AuthContext authContext) {
-        super(postCommentRepository, postCommentMapper);
+        super(postCommentRepository, postCommentMapper, PostComment.class);
         this.postCommentRepository = postCommentRepository;
         this.postCommentMapper = postCommentMapper;
         this.authContext = authContext;
@@ -39,40 +36,35 @@ public class PostCommentServiceImpl
     @Override
     @Transactional
     public PostCommentResponseDTO save(PostCommentRequestDTO dto) {
-        UUID userId = UUID.fromString(authContext.getCurrentUserId());
-        User existedUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException("Tài khoản không tồn tại", HttpStatus.BAD_REQUEST.value()));
-
-        User user = authContext.getUserAuthenticated();
-
-        // check if user is comment author
-        if (dto.getId() != null) {
-            PostComment existedComment = postCommentRepository.findById(dto.getId())
-                    .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
-            if (existedComment.getUser().getId() != user.getId()) {
-                throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
-            }
-        }
-
-        UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
-
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED)));
+        UserRequestDTO userDTO = UserRequestDTO.builder().id(userId).build();
         dto.setUser(userDTO);
-
-        return super.forceSave(dto);
+        return super.save(dto);
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
-        User user = authContext.getUserAuthenticated();
-
+        UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
+                .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED)));
         PostComment existedComment = postCommentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Id không tìm thấy"));
-
-        if (existedComment.getUser().getId() != user.getId()) {
-            throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
-        }
-
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        // check if user is comment author
+        validateTheAuthor(existedComment, userId);
         postCommentRepository.delete(existedComment);
+    }
+
+    /**
+     * Check if client's request is post author
+     * 
+     * @param postComment
+     * @param userId
+     * @return
+     */
+    private void validateTheAuthor(PostComment postComment, UUID userId) {
+        if (!postComment.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.WRONG_AUTHOR);
+        }
     }
 }

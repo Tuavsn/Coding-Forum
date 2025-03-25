@@ -33,7 +33,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/problem")
+@RequestMapping("${spring.api.prefix}/problem")
 public class ProblemController extends BaseController<Problem, ProblemResponseDTO, ProblemRequestDTO, UUID> {
     private final ProblemService problemService;
 

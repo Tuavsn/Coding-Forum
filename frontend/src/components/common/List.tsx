@@ -39,7 +39,7 @@ export default function List(props: Props) {
             >
                 {extra && <div className="list-extra mb-4">{extra}</div>}
                 {dataSource && dataSource.map((item, index) => (
-                    <>
+                    <ul key={index}>
                         <li
                             className="list-item"
                             key={item.id ?? index}
@@ -49,7 +49,7 @@ export default function List(props: Props) {
                         {split && index < dataSource.length - 1 && (
                             <Divider style={{ margin: '12px 0', borderColor: '#ddd' }} />
                         )}
-                    </>
+                    </ul>
                 ))}
             </ul>
             {footer && <div className="list-footer mt-4">{footer}</div>}

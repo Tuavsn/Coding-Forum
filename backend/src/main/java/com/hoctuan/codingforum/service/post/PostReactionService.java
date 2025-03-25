@@ -2,8 +2,8 @@ package com.hoctuan.codingforum.service.post;
 
 import java.util.UUID;
 
-public interface PostReactionService {
-    public void likePost(UUID postId);
+import com.hoctuan.codingforum.constant.ReactionType;
 
-    public void dislikePost(UUID postId);
+public interface PostReactionService {
+    public void reactionPost(UUID postId, ReactionType type);
 }

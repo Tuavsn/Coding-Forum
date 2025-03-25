@@ -11,7 +11,7 @@ import com.hoctuan.codingforum.model.entity.chat.Message;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/chat")
+@RequestMapping("${spring.api.prefix}/chat")
 public class ChatController {
 }
 

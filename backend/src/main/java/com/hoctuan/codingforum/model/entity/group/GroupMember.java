@@ -6,6 +6,8 @@ import com.hoctuan.codingforum.model.entity.account.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,5 +29,6 @@ public class GroupMember extends BaseEntity {
     private User user;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountRole role;
 }

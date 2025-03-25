@@ -15,6 +15,8 @@ import java.util.UUID;
 public interface UserRepository extends BaseRepository<User, UUID> {
     public Optional<User> findByEmailAndAuthProvider(String email, AuthProvider authProvider);
 
+    public Optional<User> findByEmail(String email);
+
     @Query(value = "SELECT * FROM user ORDER BY total_submission_point DESC LIMIT 100", nativeQuery = true)
     List<User> findTop100UsersOrderedBySubmissionPoint();
 }

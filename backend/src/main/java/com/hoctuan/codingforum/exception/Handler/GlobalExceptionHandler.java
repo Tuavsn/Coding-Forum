@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.hoctuan.codingforum.common.BaseResponse;
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 
 import javax.naming.AuthenticationException;
 
@@ -19,9 +19,10 @@ import javax.naming.AuthenticationException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<BaseResponse> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
         BaseResponse response = BaseResponse.builder()
-            .status(e.getStatusCode())
-            .message(e.getMessage())
+            .status(errorCode.getHttpStatus().value())
+            .message(errorCode.getMessage())
             .data(null)
             .build();
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -56,16 +57,6 @@ public class GlobalExceptionHandler {
         BaseResponse response = BaseResponse.builder()
             .status(HttpStatus.FORBIDDEN.value())
             .message("Bạn không có quyền truy cập vào tài nguyên này.")
-            .data(null)
-            .build();
-        return ResponseEntity.status(response.getStatus()).body(response);
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<BaseResponse> handleNotFoundException(NotFoundException e) {
-        BaseResponse response = BaseResponse.builder()
-            .status(HttpStatus.NOT_FOUND.value())
-            .message(e.getMessage())
             .data(null)
             .build();
         return ResponseEntity.status(response.getStatus()).body(response);

@@ -21,6 +21,7 @@ import React, { useContext, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import TextEditor from "./TextEditor";
+import { useRouter } from "next/navigation";
 
 const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
@@ -31,6 +32,8 @@ const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; te
 
 export default function Comment({post}:{post: Post}) {
     const {auth, setAuth} = useContext(AuthContext)
+
+    const router = useRouter();
 
     const queryClient = useQueryClient()
 
@@ -60,6 +63,7 @@ export default function Comment({post}:{post: Post}) {
             setCommentContent('')
             queryClient.invalidateQueries('getPostDetail')
             message.success(data.Message)
+            router.refresh();
         }
     })
 
@@ -89,6 +93,7 @@ export default function Comment({post}:{post: Post}) {
             setCommentContent('')
             queryClient.invalidateQueries('getPostDetail')
             message.success(data.Message)
+            router.refresh();
         }
     })
 
@@ -121,6 +126,7 @@ export default function Comment({post}:{post: Post}) {
             setOpenDrawer(false)
             queryClient.invalidateQueries('getPostDetail')
             message.success(data.Message)
+            router.refresh();
         }
     })
 
@@ -200,7 +206,7 @@ export default function Comment({post}:{post: Post}) {
                                         text={item.commentReactions.filter((reaction) => reaction.reactionType === ReactionType.DISLIKE).length.toString()}
                                     />
                                 </Button>,
-                                auth?.username == item.user.username ? (
+                                auth?.id == item.user.id ? (
                                     <Popconfirm 
                                         title="Tuỳ chọn"
                                         onConfirm={() => handleDeleteComment(item.id)}

@@ -19,7 +19,7 @@ public class MessageServiceImpl extends BaseServiceImpl<Message, MessageResponse
     private final MessageMapper messageMapper;
 
     public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper) {
-        super(messageRepository, messageMapper);
+        super(messageRepository, messageMapper, Message.class);
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
     }

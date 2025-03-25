@@ -1,7 +1,7 @@
 import { AuthContext } from "@/context/AuthContextProvider";
-import { createPost, deletePost, dislikePost, likePost, updatePost } from "@/libs/actions/post.acttion";
+import { createPost, deletePost, dislikePost, likeComment, likePost, updatePost } from "@/libs/actions/post.acttion";
 import { ReactionType } from "@/libs/enum";
-import { Post, PostImage } from "@/libs/types";
+import { Post, PostImage, Topic } from "@/libs/types";
 import { stringToSlug } from "@/libs/utils";
 import { message, UploadFile } from "antd";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,8 @@ import { useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 interface UsePostProps {
-    post: Post;
+    post?: Post;
+    isPostDetail?: boolean;
 }
 
 interface PostContent {
@@ -19,11 +20,12 @@ interface PostContent {
     images: PostImage[];
     previewImages: string;
     imageFiles: UploadFile[];
+    topic: Topic[];
 }
 
 export default function usePost(props: UsePostProps) {
 
-    const { post } = props;
+    const { post, isPostDetail } = props ?? {};
 
     const { auth } = useContext(AuthContext);
 
@@ -55,11 +57,13 @@ export default function usePost(props: UsePostProps) {
         content: '',
         images: [],
         previewImages: '',
-        imageFiles: []
+        imageFiles: [],
+        topic: []
     });
 
     /**
      * Update the specific field of post content (header, content, images)
+     * 
      * @param field {header | content | images}
      * @param value {value}
      */
@@ -72,8 +76,7 @@ export default function usePost(props: UsePostProps) {
 
     // Handle Like
     const handleLike = (id: string) => {
-        auth ? isLiked ? message.error("Bạn đã Like rồi!!!") 
-        : postLikeMutation.mutate(id) 
+        auth ? postLikeMutation.mutate(id) 
         : message.error("Bạn chưa thực hiện đăng nhập");
     }
 
@@ -82,16 +85,7 @@ export default function usePost(props: UsePostProps) {
      */
     const postLikeMutation = useMutation(likePost, {
         onSuccess: (data) => {
-            if (isDisliked) {
-                setDisLikesCount(disLikesCount - 1);
-                setIsDisliked(false);
-            }
-
-            setLikesCount(likesCount + 1);
-
-            setIsLiked(true);
-
-            message.success(data.Message)
+            router.refresh();
         }
     })
 
@@ -107,29 +101,21 @@ export default function usePost(props: UsePostProps) {
      */
     const postDislikeMutation = useMutation(dislikePost, {
         onSuccess: (data) => {
-            if (isLiked) {
-                setLikesCount(likesCount - 1);
-                setIsLiked(false);
-            }
-
-            setDisLikesCount(disLikesCount + 1)
-
-            setIsDisliked(true);
-            
-            message.success(data.Message)
+            router.refresh();
         }
     })
 
     // Handle Create
     const handleCreate = () => {
         // if (validateForm()) {
-        //     postCreateMutation.mutate({
-        //         newPost: {
-        //             header: postContent.header,
-        //             content: postContent.content,
-        //             postImage: postContent.images
-        //         }
-        //     })
+            postCreateMutation.mutate({
+                newPost: {
+                    topic: postContent.topic,
+                    header: postContent.header,
+                    content: postContent.content,
+                    postImage: postContent.images
+                }
+            })
         // }
     }
 
@@ -151,6 +137,13 @@ export default function usePost(props: UsePostProps) {
             resetModal();
 
             message.success(data.Message);
+
+            router.refresh();
+        },
+
+        onError: (error: any) => {
+            setPostCreateLoading(false);
+            message.error(error.message);
         }
     })
 
@@ -186,13 +179,22 @@ export default function usePost(props: UsePostProps) {
             resetModal();
 
             message.success(data.Message);
+
+            router.refresh();
+        },
+
+        onError: (error: any) => {
+            setPostUpdateLoading(false);
+            message.error(error.message);
         }
     })
 
     // Handle Delete
     const handleDelete = () => {
-        postDeleteMutation.mutate(post.id);
+        post ? postDeleteMutation.mutate(post.id) 
+        : message.error("Không có bài viết để xoá");
     }
+    
 
     /**
      * Post Delete Mutation
@@ -208,6 +210,15 @@ export default function usePost(props: UsePostProps) {
             // queryClient.invalidateQueries('getPostDetail');
 
             message.success(data.Message);
+
+            isPostDetail ?? router.push('/home');
+
+            router.refresh();
+        },
+
+        onError: (error: any) => {
+            setPostDeleteLoading(false);
+            message.error(error.message);
         }
     })
 
@@ -233,7 +244,8 @@ export default function usePost(props: UsePostProps) {
      * Handle Comment
      */
     const handleComment = () => {
-        router.push(`/post/${stringToSlug(post.header)}?id=${post.id}`);
+        post ? router.push(`/post/${stringToSlug(post.header)}?id=${post.id}`)
+        : message.error("Không có bài viết để bình luận");
     }
 
     /**
@@ -247,16 +259,17 @@ export default function usePost(props: UsePostProps) {
      * Open Update Modal
      */
     const handleOpenUpdateModal = () => {
-        setPostContent({
-            id: post.id,
-            header: post.header,
-            content: post.content,
-            images: post.postImage,
-            previewImages: '',
-            imageFiles: []
-        })
-
-        setIsOpenModal(true);
+        post ? (setPostContent({
+                id: post.id,
+                header: post.header,
+                content: post.content,
+                images: post.postImage,
+                previewImages: '',
+                imageFiles: [],
+                topic: post.topic
+            }),
+            setIsOpenModal(true)
+        ) : message.error("Không có bài viết để chỉnh sửa");
     }
 
     /**
@@ -278,7 +291,8 @@ export default function usePost(props: UsePostProps) {
             content: '',
             images: [],
             previewImages: '',
-            imageFiles: []
+            imageFiles: [],
+            topic: []
         })
     }
 
@@ -292,6 +306,7 @@ export default function usePost(props: UsePostProps) {
      * Count likes
      */
     const countReactionsAndComments = () => {
+        if (!post) return;
         setLikesCount(
             post.postReactions.filter(
                 (reaction) => reaction.reactionType === ReactionType.LIKE
@@ -309,6 +324,7 @@ export default function usePost(props: UsePostProps) {
      * Check if user (reacted & commented) post or not
      */
     const checkUserReactionAndComment = () => {
+        if (!post) return;
         setIsLiked(
             post.postReactions.some(
                 (reaction) => reaction.reactionType === ReactionType.LIKE && reaction.user.id === auth?.id
@@ -327,12 +343,12 @@ export default function usePost(props: UsePostProps) {
     }
 
     useEffect(() => {
-        if (auth) {
+        if (auth && post) {
             // First check
             countReactionsAndComments();
             checkUserReactionAndComment();
         }
-    }, [auth])
+    }, [auth?.id, post])
 
     return {
         isLiked,

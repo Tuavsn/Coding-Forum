@@ -2,6 +2,7 @@
 
 import Loading from "@/components/common/Loading"
 import { AuthContext } from "@/context/AuthContextProvider"
+import useAuth from "@/hooks/useAuth"
 import { register } from "@/libs/actions/user.actions"
 import { isValidEmail } from "@/libs/utils"
 import { message } from "antd"
@@ -10,68 +11,76 @@ import { useContext, useEffect, useState } from "react"
 import { useMutation } from "react-query"
 
 export default function RegisterPage() {
-    const {auth, setAuth} = useContext(AuthContext)
 
-    const router = useRouter()
+    const {
+        authForm,
+        handleInputChange,
+        handleRegister,
+        isLoading
+    } = useAuth();
 
-    const [isLoading, setIsloading] = useState(true)
+    // const {auth, setAuth} = useContext(AuthContext)
 
-    const [email, setEmail] = useState<string>('')
+    // const router = useRouter()
 
-    const [username, setUsername] = useState<string>('')
+    // const [isLoading, setIsloading] = useState(true)
 
-    const [password, setPassword] = useState<string>('')
+    // const [email, setEmail] = useState<string>('')
 
-    const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
-    }
+    // const [username, setUsername] = useState<string>('')
 
-    const handleSetUsername = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(e.target.value)
-    }
+    // const [password, setPassword] = useState<string>('')
 
-    const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value)
-    }
+    // const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setEmail(e.target.value)
+    // }
 
-    const registerMutation = useMutation(() => register({email: email, username: username, password: password}), {
-        onMutate: () => {
-            setIsloading(true)
-        },
+    // const handleSetUsername = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setUsername(e.target.value)
+    // }
 
-        onSuccess: (data) => {
-            message.success(data.Message)
-            router.push('/login')
-            setIsloading(false)
-        },
+    // const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setPassword(e.target.value)
+    // }
 
-        onError: (error) => {
-            setIsloading(false)
-            if (error instanceof Error) {
-                message.error(error.message);
-            } else {
-                message.error('Có lỗi xảy ra');
-            }
-        },
-    })
+    // const registerMutation = useMutation(() => register({email: email, username: username, password: password}), {
+    //     onMutate: () => {
+    //         setIsloading(true)
+    //     },
 
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if(isValidEmail(email)) {
-            registerMutation.mutate()
-        } else {
-            message.error("Email không hợp lệ")
-        }
-    }
+    //     onSuccess: (data) => {
+    //         message.success(data.Message)
+    //         router.push('/login')
+    //         setIsloading(false)
+    //     },
 
-    // Login route guard
-    useEffect(() => {
-        if(auth) {
-            router.push('/home')
-        } else {
-            setIsloading(false)
-        }
-    }, [])
+    //     onError: (error) => {
+    //         setIsloading(false)
+    //         if (error instanceof Error) {
+    //             message.error(error.message);
+    //         } else {
+    //             message.error('Có lỗi xảy ra');
+    //         }
+    //     },
+    // })
+
+    // const handleRegister = async (e: React.FormEvent) => {
+    //     e.preventDefault()
+    //     if(isValidEmail(email)) {
+    //         registerMutation.mutate()
+    //     } else {
+    //         message.error("Email không hợp lệ")
+    //     }
+    // }
+
+    // // Login route guard
+    // useEffect(() => {
+    //     if(auth) {
+    //         router.push('/home')
+    //     } else {
+    //         setIsloading(false)
+    //     }
+    // }, [])
 
     if(isLoading) {
         return (<Loading />)
@@ -83,15 +92,15 @@ export default function RegisterPage() {
                 <div className="flex flex-col space-y-5">
                     <label htmlFor="email">
                         <p className="font-medium text-slate-700 pb-2">Email</p>
-                        <input id="email" name="email" type="email" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập email" onChange={handleSetEmail}/>
+                        <input id="email" name="email" type="email" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập email" value={authForm.email} onChange={(e) => handleInputChange('email', e.target.value)} />
                     </label>
                     <label htmlFor="username">
                         <p className="font-medium text-slate-700 pb-2">Tên tài khoản</p>
-                        <input id="username" name="username" type="username" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập tên tài khoản" onChange={handleSetUsername}/>
+                        <input id="username" name="username" type="username" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập tên tài khoản" value={authForm.username} onChange={(e) => handleInputChange('username', e.target.value)}/>
                     </label>
                     <label htmlFor="password">
                         <p className="font-medium text-slate-700 pb-2">Mật khẩu</p>
-                        <input id="password" name="password" type="password" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập mật khẩu" onChange={handleSetPassword}/>
+                        <input id="password" name="password" type="password" className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Nhập mật khẩu" value={authForm.password} onChange={(e) => handleInputChange('password', e.target.value)}/>
                     </label>
                     <button className="w-full py-3 font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow inline-flex space-x-2 items-center justify-center" onClick={handleRegister}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoctuan.codingforum.common.BaseServiceImpl;
 import com.hoctuan.codingforum.common.Utils;
 import com.hoctuan.codingforum.constant.AccountRole;
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.constant.ProblemResult;
 import com.hoctuan.codingforum.constant.SubmitType;
 import com.hoctuan.codingforum.exception.CustomException;
-import com.hoctuan.codingforum.exception.NotFoundException;
 import com.hoctuan.codingforum.model.dto.problem.Judge0RequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemRequestDTO;
 import com.hoctuan.codingforum.model.dto.problem.ProblemResponseDTO;
@@ -59,7 +59,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
             ProblemSubmissionRepository problemSubmissionRepository, UserRepository userRepository,
             AuthContext authContext,
             ProblemSubmissonMapper problemSubmissonMapper) {
-        super(problemRepository, problemMapper);
+        super(problemRepository, problemMapper, Problem.class);
         this.problemRepository = problemRepository;
         this.problemMapper = problemMapper;
         this.judge0Service = judge0Service;
@@ -79,24 +79,22 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     @Override
     @Transactional
     public ProblemResponseDTO save(ProblemRequestDTO dto) {
-        User user = authContext.getUserAuthenticated();
-
+        User user = authContext.getCurrentUserEntityLogin();
         if (dto.getId() != null) {
             Problem existedProblem = getExistedProblem(dto.getId());
             // check if user is problem author
-            checkAuthorPermission(user, existedProblem);
+            checkAuthorPermission(existedProblem, user);
             // check if new thumbnail
             if (dto.getThumbnail().isEmpty()) {
                 dto.setThumbnail(existedProblem.getThumbnail());
             }
         }
-
         UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
-
         dto.setAuthor(userDTO);
-
-        return super.forceSave(dto);
+        return super.save(dto);
     }
+
+    // *Todo: update function
 
     /**
      * Submit solution
@@ -112,11 +110,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions,
             SubmitType type) {
         Problem existedProblem = getExistedProblem(id);
-
-        User submitUser = authContext.getUserAuthenticated();
-
+        User submitUser = authContext.getCurrentUserEntityLogin();
         List<Judge0RequestDTO> judge0RequestDTOs = getSubmitRequest(existedProblem, solutions);
-
         ProblemSubmission savedProblemSubmission = problemSubmissionRepository.save(
                 ProblemSubmission.builder()
                         .problem(existedProblem)
@@ -128,10 +123,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
                         .memory(0)
                         .score(0)
                         .build());
-
         List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type,
                 savedProblemSubmission);
-
         return problemSubmissonMapper.toDTO(
                 saveProblemSubmissionResult(
                         savedProblemSubmission,
@@ -152,11 +145,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     @Override
     public SubmissionResultResponseDTO runSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
         Problem existedProblem = getExistedProblem(id);
-
         List<Judge0RequestDTO> judge0RequestDTO = getSubmitRequest(existedProblem, solutions);
-
         SubmissionResult submissionResult = judge0Service.runSolution(judge0RequestDTO.get(0), type);
-
         return SubmissionResultResponseDTO.builder()
                 .submitToken(submissionResult.getSubmitToken())
                 .submitResult(submissionResult.getSubmitResult())
@@ -188,15 +178,11 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     private List<Judge0RequestDTO> getSubmitRequest(Problem problem, ProblemSubmissionRequestDTO solutions) {
         return Utils.splitStringByPipe(problem.getTestCases()).stream().map(testCase -> {
             List<String> separatedStringBySemicolon = Utils.splitStringBySemicolon(testCase);
-
             if (separatedStringBySemicolon.size() < 2) {
-                throw new CustomException("Test case không hợp lệ", HttpStatus.BAD_REQUEST.value());
+                throw new CustomException(ErrorCode.INVALID_TEST_CASE);
             }
-
             String input = formatInput(separatedStringBySemicolon.get(0));
-
             String output = separatedStringBySemicolon.get(1);
-
             return Judge0RequestDTO.builder()
                     .source_code(solutions.getCode())
                     .language_id(solutions.getLanguageType().getCode())
@@ -215,9 +201,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
      */
     private String formatInput(String input) {
         List<String> stringSplitByComma = Utils.splitStringByComma(input);
-
         List<String> result = Utils.splitStringBySpace(stringSplitByComma);
-
         return Utils.joinListWithNewLine(result);
     }
 
@@ -237,54 +221,35 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
             List<SubmissionResult> submissionResults,
             User submitUser) {
         problemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
-
         problem.getProblemSubmissions().add(problemSubmission);
-
         double totalTestCases = submissionResults.size();
-
         long passedTestCases = submissionResults.stream()
                 .filter(result -> ProblemResult.ACCEPTED.getDisplayName().equals(result.getSubmitResult()))
                 .count();
-
         double totalTime = 0;
-
         double totalMemory = 0;
-
         for (SubmissionResult submissionResult : submissionResults) {
             totalTime += submissionResult.getTime();
             totalMemory += submissionResult.getMemory();
         }
-
         double avarageTime = 0;
-
         double avarageMemory = 0;
-
         if (totalTime > 0)
             avarageTime = (totalTime / totalTestCases);
-
         if (totalMemory > 0)
             avarageMemory = (totalMemory / totalTestCases);
-
         double score = (passedTestCases / totalTestCases) * problem.getTotalScore();
-
         problemSubmission.setScore(score);
-
         problemSubmission.setTime(avarageTime);
-
         problemSubmission.setMemory(avarageMemory);
-
         if (passedTestCases == totalTestCases) {
             problemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
         } else {
             problemSubmission.setResult(ProblemResult.WRONG_ANSWER.getDisplayName());
         }
-
         problem.getProblemSubmissions().add(problemSubmission);
-
         problemRepository.save(problem);
-
         updateUserPoint(problem, submitUser, score);
-
         return problemSubmission;
     }
 
@@ -298,7 +263,6 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     private void updateUserPoint(Problem problem, User submitUser, double score) {
         List<ProblemSubmission> existedSubmission = problemSubmissionRepository.findByProblemAndUser(problem,
                 submitUser);
-
         if (existedSubmission.isEmpty()) { // Save new score
             submitUser.setTotalSubmissionPoint(submitUser.getTotalSubmissionPoint() + score);
         } else { // Save highest score
@@ -308,7 +272,6 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
                     .orElse(existedSubmission.get(0))
                     .getScore());
         }
-
         userRepository.save(submitUser);
     }
 
@@ -322,10 +285,8 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
      */
     @Override
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
-        User submitUser = authContext.getUserAuthenticated();
-
+        User submitUser = authContext.getCurrentUserEntityLogin();
         Problem existedProblem = getExistedProblem(id);
-
         return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser)
                 .map(problemSubmissonMapper::toDTO);
     }
@@ -340,22 +301,21 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     @Override
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
         ProblemSubmission existedProblemSubmission = getExistedProblemSubmission(problemSubmissionId);
-
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
 
-    private void checkAuthorPermission(User author, Problem problem) {
+    private void checkAuthorPermission(Problem problem, User author) {
         if (problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
-            throw new CustomException("Yêu cầu không hợp lệ", HttpStatus.BAD_REQUEST.value());
+            throw new CustomException(ErrorCode.WRONG_AUTHOR);
         }
     }
 
     private Problem getExistedProblem(UUID id) {
-        return problemRepository.findById(id).orElseThrow(() -> new NotFoundException("Bài test không tồn tại!"));
+        return problemRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROBLEM_NOT_FOUND));
     }
 
     private ProblemSubmission getExistedProblemSubmission(UUID id) {
         return problemSubmissionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Bài nộp không tồn tại!"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBMISSION_NOT_FOUND));
     }
 }

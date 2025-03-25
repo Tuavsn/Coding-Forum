@@ -19,7 +19,7 @@ public class NotifyServiceImpl extends BaseServiceImpl<Notify, NotifyResponseDTO
     private final NotifyMapper notifyMapper;
 
     public NotifyServiceImpl(NotifyRepository notifyRepository, NotifyMapper notifyMapper) {
-        super(notifyRepository, notifyMapper);
+        super(notifyRepository, notifyMapper, Notify.class);
         this.notifyRepository = notifyRepository;
         this.notifyMapper = notifyMapper;
     }

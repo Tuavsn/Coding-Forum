@@ -19,7 +19,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, GroupResponseDTO, G
     private final GroupMapper groupMapper;
 
     public GroupServiceImpl(GroupRepository groupRepository, GroupMapper groupMapper) {
-        super(groupRepository, groupMapper);
+        super(groupRepository, groupMapper, Group.class);
         this.groupRepository = groupRepository;
         this.groupMapper = groupMapper;
     }

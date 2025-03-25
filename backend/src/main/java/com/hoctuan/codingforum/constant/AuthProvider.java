@@ -6,11 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AuthProvider {
-    LOCAL(0, "local", "Hệ thống"),
-    GOOGLE(1, "google", "Google"),
-    GITHUB(2, "github", "Github");
+    LOCAL("local", "Local"),
+    GOOGLE("google", "Google"),
+    LOCAL_AND_GOOGLE("local_and_google", "Local and Google");
 
-    private final int code;
     private final String name;
     private final String displayName;
 }

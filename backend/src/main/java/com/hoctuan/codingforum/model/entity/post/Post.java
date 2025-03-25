@@ -26,8 +26,8 @@ public class Post extends BaseEntity {
     @ManyToMany
     @JoinTable(
         name = "post_topic",
-        joinColumns = @JoinColumn(name = "id"),
-        inverseJoinColumns = @JoinColumn(name = "id")
+        joinColumns = @JoinColumn(name = "post_id"),
+        inverseJoinColumns = @JoinColumn(name = "topic_id")
     )
     private Set<Topic> topics;
 
@@ -41,9 +41,10 @@ public class Post extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PostStatus status = PostStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<PostImage> postImage;
 

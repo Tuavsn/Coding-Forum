@@ -8,10 +8,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SubmitType {
-    SYNCHRONOUS("synchronous"),
-    ASYNCHRONOUS("asynchronous");
+    SYNCHRONOUS("synchronous", "Synchronous"),
+    ASYNCHRONOUS("asynchronous", "Asynchronous");
 
     private final String name;
+    private final String displayName;
 
     public static SubmitType getByName(String name) {
         return Arrays.stream(values())

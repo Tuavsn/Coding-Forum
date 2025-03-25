@@ -24,31 +24,27 @@ public class OpenAPIConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-            .info(
-                new Info().title(appConstant.getTitle())
-                    .version(appConstant.getVersion())
-                    .description(appConstant.getDescription())
-            ).servers(
-                List.of(
-                    new Server()
-                            .url(appConstant.getHostServerUrl())
-                            .description("Host Server"),
-                    new Server()
-                            .url(appConstant.getLocalServerUrl())
-                            .description("Local Server")
-                )
-            ).components(
-                new Components().addSecuritySchemes(
-                    "bearerAuth",
-                    new SecurityScheme()
-                            .type(SecurityScheme.Type.HTTP)
-                            .scheme("bearer")
-                            .bearerFormat("JWT")
-                )
-            ).security(
-                List.of(
-                        new SecurityRequirement().addList("bearerAuth")
-                )
-            );
+                .info(
+                        new Info().title(appConstant.getTitle())
+                                .version(appConstant.getVersion())
+                                .description(appConstant.getDescription()))
+                .servers(
+                        List.of(
+                                new Server()
+                                        .url(appConstant.getHostServerUrl())
+                                        .description("Host Server"),
+                                new Server()
+                                        .url(appConstant.getLocalServerUrl())
+                                        .description("Local Server")))
+                .components(
+                        new Components().addSecuritySchemes(
+                                "bearerAuth",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")))
+                .security(
+                        List.of(
+                                new SecurityRequirement().addList("bearerAuth")));
     }
 }

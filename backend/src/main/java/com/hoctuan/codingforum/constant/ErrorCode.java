@@ -1,50 +1,34 @@
 package com.hoctuan.codingforum.constant;
 
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
-    // Common
-    SUCCESS(0, "Success"),
-    FAIL(1, "Fail"),
-    NOT_FOUND(2, "Not found"),
-    UNAUTHORIZED(3, "Unauthorized"),
-    FORBIDDEN(4, "Forbidden"),
-    INVALID_PARAM(5, "Invalid param"),
-    INVALID_TOKEN(6, "Invalid token"),
-    INVALID_PASSWORD(7, "Invalid password"),
-    INVALID_EMAIL(8, "Invalid email"),
-    INVALID_USERNAME(9, "Invalid username"),
-    INVALID_PHONE(10, "Invalid phone"),
-    INVALID_CAPTCHA(11, "Invalid captcha"),
-    INVALID_FILE(12, "Invalid file"),
-    INVALID_GROUP(13, "Invalid group"),
-    INVALID_TOPIC(14, "Invalid topic"),
-    INVALID_POST(15, "Invalid post"),
-    INVALID_COMMENT(16, "Invalid comment"),
-    INVALID_MESSAGE(17, "Invalid message"),
-    INVALID_USER(18, "Invalid user"),
-    INVALID_ROLE(19, "Invalid role"),
-    INVALID_PERMISSION(20, "Invalid permission"),
-    INVALID_STATUS(21, "Invalid status"),
-    INVALID_TYPE(22, "Invalid type"),
-    INVALID_DATE(23, "Invalid date"),
-    INVALID_TIME(24, "Invalid time"),
-    INVALID_URL(25, "Invalid url"),
-    INVALID_TITLE(26, "Invalid title"),
-    INVALID_CONTENT(27, "Invalid content"),
-    INVALID_DESCRIPTION(28, "Invalid description"),
-    INVALID_IMAGE(29, "Invalid image"),
-    INVALID_AVATAR(30, "Invalid avatar"),
-    INVALID_NAME(31, "Invalid name"),
-    INVALID_FULLNAME(32, "Invalid fullname"),
-    INVALID_BIRTHDAY(33, "Invalid birthday");
+    UNAUTHORIZED("Unauthorized", HttpStatus.UNAUTHORIZED),
+    ACCESS_DENIED("Access denied", HttpStatus.NOT_ACCEPTABLE),
+    WRONG_AUTHOR("Your are not the author", HttpStatus.BAD_REQUEST),
+    EMAIL_ALREADY_EXISTED("Email already existed", HttpStatus.BAD_REQUEST),
+    NOT_FOUND("No % found", HttpStatus.NOT_FOUND),
+    USER_NOT_FOUND("User not found", HttpStatus.NOT_FOUND),
+    POST_NOT_FOUND("Post not found", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_FOUND("Comment not found", HttpStatus.NOT_FOUND),
+    PROBLEM_NOT_FOUND("Problem not found", HttpStatus.NOT_FOUND),
+    SUBMISSION_NOT_FOUND("Submission not found", HttpStatus.NOT_FOUND),
+    INVALID_TEST_CASE("Invalid test case", HttpStatus.BAD_REQUEST),
+    UNSUPPORTED_SUBMIT_TYPE("Unsupported submit type", HttpStatus.BAD_REQUEST),
+    INVALID_ACCOUNT("Invalid account", HttpStatus.BAD_REQUEST),
+    INVALID_USERNAME_OR_PASSWORD("Account or password is incorrect.", HttpStatus.UNAUTHORIZED),
+    NOT_ACCEPTABLE("Your account has been denied access.", HttpStatus.NOT_ACCEPTABLE),
+    IS_DELETED_ACCOUNT("Your account has been deleted.", HttpStatus.BAD_REQUEST),
+    IS_NOT_ACTIVE_ACCOUNT("Your account has not been activated.", HttpStatus.BAD_REQUEST),
+    UNSUPPORTED_FILE_TYPE("Unsupported file type.", HttpStatus.BAD_REQUEST);
 
-    private final int code;
     private final String message;
-    private final HttpStatusCode httpStatus;
+    private final HttpStatus httpStatus;
 
-    ErrorCode(int code, String message, HttpStatusCode httpStatus) {
-        this.code = code;
+    ErrorCode(String message, HttpStatus httpStatus) {
         this.message = message;
         this.httpStatus = httpStatus;
     }

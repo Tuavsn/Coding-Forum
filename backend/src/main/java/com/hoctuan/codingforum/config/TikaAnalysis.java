@@ -1,10 +1,10 @@
 package com.hoctuan.codingforum.config;
 
 import org.apache.tika.Tika;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hoctuan.codingforum.constant.ErrorCode;
 import com.hoctuan.codingforum.exception.CustomException;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class TikaAnalysis {
                 return;
             }
         }
-        throw new CustomException("Không hỗ trợ định dạng file này: " + fileType, HttpStatus.BAD_REQUEST.value());
+        throw new CustomException(ErrorCode.UNSUPPORTED_FILE_TYPE);
     }
 
     private String getContentType(MultipartFile file) throws IOException {

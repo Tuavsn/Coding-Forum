@@ -1,5 +1,5 @@
 'use client'
-import { Avatar, Button, Dropdown, Input, MenuProps, message } from "antd";
+import { Avatar, Button, Dropdown, Input, MenuProps, message, Spin } from "antd";
 import { 
     HomeOutlined, 
     CodeOutlined, 
@@ -8,7 +8,8 @@ import {
     SearchOutlined,
     UserOutlined,
     CaretDownOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    PlusOutlined
 } from "@ant-design/icons"
 import { FloatButton } from "antd";
 import { useContext, useEffect, useState } from "react";
@@ -25,7 +26,7 @@ import ProfileBadge from "../common/ProfileBadge";
 export default function CustomHeader() {
     const {auth, setAuth} = useContext(AuthContext)
     
-    const {data} = useQuery('getUserInfo', getInfo)
+    const {data, isLoading} = useQuery('getUserInfo', getInfo)
 
     const path = usePathname()
 
@@ -132,7 +133,7 @@ export default function CustomHeader() {
                         </div>
                     </div>
                     {/* Account */}
-                    {auth ? (
+                    {isLoading ? <Spin size="default" className="mx-10" /> : auth ? (
                         <Dropdown menu={{ items: dropDownItems }}>
                             <div className="flex items-center gap-2 mx-6 cursor-pointer">
                                 <Avatar size="large" src={auth.avatar} />
@@ -159,12 +160,6 @@ export default function CustomHeader() {
                     )}
                 </div>
             </header>
-            <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
-                <FloatButton.BackTop 
-                    tooltip={<div>Trở về đầu trang</div>}
-                    visibilityHeight={0} 
-                />
-            </FloatButton.Group>
         </>
     )
 }

@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AccountGender {
-    MALE("male", "Male"),
-    FEMALE("female", "Female");
+public enum TokenType {
+    ACCESS_TOKEN("access_token", "Access Token"),
+    REFRESH_TOKEN("refresh_token", "Refresh Token");
 
-    private String name;
+    private final String name;
     private final String displayName;
 }
