@@ -28,8 +28,10 @@ public class AppConstant {
     private RSAPublicKey publicKey;
     @Value("${spring.jwt.rsa.private-key}")
     private RSAPrivateKey privateKey;
-    @Value("${spring.cookie.expires-time}")
-    private Integer expiresTime;
+    @Value("${spring.jwt.access-token.expire-time}")
+    private Integer accessTokenExpireTime;
+    @Value("${spring.jwt.refresh-token.expire-time}")
+    private Integer refreshTokenExpireTime;
 
     @Value("${bcrypt.log-rounds}")
     private Integer logRounds;

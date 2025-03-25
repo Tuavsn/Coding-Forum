@@ -1,4 +1,5 @@
-const server_url = process.env.NEXT_PUBLIC_API_URL || 'https://codingforumapi.trinhhoctuan.io.vn'
+const server_url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+// const server_url = process.env.NEXT_PUBLIC_API_URL || 'https://codingforumapi.trinhhoctuan.io.vn'
 
 export const getPublicData = async(url: string) => {
     const headers = {
@@ -13,7 +14,7 @@ export const getPublicData = async(url: string) => {
 }
 
 export const getData = async(url: string) => {
-    const token = localStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('accessToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -26,7 +27,7 @@ export const getData = async(url: string) => {
 }
 
 export const postData = async(url: string, post: object) => {
-    const token = localStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('accessToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -40,7 +41,7 @@ export const postData = async(url: string, post: object) => {
 }
 
 export const putData = async(url: string, put: object) => {
-    const token = localStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('accessToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -54,7 +55,7 @@ export const putData = async(url: string, put: object) => {
 }
 
 export const patchData = async(url: string, patch: object) => {
-    const token = localStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('accessToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -68,7 +69,7 @@ export const patchData = async(url: string, patch: object) => {
 }
 
 export const deleteData = async(url: string) => {
-    const token = localStorage.getItem('userToken') || undefined;
+    const token = localStorage.getItem('accessToken') || undefined;
     const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })

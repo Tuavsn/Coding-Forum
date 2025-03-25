@@ -13,6 +13,7 @@ import com.hoctuan.codingforum.constant.AccountStatus;
 import com.hoctuan.codingforum.constant.AppConstant;
 import com.hoctuan.codingforum.constant.AuthProvider;
 import com.hoctuan.codingforum.constant.ErrorCode;
+import com.hoctuan.codingforum.constant.TokenType;
 import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.model.dto.auth.AuthRequestDTO;
 import com.hoctuan.codingforum.model.dto.auth.AuthResponseDTO;
@@ -61,7 +62,9 @@ public class AuthServiceImpl implements AuthService {
                                 .address(user.getAddress())
                                 .phone(user.getPhone())
                                 .status(user.getStatus())
-                                .token(tokenService.buildToken(user, request))
+                                .token(
+                                    tokenService.buildToken(user, TokenType.ACCESS_TOKEN, request)
+                                )
                                 .createdAt(user.getCreatedAt())
                                 .updatedAt(user.getUpdatedAt())
                                 .createdBy(user.getCreatedBy())
@@ -93,7 +96,9 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.saveAndFlush(User.builder()
                 .email(authRequestDTO.getEmail())
                 .username(authRequestDTO.getUsername())
-                .password(BCrypt.hashpw(authRequestDTO.getPassword(), BCrypt.gensalt(appConstant.getLogRounds())))
+                .password(
+                    BCrypt.hashpw(authRequestDTO.getPassword(), BCrypt.gensalt(appConstant.getLogRounds()))
+                )
                 .authProvider(AuthProvider.LOCAL)
                 .status(AccountStatus.ACTIVE)
                 .role(AccountRole.USER)

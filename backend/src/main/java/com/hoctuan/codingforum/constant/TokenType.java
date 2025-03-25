@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AuthProvider {
-    LOCAL("local", "Local"),
-    GOOGLE("google", "Google"),
-    LOCAL_AND_GOOGLE("local_and_google", "Local and Google");
+public enum TokenType {
+    ACCESS_TOKEN("access_token", "Access Token"),
+    REFRESH_TOKEN("refresh_token", "Refresh Token");
 
     private final String name;
     private final String displayName;

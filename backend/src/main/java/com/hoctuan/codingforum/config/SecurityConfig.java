@@ -1,5 +1,6 @@
 package com.hoctuan.codingforum.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -23,34 +24,41 @@ public class SecurityConfig {
     private final AppConstant appConstant;
     private final OAuth2SuccessHandler successHandler;
     private final OAuth2FailureHandler failureHandler;
-    private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
+    // private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
     private final CorsConfigurationSource corsConfigurationSource;
+    @Value("${spring.api.prefix}")
+    private String apiPrefix;
 
     public SecurityConfig(AppConstant appConstant, OAuth2SuccessHandler successHandler,
-            OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint,
+            // OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint,
+            OAuth2FailureHandler failureHandler,
             CorsConfigurationSource corsConfigurationSource) {
         this.appConstant = appConstant;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
-        this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
+        // this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
         this.corsConfigurationSource = corsConfigurationSource;
     }
 
-    private String[] whiteList = {
+    private String[] whiteList() {
+        return new String[] {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/api/auth/**",
-            "/api/oauth2/**",
+            apiPrefix + "/auth/**",
+            apiPrefix + "/oauth2/**",
             "/oauth2/**",
+        };
     };
 
-    private String[] getWhiteList = {
-            "/api/topic/**",
-            "/api/post/**",
-            "/api/comment/**",
-            "/api/user/**",
-            "/api/problem/**"
+    private String[] getWhiteList() {
+        return new String[] {
+            apiPrefix + "/topic/**",
+            apiPrefix + "/post/**",
+            apiPrefix + "/comment/**",
+            apiPrefix + "/user/**",
+            apiPrefix + "/problem/**"
+        };
     };
 
     @Bean
@@ -67,8 +75,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(whiteList).permitAll();
-                    auth.requestMatchers(HttpMethod.GET, getWhiteList).permitAll();
+                    auth.requestMatchers(whiteList()).permitAll();
+                    auth.requestMatchers(HttpMethod.GET, getWhiteList()).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(auth -> {
@@ -81,10 +89,10 @@ public class SecurityConfig {
                 })
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2
-                            .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
+                            // .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
                             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()));
                 })
-                .exceptionHandling(handler -> handler.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
+                // .exceptionHandling(handler -> handler.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
                 .build();
     }
 }
