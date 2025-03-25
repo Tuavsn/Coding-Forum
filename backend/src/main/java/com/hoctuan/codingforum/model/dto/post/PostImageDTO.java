@@ -1,5 +1,6 @@
 package com.hoctuan.codingforum.model.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoctuan.codingforum.common.BaseResponseDTO;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,8 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class PostImageDTO extends BaseResponseDTO {
+    @JsonIgnore
+    private PostRequestDTO post;
+
     private String image;
 }

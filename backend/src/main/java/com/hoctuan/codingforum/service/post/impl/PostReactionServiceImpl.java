@@ -40,7 +40,7 @@ public class PostReactionServiceImpl implements PostReactionService {
         }, () -> {
             User user = User.builder().id(userId).build();
             Post post = Post.builder().id(postId).build();
-            postReactionRepository.save(PostReaction.builder().user(user).post(post).build());
+            postReactionRepository.save(PostReaction.builder().user(user).post(post).reactionType(type).build());
         });
     }
 }

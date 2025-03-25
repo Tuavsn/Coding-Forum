@@ -15,6 +15,7 @@ interface Props {
     allowLike?: boolean;
     allowDislike?: boolean;
     allowComment?: boolean;
+    isPostDetail?: boolean;
 }
 
 export default function PostAction(props: Props) {
@@ -26,6 +27,7 @@ export default function PostAction(props: Props) {
         allowLike,
         allowDislike,
         allowComment,
+        isPostDetail
     } = props;
 
     const {
@@ -48,7 +50,7 @@ export default function PostAction(props: Props) {
         toggleModal,
         handleInputChange,
         postContent
-    } = usePost({ post})
+    } = usePost({ post, isPostDetail })
 
     return (
         <>
@@ -123,17 +125,17 @@ export default function PostAction(props: Props) {
                         </Popconfirm>
                     </Tooltip>    
                 )}
+                <PostModal
+                    isOpen={isOpenModal}
+                    postContent={postContent}
+                    toggleAction={toggleModal}
+                    onChange={handleInputChange}
+                    onUpdate={handleUpdate}
+                    onCreate={handleCreate}
+                    isCreateLoading={postCreateLoading}
+                    isUpdateLoading={postUpdateLoading}
+                />
             </Space>
-            <PostModal
-                isOpen={isOpenModal}
-                postContent={postContent}
-                toggleAction={toggleModal}
-                onChange={handleInputChange}
-                onUpdate={handleUpdate}
-                onCreate={handleCreate}
-                isCreateLoading={postCreateLoading}
-                isUpdateLoading={postUpdateLoading}
-            />
         </>
     )
 }

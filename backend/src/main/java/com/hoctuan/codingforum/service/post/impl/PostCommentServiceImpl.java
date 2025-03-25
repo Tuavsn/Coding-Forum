@@ -63,7 +63,7 @@ public class PostCommentServiceImpl
      * @return
      */
     private void validateTheAuthor(PostComment postComment, UUID userId) {
-        if (postComment.getUser().getId() != userId) {
+        if (!postComment.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.WRONG_AUTHOR);
         }
     }

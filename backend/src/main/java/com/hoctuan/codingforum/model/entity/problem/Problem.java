@@ -38,6 +38,7 @@ public class Problem extends BaseEntity {
     private String thumbnail;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProblemType difficulty;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)

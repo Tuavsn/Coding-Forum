@@ -42,6 +42,7 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
         UUID userId = UUID.fromString(authContext.getCurrentUserLogin()
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
         dto.setUser(UserRequestDTO.builder().id(userId).build());
+        dto.getPostImage().forEach(image -> image.setPost(dto));
         return super.save(dto);
 
         // if (dto.getPostImage().isEmpty()) {
@@ -109,7 +110,7 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
      * @return
      */
     private void validateTheAuthor(Post post, UUID userId) {
-        if (post.getUser().getId() != userId) {
+        if (!post.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.WRONG_AUTHOR);
         }
     }

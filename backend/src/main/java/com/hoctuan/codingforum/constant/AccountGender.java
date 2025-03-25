@@ -6,10 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AccountGender {
-    MALE(0, "male", "Nam"),
-    FEMALE(1, "female", "Nữ");
+    MALE("male", "Male"),
+    FEMALE("female", "Female");
 
-    private int code;
     private String name;
     private final String displayName;
 }

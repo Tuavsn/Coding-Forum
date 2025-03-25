@@ -12,6 +12,8 @@ import com.hoctuan.codingforum.model.entity.account.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -42,6 +44,7 @@ public class ProblemSubmission extends BaseEntity {
     private String code;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProblemSubmissionLanguageType languageType;
 
     @Column(nullable = false)

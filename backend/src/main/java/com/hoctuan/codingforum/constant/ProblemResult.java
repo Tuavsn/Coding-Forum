@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ProblemResult {
-    IN_QUEUE(1, "In Queue", "Đang trong hàng đợi"),
-    PROCESSING(2, "Processing", "Đang xử lý"),
-    ACCEPTED(3, "Accepted", "Kết quả hợp lệ"),
-    WRONG_ANSWER(4, "Wrong answer", "Sai kết quả"),
-    TIME_LIMIT(5, "Time Limit Exceeded", "Vượt quá thời gian cho phép"),
-    COMPILE_ERROR(6, "Compilation error", "Biên dịch lỗi");
+    IN_QUEUE(0, "in_queue", "In Queue"),
+    PROCESSING(1, "processing", "Processing"),
+    ACCEPTED(2, "accepted", "Accepted"),
+    WRONG_ANSWER(3, "wrong_answer", "Wrong Answer"),
+    TIME_LIMIT(4, "time_limit_exceeded", "Time Limit Exceeded"),
+    COMPILE_ERROR(5, "compilation_error", "Compliation Error");
 
     private final int code;
     private final String name;
@@ -21,17 +21,9 @@ public enum ProblemResult {
 
     public static String getDisplayNameByCode(int code) {
         return Arrays.stream(values())
-                     .filter(result -> result.getCode() == code)
-                     .map(ProblemResult::getDisplayName)
-                     .findFirst()
-                     .orElse("Unknown Code"); // Trả về "Unknown Code" nếu không tìm thấy
-    }
-
-    public static String getNameByCode(int code) {
-        return Arrays.stream(values())
-                     .filter(result -> result.getCode() == code)
-                     .map(ProblemResult::getName)
-                     .findFirst()
-                     .orElse("Unknown Code"); // Trả về "Unknown Code" nếu không tìm thấy
+                .filter(result -> result.getCode() == code)
+                .map(ProblemResult::getDisplayName)
+                .findFirst()
+                .orElse("Unknown Code"); // Trả về "Unknown Code" nếu không tìm thấy
     }
 }

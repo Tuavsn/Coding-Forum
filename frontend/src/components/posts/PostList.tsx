@@ -1,3 +1,4 @@
+'use client'
 import { Post } from "@/libs/types";
 import { formatDate, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, UserOutlined } from "@ant-design/icons";
@@ -6,24 +7,37 @@ import Link from "next/link";
 import React from "react";
 import List from "../common/List";
 import PostAction from "./PostAction";
+import usePost from "@/hooks/usePost";
+import PostModal from "./PostModal";
 
-interface postList {
+interface Props {
     posts: Post[];
 }
 
-export default function PostList({posts}: postList) {
+export default function PostList(props: Props) {
 
-    const sortedPost = [...posts].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const { posts } = props;
+
+    const {
+        isOpenModal,
+        postContent,
+        toggleModal,
+        handleInputChange,
+        handleUpdate,
+        handleCreate,
+        postCreateLoading,
+        postUpdateLoading
+    } = usePost({});
     
     return (
         <>
-            <Divider orientation="left"><p>{sortedPost.length} Bài Post</p></Divider>
+            <Divider orientation="left"><p>{posts.length} Bài Post</p></Divider>
             <Card className="shadow-md">
                 <List
                     split={true}
                     bordered={true}
                     itemLayout="vertical"
-                    dataSource={sortedPost}
+                    dataSource={posts}
                     renderItem={(item: Post) => (
                         <div className="flex items-center gap-4">
                             <div className="flex-1 p-2 min-w-0">
@@ -68,6 +82,20 @@ export default function PostList({posts}: postList) {
                                     allowEdit={true}
                                     allowDelete={true}
                                 />
+                                
+                                {/* **TODO: Implement zustand for post modal */}
+                                {/* <PostModal
+                                    isOpen={isOpenModal}
+                                    postContent={postContent}
+                                    toggleAction={toggleModal}
+                                    onChange={handleInputChange}
+                                    onUpdate={handleUpdate}
+                                    onCreate={handleCreate}
+                                    isCreateLoading={postCreateLoading}
+                                    isUpdateLoading={postUpdateLoading}
+                                /> */}
+
+
                             </div>
                             {item.postImage && (
                                 <img

@@ -6,10 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PostStatus {
-    ACTIVE(0, "actived", "Đang hoạt động"),
-    CLOSED(1, "closed", "Đã đóng");
+    ACTIVE("active", "Active"),
+    CLOSED("close", "Close");
 
-    private final int code;
     private final String name;
     private final String displayName;
 }

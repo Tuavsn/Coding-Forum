@@ -6,11 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AccountStatus {
-    ACTIVE(0, "active", "Đã kích hoạt"),
-    INACTIVE(1, "Inactive", "Chưa kích hoạt"),
-    BLOCK(2, "block", "Bị khoá");
+    ACTIVE("active", "Active"),
+    INACTIVE("Inactive", "Inactive"),
+    BLOCK("block", "Block");
 
-    private final int code;
     private final String name;
     private final String displayName;
 }

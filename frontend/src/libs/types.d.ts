@@ -68,6 +68,7 @@ declare type Post = {
     postImage: PostImage[];
     postComment: PostComment[];
     postReactions: PostReaction[];
+    topic: Topic[];
 }
 
 declare type PostComment = {

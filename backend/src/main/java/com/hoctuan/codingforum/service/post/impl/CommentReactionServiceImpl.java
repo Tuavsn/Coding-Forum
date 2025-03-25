@@ -40,7 +40,7 @@ public class CommentReactionServiceImpl implements CommentReactionService {
         }, () -> {
             User user = User.builder().id(userId).build();
             PostComment comment = PostComment.builder().id(commentId).build();
-            commentReactionRepository.save(CommentReaction.builder().user(user).postComment(comment).build());
+            commentReactionRepository.save(CommentReaction.builder().user(user).postComment(comment).reactionType(type).build());
         });
     }
 }

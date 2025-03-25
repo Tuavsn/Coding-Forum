@@ -31,5 +31,6 @@ public class Notify extends BaseEntity {
     private String link;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @Enumerated(EnumType.STRING)
     private NotifyStatus status;
 }
