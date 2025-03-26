@@ -5,6 +5,8 @@ import { Post } from "@/libs/types";
 import { DeleteOutlined, DislikeFilled, DislikeOutlined, EditOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined } from "@ant-design/icons";
 import { Button, Divider, Popconfirm, Space, Tooltip } from "antd";
 import PostModal from "./PostModal";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContextProvider";
 
 interface Props {
     // Post id
@@ -19,6 +21,8 @@ interface Props {
 }
 
 export default function PostAction(props: Props) {
+
+    const { auth } = useContext(AuthContext);
 
     const {
         post,
@@ -102,7 +106,7 @@ export default function PostAction(props: Props) {
                 )}
                 <Divider type="vertical" />
                 {/* Edit button */}
-                {allowEdit && (
+                {allowEdit && post?.user.id === auth?.id && (
                     <Tooltip title="Chỉnh sửa">
                         <Button
                             type="text"
@@ -113,7 +117,7 @@ export default function PostAction(props: Props) {
                 )}
                 <Divider type="vertical" />
                 {/* Delete button */}
-                {allowDelete && (
+                {allowDelete && post?.user.id === auth?.id && (
                     <Tooltip title="Xóa">
                         <Popconfirm
                             title="Bạn có chắc muốn xóa không?"

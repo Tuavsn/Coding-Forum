@@ -19,8 +19,8 @@ export default async function HomePage(props: {
     const searchParams = await props.searchParams;
 
     const pageable: PageableRequest = {
-        page: searchParams.pageNumber ? parseInt(searchParams.page as string, 10) - 1 : 0,
-        size: searchParams.pageSize ? parseInt(searchParams.size as string, 10) : 5,
+        page: searchParams.page ? parseInt(searchParams.page as string, 10) - 1 : 0,
+        size: searchParams.size ? parseInt(searchParams.size as string, 10) : 5,
         sort: typeof searchParams.sort === 'string' ? searchParams.sort : 'createdAt,desc',
         search: typeof searchParams.search === 'string' ? searchParams.search : ''
     }
@@ -30,38 +30,39 @@ export default async function HomePage(props: {
      */
     const data = (await getPost(pageable)).Data;
 
-    const post: Post = data.content;
+    const posts: Post[] = data.content;
 
     const pageableInfo: PageableInfo = {
         totalElements: data.totalElements,
         totalPages: data.totalPages
     }
 
-    const sortedPost = [...data.content].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const sortedPost = [...posts].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return (
         <div>
             <BreadCrumb type="post" />
             <HomeWelcomeCard />
             <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-3">
+                {/* <div className="col-span-3"> */}
+                <div className="col-span-4">
                     <PostList
                         posts={sortedPost}
                         pageableInfo={pageableInfo}
                     />
                 </div>
-                <div>
+                {/* <div>
                     <Divider orientation="left"><p>Bộ lọc</p></Divider>
                     <TopicList />
                     <Divider orientation="left"><p>Thống kê</p></Divider>
-                    {/* <CommonStatistics
+                    <CommonStatistics
                         topicCount={topics.length}
                         postCount={topics[0].posts.length}
                         userCount={topics[0].posts[0].user.username.length}
                         reactionCount={topics[0].posts[0].postReactions.length}
                         commentCount={topics[0].posts[0].postComment.length}
-                    /> */}
-                </div>
+                    />
+                </div> */}
             </div>
             <GroupFloatButton />
         </div>
