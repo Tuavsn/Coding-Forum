@@ -10,7 +10,12 @@ export default function GroupFloatButton() {
     const path = usePathname();
 
     const {
+        isOpenModal,
+        postContent,
         toggleModal,
+        handleInputChange,
+        handleCreate,
+        postCreateLoading,
     } = usePost({});
 
     return (
@@ -34,6 +39,14 @@ export default function GroupFloatButton() {
                     visibilityHeight={0} 
                 />
             </FloatButton.Group>
+            <PostModal
+                isOpen={isOpenModal}
+                postContent={postContent}
+                toggleAction={toggleModal}
+                onChange={handleInputChange}
+                onCreate={handleCreate}
+                isCreateLoading={postCreateLoading}
+            />
         </>
     )
 }

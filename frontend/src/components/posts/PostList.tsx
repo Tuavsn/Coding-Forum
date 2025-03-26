@@ -1,33 +1,33 @@
 'use client'
-import { Post } from "@/libs/types";
+import { PageableInfo, Post } from "@/libs/types";
 import { formatDate, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Divider, Typography } from "antd";
+import { Avatar, Card, Divider, Pagination, Typography } from "antd";
+import type { PaginationProps } from "antd";
 import Link from "next/link";
-import React from "react";
 import List from "../common/List";
 import PostAction from "./PostAction";
-import usePost from "@/hooks/usePost";
-import PostModal from "./PostModal";
+import { useRouter } from "next/navigation";
+
 
 interface Props {
     posts: Post[];
+    pageableInfo: PageableInfo;
 }
 
 export default function PostList(props: Props) {
 
-    const { posts } = props;
+    const { posts, pageableInfo } = props;
 
-    const {
-        isOpenModal,
-        postContent,
-        toggleModal,
-        handleInputChange,
-        handleUpdate,
-        handleCreate,
-        postCreateLoading,
-        postUpdateLoading
-    } = usePost({});
+    const router = useRouter();
+
+    const onchange: PaginationProps['onChange'] = (pageNumber, pageSize) => {
+        let params = new URLSearchParams({
+            page: pageNumber.toString(),
+            size: pageSize.toString()
+        }).toString();
+        router.push('/?' + params);
+    };
     
     return (
         <>
@@ -82,20 +82,6 @@ export default function PostList(props: Props) {
                                     allowEdit={true}
                                     allowDelete={true}
                                 />
-                                
-                                {/* **TODO: Implement zustand for post modal */}
-                                {/* <PostModal
-                                    isOpen={isOpenModal}
-                                    postContent={postContent}
-                                    toggleAction={toggleModal}
-                                    onChange={handleInputChange}
-                                    onUpdate={handleUpdate}
-                                    onCreate={handleCreate}
-                                    isCreateLoading={postCreateLoading}
-                                    isUpdateLoading={postUpdateLoading}
-                                /> */}
-
-
                             </div>
                             {item.postImage && (
                                 <img
@@ -106,6 +92,17 @@ export default function PostList(props: Props) {
                             )}
                         </div>
                     )}
+                />
+                {/* Pagination */}
+                <Pagination
+                    className="mt-4"
+                    showQuickJumper
+                    showSizeChanger
+                    defaultCurrent={1}
+                    defaultPageSize={5}
+                    pageSizeOptions={['5', '10', '20']}
+                    total={pageableInfo.totalElements}
+                    onChange={onchange}
                 />
             </Card>
         </>
