@@ -159,6 +159,24 @@ declare type SubmissionResult = {
     memory: number;
 }
 
+declare type PageableRequest = {
+    page: number;
+    size: number;
+    sort: string;
+    search: string;
+}
+
+declare type PageableInfo = {
+    totalElements: number;
+    totalPages: number;
+}
+
+declare type ResponseData = {
+    Data: any;
+    Message: string;
+    Status: number;
+}
+
 import { GetProp, UploadProps } from "antd";
 import Password from "antd/es/input/Password";
 import { AccountProvider, AccountStatus, Achievement, Gender, PostStatus, ReactionType } from "./enum";

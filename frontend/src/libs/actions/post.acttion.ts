@@ -1,5 +1,5 @@
-import { deleteData, getData, getPublicData, postData, putData } from "@/utils/FetchData";
-import { Post, PostImage, Topic } from "../types";
+import { deleteData, getPublicData, postData, putData } from "@/utils/FetchData";
+import { PageableRequest, Post, PostImage, ResponseData, Topic } from "../types";
 import { ReactionType } from "../enum";
 
 // Topic
@@ -9,9 +9,10 @@ export const getTopic = async(): Promise<Topic[]> => {
 }
 
 // Post
-export const getPost = async(): Promise<Post[]> => {
-    const result = await getPublicData('api/v1/post');
-    return result.Data;
+export const getPost = async(pageable: PageableRequest): Promise<ResponseData> => {
+    const params = new URLSearchParams(pageable as any).toString();
+    const result = await getPublicData(`api/v1/post/all?${params}`);
+    return result;
 }
 
 export const getPostDetail = async(postId: string | null): Promise<Post> => {
