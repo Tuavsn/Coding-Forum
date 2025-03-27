@@ -44,25 +44,24 @@ export default async function HomePage(props: {
             <BreadCrumb type="post" />
             <HomeWelcomeCard />
             <div className="grid grid-cols-4 gap-4">
-                {/* <div className="col-span-3"> */}
-                <div className="col-span-4">
+                <div className="col-span-3">
                     <PostList
                         posts={sortedPost}
                         pageableInfo={pageableInfo}
                     />
                 </div>
-                {/* <div>
+                <div>
                     <Divider orientation="left"><p>Bộ lọc</p></Divider>
                     <TopicList />
-                    <Divider orientation="left"><p>Thống kê</p></Divider>
-                    <CommonStatistics
+                    {/* <Divider orientation="left"><p>Thống kê</p></Divider> */}
+                    {/* <CommonStatistics
                         topicCount={topics.length}
                         postCount={topics[0].posts.length}
                         userCount={topics[0].posts[0].user.username.length}
                         reactionCount={topics[0].posts[0].postReactions.length}
                         commentCount={topics[0].posts[0].postComment.length}
-                    />
-                </div> */}
+                    /> */}
+                </div>
             </div>
             <GroupFloatButton />
         </div>

@@ -81,6 +81,8 @@ public class PostServiceImpl extends BaseServiceImpl<Post, PostResponseDTO, Post
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND));
         // check if user is post author
         validateTheAuthor(existedPost, userId);
+        dto.setUser(UserRequestDTO.builder().id(userId).build());
+        dto.getPostImage().forEach(image -> image.setPost(dto));
         return postMapper.toDTO(
                 postRepository.save(postMapper.updateModel(dto, existedPost)));
     }

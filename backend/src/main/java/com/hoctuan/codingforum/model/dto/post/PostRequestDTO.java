@@ -22,7 +22,7 @@ import com.hoctuan.codingforum.model.dto.user.UserRequestDTO;
 public class PostRequestDTO extends BaseRequestDTO {
     private UserRequestDTO user;
     
-    private Set<TopicRequestDTO> topic;
+    private Set<TopicRequestDTO> topics;
 
     @NotBlank(message = "Bạn chưa nhập header")
     @Size(max = 100, message = "Header quá dài")

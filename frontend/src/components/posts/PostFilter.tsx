@@ -66,7 +66,7 @@ const PostFilter: React.FC<PostFilterProps> = ({ onFilter, availableTopics }) =>
 
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
         {/* Keyword Filter */}
         <Input
           placeholder="Search by keyword"
@@ -80,12 +80,10 @@ const PostFilter: React.FC<PostFilterProps> = ({ onFilter, availableTopics }) =>
           placeholder="Select category"
           value={filters.category}
           onChange={handleCategoryChange}
-          className="w-full"
+          className="w-full mt-2"
         >
-          <Option value="">All Categories</Option>
-          <Option value="technology">Technology</Option>
-          <Option value="lifestyle">Lifestyle</Option>
-          <Option value="education">Education</Option>
+          <Option value="DESC">Mới nhất</Option>
+          <Option value="ASC">Cũ nhất</Option>
         </Select>
       </div>
 

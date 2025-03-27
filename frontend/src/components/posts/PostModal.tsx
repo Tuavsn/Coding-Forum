@@ -1,8 +1,11 @@
-import { Button, Col, Form, Input, Modal, Row, Upload, UploadFile, UploadProps } from "antd";
+'use client'
+import { Button, Col, Form, Input, Modal, Row, Select, Upload, UploadFile, UploadProps } from "antd";
 import TextEditor from "../common/TextEditor";
 import { getBase64 } from "@/libs/utils";
-import { FileType, PostImage } from "@/libs/types";
+import { FileType, PostImage, Topic } from "@/libs/types";
 import UploadButton from "../common/UploadButton";
+import { getTopic } from "@/libs/actions/post.acttion";
+import { useQuery } from "react-query";
 
 interface PostContent {
     id: string;
@@ -11,6 +14,7 @@ interface PostContent {
     images: PostImage[];
     previewImages: string;
     imageFiles: UploadFile[];
+    topics: Topic[];
 }
 
 interface PostModalProps {
@@ -25,6 +29,8 @@ interface PostModalProps {
 }
 
 export default function PostModal(props: PostModalProps) {
+
+    const { data, isLoading } = useQuery<Topic[]>('getTopicsOptions', getTopic);
 
     const {
         isOpen,
@@ -132,6 +138,44 @@ export default function PostModal(props: PostModalProps) {
                     />
                     </Form.Item>
                 </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={22}>
+                        <Form.Item
+                            label="Chủ đề"
+                            rules={[{ required: true, message: 'Chọn ít nhất 1 chủ đề' }]}
+                        >
+                            <Select
+                                mode="multiple"
+                                allowClear
+                                placeholder="Chọn chủ đề"
+                                // Chuyển đổi mảng các id được chọn thành mảng các đối tượng Topic
+                                onChange={(selectedIds: string[]) => {
+                                    const selectedTopics = data?.filter((topic: Topic) =>
+                                    selectedIds.includes(topic.id)
+                                    );
+                                    onChange('topics', selectedTopics);
+                                }}
+                                // Hiển thị giá trị hiện tại dưới dạng mảng các id của các Topic đã chọn
+                                value={postContent.topics.map(topic => topic.id)}
+                                options={data?.map((topic: Topic) => ({
+                                    value: topic.id,
+                                    label: topic.name
+                                }))}
+                            />
+                            {/* <Select
+                                mode="multiple"
+                                allowClear
+                                placeholder="Chọn chủ đề"
+                                onChange={(value) => onChange('topics', value)}
+                                value={postContent.topics}
+                                options={data?.map(topic => ({
+                                    value: topic.id,
+                                    label: topic.name
+                                }))}
+                            /> */}
+                        </Form.Item>
+                    </Col>
                 </Row>
                 <Row gutter={16}>
                 <Col span={22}>

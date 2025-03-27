@@ -104,9 +104,10 @@ export default function PostAction(props: Props) {
                         </Button>
                     </Tooltip>
                 )}
-                <Divider type="vertical" />
                 {/* Edit button */}
                 {allowEdit && post?.user.id === auth?.id && (
+                    <>
+                    <Divider type="vertical" />
                     <Tooltip title="Chỉnh sửa">
                         <Button
                             type="text"
@@ -114,10 +115,12 @@ export default function PostAction(props: Props) {
                             onClick={() => toggleModal('update')}
                         />
                     </Tooltip>
+                    </>
                 )}
-                <Divider type="vertical" />
                 {/* Delete button */}
                 {allowDelete && post?.user.id === auth?.id && (
+                    <>
+                    <Divider type="vertical" />
                     <Tooltip title="Xóa">
                         <Popconfirm
                             title="Bạn có chắc muốn xóa không?"
@@ -128,7 +131,9 @@ export default function PostAction(props: Props) {
                             <Button type="text" danger icon={<DeleteOutlined className="text-lg" />} loading={postDeleteLoading} />
                         </Popconfirm>
                     </Tooltip>    
+                    </>
                 )}
+                {/* Post modal */}
                 <PostModal
                     isOpen={isOpenModal}
                     postContent={postContent}

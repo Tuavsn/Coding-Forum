@@ -1,8 +1,8 @@
 'use client'
 import { PageableInfo, Post } from "@/libs/types";
 import { formatDate, stringToSlug } from "@/libs/utils";
-import { ClockCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Divider, Pagination, Typography } from "antd";
+import { ClockCircleOutlined, TagsOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Card, Divider, Pagination, Tag, Typography } from "antd";
 import type { PaginationProps } from "antd";
 import Link from "next/link";
 import List from "../common/List";
@@ -39,14 +39,16 @@ export default function PostList(props: Props) {
                     itemLayout="vertical"
                     dataSource={posts}
                     renderItem={(item: Post) => (
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col-reverse lg:flex-row items-center gap-4">
                             <div className="flex-1 p-2 min-w-0">
                                 <div className="flex items-center gap-4">
                                     <Avatar shape="square" size={60} src={item.user.avatar} />
                                     <div>
-                                        <Link href={`/post/${stringToSlug(item.header)}?id=${item.id}`}>
-                                            <h3 className="font-bold text-lg">{item.header}</h3>
-                                        </Link>
+                                        <div className="flex flex-row items-center gap-2">
+                                            <Link href={`/post/${stringToSlug(item.header)}?id=${item.id}`}>
+                                                <h3 className="font-bold text-lg">{item.header}</h3>
+                                            </Link>
+                                        </div>
                                         <div className="flex items-center text-gray-500 text-sm">
                                             <Link href={`/user?id=${item.user.id}`}>
                                                 <strong className="mr-4">
@@ -82,6 +84,14 @@ export default function PostList(props: Props) {
                                     allowEdit={true}
                                     allowDelete={true}
                                 />
+                                <div className="flex items-center text-gray-500 text-sm mx-2 mt-4">
+                                    <TagsOutlined className="mr-2" />
+                                    {item.topics && item.topics.map((topic) => (
+                                        <Tag key={topic.id} color="blue">
+                                            {topic.name}
+                                        </Tag>
+                                    ))}
+                                </div>
                             </div>
                             {item.postImage && (
                                 <img
