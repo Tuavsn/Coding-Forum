@@ -107,7 +107,7 @@ public class BaseController<Model extends BaseEntity, ResponseDTO extends BaseRe
         @PathVariable ID id,
         @Valid @RequestBody RequestDTO DTO) {
     DTO.setId(id);
-    ResponseDTO data = baseService.save(DTO);
+    ResponseDTO data = baseService.update(DTO);
     return new ResponseEntity<>(
         BaseResponse.builder()
             .message("Cập nhật thành công")

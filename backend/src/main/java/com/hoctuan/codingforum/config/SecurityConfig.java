@@ -48,6 +48,7 @@ public class SecurityConfig {
             apiPrefix + "/auth/**",
             apiPrefix + "/oauth2/**",
             "/oauth2/**",
+            apiPrefix + "/problem/*/run"
         };
     };
 

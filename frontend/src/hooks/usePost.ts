@@ -20,7 +20,7 @@ interface PostContent {
     images: PostImage[];
     previewImages: string;
     imageFiles: UploadFile[];
-    topic: Topic[];
+    topics: Topic[];
 }
 
 export default function usePost(props: UsePostProps) {
@@ -58,7 +58,7 @@ export default function usePost(props: UsePostProps) {
         images: [],
         previewImages: '',
         imageFiles: [],
-        topic: []
+        topics: []
     });
 
     /**
@@ -110,7 +110,7 @@ export default function usePost(props: UsePostProps) {
         // if (validateForm()) {
             postCreateMutation.mutate({
                 newPost: {
-                    topic: postContent.topic,
+                    topics: postContent.topics,
                     header: postContent.header,
                     content: postContent.content,
                     postImage: postContent.images
@@ -153,6 +153,7 @@ export default function usePost(props: UsePostProps) {
             postUpdateMutation.mutate({
                 postId: postContent.id,
                 newPost: {
+                    topics: postContent.topics,
                     header: postContent.header,
                     content: postContent.content,
                     postImage: postContent.images
@@ -266,7 +267,7 @@ export default function usePost(props: UsePostProps) {
                 images: post.postImage,
                 previewImages: '',
                 imageFiles: [],
-                topic: post.topic
+                topics: post.topics
             }),
             setIsOpenModal(true)
         ) : message.error("Không có bài viết để chỉnh sửa");
@@ -292,7 +293,7 @@ export default function usePost(props: UsePostProps) {
             images: [],
             previewImages: '',
             imageFiles: [],
-            topic: []
+            topics: []
         })
     }
 

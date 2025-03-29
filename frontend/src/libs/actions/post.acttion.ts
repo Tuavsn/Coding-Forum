@@ -20,12 +20,12 @@ export const getPostDetail = async(postId: string | null): Promise<Post> => {
     return result.Data;
 }
 
-export const createPost = async({ newPost }: { newPost: { topic: Topic[], header: string, content: string, postImage: PostImage[] } }) => {
+export const createPost = async({ newPost }: { newPost: { topics: Topic[], header: string, content: string, postImage: PostImage[] } }) => {
     const result = await postData(`api/v1/post`, newPost);
     return result;
 }
 
-export const updatePost = async({ postId, newPost }: { postId: string, newPost: { header: string, content: string, postImage: PostImage[] } }) => {
+export const updatePost = async({ postId, newPost }: { postId: string, newPost: { topics: Topic[], header: string, content: string, postImage: PostImage[] } }) => {
     const result = await putData(`api/v1/post/${postId}`, newPost);
     return result;
 }

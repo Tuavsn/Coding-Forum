@@ -1,6 +1,6 @@
 'use client'
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, CloudServerOutlined, DatabaseOutlined, HistoryOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Collapse, Divider, Flex, message, Modal, Pagination, Skeleton, Tag, Typography } from "antd";
+import { Button, Card, Collapse, Divider, Flex, message, Modal, Pagination, Skeleton, Splitter, Tag, Typography } from "antd";
 import LanguageMenu from "./LanguageMenu";
 import MonacoEditor from "./MonacoEditor";
 import { useContext, useEffect, useState } from "react";
@@ -167,6 +167,7 @@ export default function ProblemDetail() {
     return (
         data && (
             <>
+                {/* Buttons */}
                 <Flex gap={6} justify="center" className="m-4">
                     <Button size="large" type="primary" loading={runLoading} disabled={runLoading || submitLoading} onClick={handleRunSolution}><PlayCircleOutlined /><p>Run</p></Button>
                     <Button size="large" type="primary" loading={submitLoading} disabled={runLoading || submitLoading} onClick={handleSubmitSolution}><CloudServerOutlined /><p>Submit</p></Button>
@@ -174,12 +175,13 @@ export default function ProblemDetail() {
                     <ThemeMenu editorTheme={editorTheme} onThemeChange={handleThemeChange} />
                     <Button size="large" type="dashed" loading={historyLoading} disabled={runLoading || submitLoading} onClick={handleGetSubmissions}><HistoryOutlined />History</Button>
                 </Flex>
-                <Flex gap={4}>
-                    <Flex 
-                    vertical={true}
-                    className="h-[800px] w-[40%] drop-shadow"
-                    gap={4}>
-                        <div className="h-[500px]">
+
+                {/* Main Editor */}
+                <Splitter
+                // vertical={true}
+                className="h-[800px] w-full drop-shadow">
+                    <Splitter.Panel>
+                        <div className="h-[70%]">
                             <Card title={<span className={`${textColor} break-words whitespace-pre-wrap`}>{data.title}</span>} className={`h-full w-full rounded-none overflow-y-scroll scrollbar-thin ${bgColor}`}>
                                 <p className={`${textColor}`}><strong>Độ khó: </strong><Tag className="mx-2" key='1' color={getTopicColor(data.difficulty)}>{data.difficulty}</Tag></p>
                                 <p className={`${textColor}`}><strong>Mô tả:</strong></p>
@@ -192,7 +194,7 @@ export default function ProblemDetail() {
                                 </Typography>
                             </Card>
                         </div>
-                        <div className="h-[200px]">
+                        <div className="h-[30%]">
                             <Card title={
                                 <span className={`${textColor} break-words whitespace-pre-wrap`}>
                                     Kết quả: {runResult?.submitError
@@ -206,13 +208,15 @@ export default function ProblemDetail() {
                                 <pre className={`${textColor}`}><strong>Bộ nhớ: </strong>{runResult?.memory} KB</pre>
                             </Card>
                         </div>
-                    </Flex>
-                    <div className="h-[704px] w-[60%] drop-shadow">
-                        <Card title={<span className={`${textColor}`}>Code Editor</span>} className={`h-full w-full rounded-none overflow-hidden ${bgColor}`} styles={{ body: { height: "100%", padding: "24px 0" } }}>
-                            <MonacoEditor theme={editorTheme} language={language.toLowerCase()} code={code} setCode={setCode} />
-                        </Card>
-                    </div>
-                </Flex>
+                    </Splitter.Panel>
+                    <Splitter.Panel defaultSize="60%" min="20%" max="70%">
+                        <div className="h-full w-full drop-shadow">
+                            <Card title={<span className={`${textColor}`}>Code Editor</span>} className={`h-full w-full rounded-none overflow-hidden ${bgColor}`} styles={{ body: { height: "100%", padding: "24px 0" } }}>
+                                <MonacoEditor theme={editorTheme} language={language.toLowerCase()} code={code} setCode={setCode} />
+                            </Card>
+                        </div>
+                    </Splitter.Panel>
+                </Splitter>
 
                 {/* Modal submit result  */}
                 <Modal
