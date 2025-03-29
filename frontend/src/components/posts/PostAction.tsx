@@ -89,9 +89,10 @@ export default function PostAction(props: Props) {
                         </Button>
                     </Tooltip>    
                 )}
-                <Divider type="vertical" />
                 {/* Comment button */}
                 {allowComment && (
+                    <>
+                    <Divider type="vertical" />
                     <Tooltip title="Bình luận">
                         <Button
                             type="text"
@@ -103,6 +104,7 @@ export default function PostAction(props: Props) {
                             {commentsCount}
                         </Button>
                     </Tooltip>
+                    </>
                 )}
                 {/* Edit button */}
                 {allowEdit && post?.user.id === auth?.id && (
