@@ -5,7 +5,7 @@ import { Post } from "@/libs/types";
 import { DeleteOutlined, DislikeFilled, DislikeOutlined, EditOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined } from "@ant-design/icons";
 import { Button, Divider, Popconfirm, Space, Tooltip } from "antd";
 import PostModal from "./PostModal";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "@/context/AuthContextProvider";
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
     isPostDetail?: boolean;
 }
 
-export default function PostAction(props: Props) {
+const PostAction: React.FC<Props> = (props) => {
 
     const { auth } = useContext(AuthContext);
 
@@ -150,3 +150,5 @@ export default function PostAction(props: Props) {
         </>
     )
 }
+
+export default PostAction;

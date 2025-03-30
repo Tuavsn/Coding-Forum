@@ -154,7 +154,7 @@ export default function PostModal(props: PostModalProps) {
                                     const selectedTopics = data?.filter((topic: Topic) =>
                                     selectedIds.includes(topic.id)
                                     );
-                                    onChange('topics', selectedTopics);
+                                    onChange('topics', selectedTopics ?? []);
                                 }}
                                 // Hiển thị giá trị hiện tại dưới dạng mảng các id của các Topic đã chọn
                                 value={postContent.topics.map(topic => topic.id)}
@@ -163,17 +163,6 @@ export default function PostModal(props: PostModalProps) {
                                     label: topic.name
                                 }))}
                             />
-                            {/* <Select
-                                mode="multiple"
-                                allowClear
-                                placeholder="Chọn chủ đề"
-                                onChange={(value) => onChange('topics', value)}
-                                value={postContent.topics}
-                                options={data?.map(topic => ({
-                                    value: topic.id,
-                                    label: topic.name
-                                }))}
-                            /> */}
                         </Form.Item>
                     </Col>
                 </Row>
