@@ -1,14 +1,8 @@
 'use client'
 
 import Loading from "@/components/common/Loading"
-import { AuthContext } from "@/context/AuthContextProvider"
 import useAuth from "@/hooks/useAuth"
-import { login } from "@/libs/actions/user.actions"
-import { isValidEmail } from "@/libs/utils"
-import { message } from "antd"
-import { useRouter } from "next/navigation"
-import { useContext, useEffect, useState } from "react"
-import { useMutation } from "react-query"
+import { Image } from "antd"
 
 export default function LoginPage() {
 
@@ -20,64 +14,6 @@ export default function LoginPage() {
         isLoading
     } = useAuth();
 
-    // const {auth, setAuth} = useContext(AuthContext)
-
-    // const router = useRouter()
-
-    // const [isLoading, setIsloading] = useState(true)
-
-    // const [email, setEmail] = useState<string>('')
-
-    // const [password, setPassword] = useState<string>('')
-
-    // const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setEmail(e.target.value)
-    // }
-
-    // const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setPassword(e.target.value)
-    // }
-
-    // const loginMutation = useMutation(() => login({email: email, password: password}), {
-    //     onMutate: () => {
-    //         setIsloading(true)
-    //     },
-
-    //     onSuccess: (data) => {
-    //         setAuth(data.Data)
-    //         message.success(data.Message)
-    //         router.push('/home')
-    //         setIsloading(false)
-    //     },
-
-    //     onError: (error) => {
-    //         setIsloading(false)
-    //         if (error instanceof Error) {
-    //             message.error(error.message);
-    //         } else {
-    //             message.error('Có lỗi xảy ra');
-    //         }
-    //     },
-    // })
-
-    // const handleLogin = async (e: React.FormEvent) => {
-    //     e.preventDefault()
-    //     if(isValidEmail(email)) {
-    //         loginMutation.mutate()
-    //     } else {
-    //         message.error("Email không hợp lệ")
-    //     }
-    // }
-
-    // // Login route guard
-    // useEffect(() => {
-    //     if(auth) {
-    //         router.push('/home')
-    //     } else {
-    //         setIsloading(false)
-    //     }
-    // }, [])
-
     if(isLoading) {
         return (<Loading />)
     }
@@ -87,7 +23,7 @@ export default function LoginPage() {
             <h1 className="text-center text-4xl font-medium">Đăng nhập</h1>
             <div className="my-5">
                 <button className="w-full text-center py-3 my-3 border flex space-x-2 items-center justify-center border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150" onClick={handleLoginWithGoogle}>
-                    <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-6 h-6" alt="" /> <span>Đăng nhập với Google</span>
+                    <Image src="https://www.svgrepo.com/show/355037/google.svg" className="w-6 h-6" alt="" /> <span>Đăng nhập với Google</span>
                 </button>
             </div>
             <form action="" className="my-10">
