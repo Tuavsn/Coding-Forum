@@ -62,6 +62,12 @@ public class SecurityConfig {
         };
     };
 
+    private String[] postWhiteList() {
+        return new String[] {
+            apiPrefix + "/post/search",
+        };
+    };
+
     @Bean
     Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
@@ -78,6 +84,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(whiteList()).permitAll();
                     auth.requestMatchers(HttpMethod.GET, getWhiteList()).permitAll();
+                    auth.requestMatchers(HttpMethod.POST, postWhiteList()).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(auth -> {

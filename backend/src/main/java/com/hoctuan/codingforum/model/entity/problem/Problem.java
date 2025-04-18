@@ -31,8 +31,13 @@ public class Problem extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String example;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String tags;
+    @ManyToMany
+    @JoinTable(
+        name = "problem_tag",
+        joinColumns = @JoinColumn(name = "problem_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String thumbnail;

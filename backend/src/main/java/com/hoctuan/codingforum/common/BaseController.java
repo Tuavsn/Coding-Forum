@@ -1,22 +1,49 @@
 package com.hoctuan.codingforum.common;
 
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.UUID;
+import jakarta.validation.Valid;
 
 public class BaseController<Model extends BaseEntity, ResponseDTO extends BaseResponseDTO, RequestDTO extends BaseRequestDTO, ID extends UUID> {
     private final BaseService<ResponseDTO, RequestDTO, ID> baseService;
 
     public BaseController(BaseService<ResponseDTO, RequestDTO, ID> baseService) {
         this.baseService = baseService;
+    }
+
+    /**
+     * Get All Element with Pagination and Mutiple Fields Filter
+     * 
+     * @param filterRequest
+     * @param pageable
+     * @return
+     */
+    @PostMapping("/search")
+    public ResponseEntity<BaseResponse> findAllWithFilter(
+        @RequestBody FilterRequest filterRequest
+    ) {
+    Page<ResponseDTO> data = baseService.search(filterRequest);
+    return new ResponseEntity<>(
+        BaseResponse.builder()
+            .message("Lấy danh sách thành công")
+            .data(data)
+            .status(HttpStatus.OK.value())
+            .build(),
+        HttpStatus.OK);
     }
 
     /**
@@ -43,7 +70,7 @@ public class BaseController<Model extends BaseEntity, ResponseDTO extends BaseRe
      * @param search
      * @return
      */
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<BaseResponse> findAll(
         @ParameterObject Pageable pageable, @RequestParam(defaultValue = "") String search) {
     Page<ResponseDTO> data = baseService.findAll(pageable, search);

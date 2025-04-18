@@ -10,6 +10,8 @@ public interface BaseService<ResponseDTO extends BaseResponseDTO, RequestDTO ext
     public List<ResponseDTO> findAll();
 
     public Page<ResponseDTO> findAll(Pageable pageable, String search);
+    
+    public Page<ResponseDTO> search(FilterRequest filterRequest);
 
     public ResponseDTO getById(ID id);
 

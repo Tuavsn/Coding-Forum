@@ -42,39 +42,39 @@ public class ProblemController extends BaseController<Problem, ProblemResponseDT
         this.problemService = problemService;
     }
 
-    @Override
-    public ResponseEntity<BaseResponse> findAll(
-        @ParameterObject Pageable pageable,
-        @RequestParam(defaultValue = "") String search
-    ) {
-        return super.findAll(pageable, search);
-    }
+    // @Override
+    // public ResponseEntity<BaseResponse> findAll(
+    //     @ParameterObject Pageable pageable,
+    //     @RequestParam(defaultValue = "") String search
+    // ) {
+    //     return super.findAll(pageable, search);
+    // }
 
-    @Override
-    public ResponseEntity<BaseResponse> findById(UUID id) {
-        return super.findById(id);
-    }
+    // @Override
+    // public ResponseEntity<BaseResponse> findById(UUID id) {
+    //     return super.findById(id);
+    // }
 
-    @Override
-    @PreAuthorize("hasRole('SYS_ADMIN')")
-    public ResponseEntity<BaseResponse> create(@Valid @RequestBody ProblemRequestDTO DTO) {
-        return super.create(DTO);
-    }
+    // @Override
+    // @PreAuthorize("hasRole('SYS_ADMIN')")
+    // public ResponseEntity<BaseResponse> create(@Valid @RequestBody ProblemRequestDTO DTO) {
+    //     return super.create(DTO);
+    // }
 
-    @Override
-    @PreAuthorize("hasRole('SYS_ADMIN')")
-    public ResponseEntity<BaseResponse> update(
-        @PathVariable UUID id,
-        @Valid @RequestBody ProblemRequestDTO DTO
-    ) {
-        return super.update(id, DTO);
-    }
+    // @Override
+    // @PreAuthorize("hasRole('SYS_ADMIN')")
+    // public ResponseEntity<BaseResponse> update(
+    //     @PathVariable UUID id,
+    //     @Valid @RequestBody ProblemRequestDTO DTO
+    // ) {
+    //     return super.update(id, DTO);
+    // }
 
-    @Override
-    @PreAuthorize("hasRole('SYS_ADMIN')")
-    public ResponseEntity<BaseResponse> delete(@PathVariable UUID id) {
-        return super.delete(id);
-    }
+    // @Override
+    // @PreAuthorize("hasRole('SYS_ADMIN')")
+    // public ResponseEntity<BaseResponse> delete(@PathVariable UUID id) {
+    //     return super.delete(id);
+    // }
 
     @PostMapping("/{id}/submit")
     public ResponseEntity<BaseResponse> submitSolution(

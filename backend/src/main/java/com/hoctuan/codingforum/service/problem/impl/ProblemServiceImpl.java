@@ -1,11 +1,8 @@
 package com.hoctuan.codingforum.service.problem.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +39,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the Problem Service
+ * Handles operations related to coding problems, including submission and
+ * evaluation
+ */
+@Log4j2
 @Service
 public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponseDTO, ProblemRequestDTO, UUID>
         implements ProblemService {
-    private static final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
+
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
     private final Judge0Service judge0Service;
@@ -69,16 +72,22 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         this.problemSubmissonMapper = problemSubmissonMapper;
     }
 
+    @Override
+    protected String getJoinAttributeName() {
+        return "tags";
+    }
+
     /**
-     * Save new Problem
+     * Save new Problem or update existing one
      * 
-     * @param dto
-     * @return New Problem
-     * @throws BadRequest if invalid permission request
+     * @param dto Problem data transfer object
+     * @return Updated/New Problem
+     * @throws CustomException if invalid permission request
      */
     @Override
     @Transactional
     public ProblemResponseDTO save(ProblemRequestDTO dto) {
+        log.debug("Saving problem with ID: {}", dto.getId());
         User user = authContext.getCurrentUserEntityLogin();
         if (dto.getId() != null) {
             Problem existedProblem = getExistedProblem(dto.getId());
@@ -91,24 +100,24 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         }
         UserRequestDTO userDTO = UserRequestDTO.builder().id(user.getId()).build();
         dto.setAuthor(userDTO);
+        log.info("Problem saved successfully by user: {}", user.getId());
         return super.save(dto);
     }
 
-    // *Todo: update function
-
     /**
-     * Submit solution
+     * Submit solution for evaluation
      * 
      * @param id        Problem's id
      * @param solutions User solution
      * @param type      [Synchronous] or [Asynchronous]
      * @return Submit result
-     * @throws NotFound if existed Problem or existed User not found
+     * @throws CustomException if existed Problem or existed User not found
      */
     @Override
     @Transactional
     public ProblemSubmissionResponseDTO submitSolution(UUID id, ProblemSubmissionRequestDTO solutions,
             SubmitType type) {
+        log.debug("Submitting solution for problem ID: {}", id);
         Problem existedProblem = getExistedProblem(id);
         User submitUser = authContext.getCurrentUserEntityLogin();
         List<Judge0RequestDTO> judge0RequestDTOs = getSubmitRequest(existedProblem, solutions);
@@ -123,6 +132,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
                         .memory(0)
                         .score(0)
                         .build());
+        log.info("Solution submitted by user: {} for problem: {}", submitUser.getId(), id);
         List<SubmissionResult> submissionResults = judge0Service.submitSolution(judge0RequestDTOs, type,
                 savedProblemSubmission);
         return problemSubmissonMapper.toDTO(
@@ -134,19 +144,21 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     }
 
     /**
-     * Run solution
+     * Run solution without saving results
      * 
      * @param id        Problem's id
      * @param solutions User solution
      * @param type      [Synchronous] or [Asynchronous]
      * @return Run result
-     * @throws NotFound if existed Problem not found
+     * @throws CustomException if existed Problem not found
      */
     @Override
     public SubmissionResultResponseDTO runSolution(UUID id, ProblemSubmissionRequestDTO solutions, SubmitType type) {
+        log.debug("Running solution for problem ID: {} with type: {}", id, type);
         Problem existedProblem = getExistedProblem(id);
         List<Judge0RequestDTO> judge0RequestDTO = getSubmitRequest(existedProblem, solutions);
         SubmissionResult submissionResult = judge0Service.runSolution(judge0RequestDTO.get(0), type);
+        log.debug("Solution execution completed with result: {}", submissionResult.getSubmitResult());
         return SubmissionResultResponseDTO.builder()
                 .submitToken(submissionResult.getSubmitToken())
                 .submitResult(submissionResult.getSubmitResult())
@@ -170,15 +182,17 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
      * + Input: [3\n1 2 3]
      * + Output: 6
      * 
-     * @param problem
-     * @param solutions
+     * @param problem   The problem containing testcases
+     * @param solutions User submitted solution
      * @return List of Judge0's request
-     * @throws Badrequest if invalid testcase
+     * @throws CustomException if invalid testcase
      */
     private List<Judge0RequestDTO> getSubmitRequest(Problem problem, ProblemSubmissionRequestDTO solutions) {
+        log.debug("Preparing test cases for problem ID: {}", problem.getId());
         return Utils.splitStringByPipe(problem.getTestCases()).stream().map(testCase -> {
             List<String> separatedStringBySemicolon = Utils.splitStringBySemicolon(testCase);
             if (separatedStringBySemicolon.size() < 2) {
+                log.error("Invalid test case format detected for problem ID: {}", problem.getId());
                 throw new CustomException(ErrorCode.INVALID_TEST_CASE);
             }
             String input = formatInput(separatedStringBySemicolon.get(0));
@@ -196,7 +210,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
      * Convert from inline string to valid Judge0 argument input
      * Example: 5,1 2 3 4 5 -> 5\n1 2 3 4 5
      * 
-     * @param input
+     * @param input Raw input string
      * @return valid input string
      */
     private String formatInput(String input) {
@@ -206,12 +220,12 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     }
 
     /**
-     * caclculate result
+     * Calculate and save submission result
      * 
-     * @param problemSubmission
-     * @param problem
-     * @param submissionResults
-     * @param submitUser
+     * @param problemSubmission The submission to update
+     * @param problem           The problem being solved
+     * @param submissionResults Results from judge service
+     * @param submitUser        User who submitted the solution
      * @return calculated result
      */
     @Transactional
@@ -220,6 +234,7 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
             Problem problem,
             List<SubmissionResult> submissionResults,
             User submitUser) {
+        log.debug("Processing submission results for problem ID: {}", problem.getId());
         problemSubmission.setSubmissionResults(new HashSet<>(submissionResults));
         problem.getProblemSubmissions().add(problemSubmission);
         double totalTestCases = submissionResults.size();
@@ -244,8 +259,11 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
         problemSubmission.setMemory(avarageMemory);
         if (passedTestCases == totalTestCases) {
             problemSubmission.setResult(ProblemResult.ACCEPTED.getDisplayName());
+            log.info("All test cases passed for submission ID: {}", problemSubmission.getId());
         } else {
             problemSubmission.setResult(ProblemResult.WRONG_ANSWER.getDisplayName());
+            log.info("Some test cases failed. Passed {}/{} for submission ID: {}",
+                    passedTestCases, totalTestCases, problemSubmission.getId());
         }
         problem.getProblemSubmissions().add(problemSubmission);
         problemRepository.save(problem);
@@ -254,37 +272,42 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     }
 
     /**
-     * Save User point
+     * Update User point based on submission score
      * 
-     * @param problem
-     * @param submitUser
-     * @param score
+     * @param problem    The problem being solved
+     * @param submitUser User who submitted solution
+     * @param score      Score achieved in current submission
      */
     private void updateUserPoint(Problem problem, User submitUser, double score) {
+        log.debug("Updating points for user ID: {}", submitUser.getId());
         List<ProblemSubmission> existedSubmission = problemSubmissionRepository.findByProblemAndUser(problem,
                 submitUser);
         if (existedSubmission.isEmpty()) { // Save new score
             submitUser.setTotalSubmissionPoint(submitUser.getTotalSubmissionPoint() + score);
+            log.info("Added {} points to user ID: {} (first submission)", score, submitUser.getId());
         } else { // Save highest score
-            submitUser.setTotalSubmissionPoint(existedSubmission
+            double highestScore = existedSubmission
                     .stream()
                     .max(Comparator.comparingDouble(result -> result.getScore()))
                     .orElse(existedSubmission.get(0))
-                    .getScore());
+                    .getScore();
+            submitUser.setTotalSubmissionPoint(highestScore);
+            log.info("Updated user ID: {} points to highest score: {}", submitUser.getId(), highestScore);
         }
         userRepository.save(submitUser);
     }
 
     /**
-     * Get all Submission results
+     * Get all Submission results for a problem
      * 
-     * @param id
-     * @param pageable
+     * @param id       Problem ID
+     * @param pageable Pagination information
      * @return Page of submit results
-     * @throws Notfound if existed Problem or existed User not found
+     * @throws CustomException if existed Problem or existed User not found
      */
     @Override
     public Page<ProblemSubmissionResponseDTO> getSubmissions(UUID id, Pageable pageable) {
+        log.debug("Fetching submissions for problem ID: {}", id);
         User submitUser = authContext.getCurrentUserEntityLogin();
         Problem existedProblem = getExistedProblem(id);
         return problemSubmissionRepository.findByProblemAndUser(pageable, existedProblem, submitUser)
@@ -292,30 +315,60 @@ public class ProblemServiceImpl extends BaseServiceImpl<Problem, ProblemResponse
     }
 
     /**
-     * Get submit result by id
+     * Get submit result by submission id
      * 
-     * @param problemSubmissionId
-     * @return Submit result
-     * @throws Notfound if existed Problem not found
+     * @param problemSubmissionId Submission ID
+     * @return Submit result details
+     * @throws CustomException if submission not found
      */
     @Override
     public ProblemSubmissionResponseDTO getSubmitResult(UUID problemSubmissionId) {
+        log.debug("Fetching submission result for ID: {}", problemSubmissionId);
         ProblemSubmission existedProblemSubmission = getExistedProblemSubmission(problemSubmissionId);
         return problemSubmissonMapper.toDTO(existedProblemSubmission);
     }
 
+    /**
+     * Verify the user has permission to modify the problem
+     * 
+     * @param problem The problem to check
+     * @param author  The user attempting modification
+     * @throws CustomException if user doesn't have permission
+     */
     private void checkAuthorPermission(Problem problem, User author) {
         if (problem.getAuthor().getId() != author.getId() && !author.getRole().equals(AccountRole.SYS_ADMIN)) {
+            log.warn("Permission denied: User {} attempted to modify problem {} created by {}",
+                    author.getId(), problem.getId(), problem.getAuthor().getId());
             throw new CustomException(ErrorCode.WRONG_AUTHOR);
         }
     }
 
+    /**
+     * Get existing problem by ID
+     * 
+     * @param id Problem ID
+     * @return Problem entity
+     * @throws CustomException if problem not found
+     */
     private Problem getExistedProblem(UUID id) {
-        return problemRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROBLEM_NOT_FOUND));
+        return problemRepository.findById(id).orElseThrow(() -> {
+            log.error("Problem not found with ID: {}", id);
+            return new CustomException(ErrorCode.PROBLEM_NOT_FOUND);
+        });
     }
 
+    /**
+     * Get existing problem submission by ID
+     * 
+     * @param id Submission ID
+     * @return ProblemSubmission entity
+     * @throws CustomException if submission not found
+     */
     private ProblemSubmission getExistedProblemSubmission(UUID id) {
         return problemSubmissionRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.SUBMISSION_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("Submission not found with ID: {}", id);
+                    return new CustomException(ErrorCode.SUBMISSION_NOT_FOUND);
+                });
     }
 }

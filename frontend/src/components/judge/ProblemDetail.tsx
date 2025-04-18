@@ -236,7 +236,7 @@ export default function ProblemDetail() {
                             <Typography.Text className="font-semibold">Kết quả:</Typography.Text>{" "}
                             <span
                                 className={`inline-block px-3 py-1 rounded-full text-white ${
-                                    submitResult?.result === "Kết quả hợp lệ"
+                                    submitResult?.result === "Accepted"
                                         ? "bg-green-500"
                                         : "bg-red-500"
                                 }`}
@@ -273,7 +273,7 @@ export default function ProblemDetail() {
                                 key={test.id}
                                 className="mb-4 p-3 border rounded-md shadow-sm bg-gray-50"
                             >
-                                <p className={`font-semibold ${test.submitResult === "Kết quả hợp lệ" ? "text-blue-600" : "text-red-500"}`}>Test Case {index + 1}</p>
+                                <p className={`font-semibold ${test.submitResult === "Accepted" ? "text-blue-600" : "text-red-500"}`}>Test Case {index + 1}</p>
                                 <p>
                                     <span className="font-semibold">Kết quả:</span>{" "}
                                     <span className="text-gray-700">{test.submitResult}</span>
@@ -315,7 +315,7 @@ export default function ProblemDetail() {
                                                 header={
                                                     <div className="flex justify-between items-center">
                                                         <Typography.Text className="flex items-center">
-                                                            {submission.result === "Kết quả hợp lệ" ? (
+                                                            {submission.result === "Accepted" ? (
                                                                 <CheckCircleOutlined className="text-green-500 mr-2" />
                                                             ) : (
                                                                 <CloseCircleOutlined className="text-red-500 mr-2" />
@@ -346,7 +346,7 @@ export default function ProblemDetail() {
                                                             <div className="flex justify-between">
                                                                 <Typography.Text className="font-semibold text-gray-700">Test Case {testCase.testCaseNum}</Typography.Text>
                                                                 <Typography.Text
-                                                                    className={`font-semibold ${testCase.submitResult === "Kết quả hợp lệ" ? "text-blue-600" : "text-red-500"}`}
+                                                                    className={`font-semibold ${testCase.submitResult === "Accepted" ? "text-blue-600" : "text-red-500"}`}
                                                                 >
                                                                     {testCase.submitResult}
                                                                 </Typography.Text>

@@ -3,6 +3,7 @@ package com.hoctuan.codingforum.common;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 @NoRepositoryBean
 @Transactional
-public interface BaseRepository<Model extends BaseEntity, ID extends UUID> extends JpaRepository<Model, ID> {
+public interface BaseRepository<Model extends BaseEntity, ID extends UUID> extends JpaRepository<Model, ID>, JpaSpecificationExecutor<Model> {
     @Override
     @Query("select x from #{#entityName} x where x.isDeleted = false order by x.createdAt desc")
     List<Model> findAll();

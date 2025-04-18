@@ -4,8 +4,12 @@ import { FloatButton } from "antd";
 import { usePathname } from "next/navigation";
 import PostModal from "../posts/PostModal";
 import usePost from "@/hooks/usePost";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContextProvider";
 
 export default function GroupFloatButton() {
+
+    const {auth} = useContext(AuthContext);
 
     const path = usePathname();
 
@@ -21,14 +25,14 @@ export default function GroupFloatButton() {
     return (
         <>
             <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
-                {path === '/home' && (
+                {path === '/home' && auth && (
                     <FloatButton
                         icon={<PlusOutlined />}
                         tooltip={<div>Đăng bài</div>}
                         onClick={() => toggleModal('create')}
                     />
                 )}
-                {path === '/problem' && (
+                {path === '/problem' && auth && (
                     <FloatButton
                         icon={<PlusOutlined />}
                         tooltip={<div>Tạo Problem</div>}

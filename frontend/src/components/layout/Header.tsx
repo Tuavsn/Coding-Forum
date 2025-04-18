@@ -9,9 +9,7 @@ import {
     UserOutlined,
     CaretDownOutlined,
     LogoutOutlined,
-    PlusOutlined
 } from "@ant-design/icons"
-import { FloatButton } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getInfo, logout } from "@/libs/actions/user.actions";
@@ -109,7 +107,7 @@ export default function CustomHeader() {
     return (
         <>
             <header className="bg-white shadow-md fixed top-0 right-0 left-0 w-full z-50">
-                <div className="flex justify-between items-center p-2">
+                <div className="container mx-auto flex justify-between items-center p-2">
                     {/* Logo */}
                     <div className="flex items-center px-4 gap-10">
                         <Link href='/home'>
@@ -151,7 +149,7 @@ export default function CustomHeader() {
                         <Link href="/login">
                             <Button
                                 icon={<UserOutlined />}
-                                size="large"
+                                size="middle"
                                 className="bg-[#12459C] text-white mx-6"
                             >
                                 Đăng nhập
