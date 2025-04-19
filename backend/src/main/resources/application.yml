@@ -1,85 +1,85 @@
 spring:
   application:
-    name: ${SPRING_APPLICATION_NAME}            # Application name, used in logs and service discovery
+    name: ${SPRING_APPLICATION_NAME}                                        # Application name, used in logs and service discovery
   output:
     ansi:
-      enabled: detect                             # Enable ANSI colors in console if supported
+      enabled: detect                                                       # Enable ANSI colors in console if supported
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}  # Schema generation strategy (none, validate, update, create, create-drop)
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}                            # Schema generation strategy (none, validate, update, create, create-drop)
     properties:
       hibernate:
-        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}  # SQL dialect for your database
-        format_sql: true                          # Pretty-print SQL in logs
-    show-sql: true                               # Log SQL statements executed by Hibernate
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}                 # SQL dialect for your database
+        format_sql: true                                                    # Pretty-print SQL in logs
+    show-sql: true                                                          # Log SQL statements executed by Hibernate
   datasource:
-    url: ${SPRING_DATA_SOURCE_URL}               # JDBC URL for the database connection
-    username: ${SPRING_DATA_SOURCE_USERNAME}     # Database username
-    password: ${SPRING_DATA_SOURCE_PASSWORD}     # Database password
-    driver-class-name: ${SPRING_DATA_SOURCE_DRIVER_CLASSNAME}  # JDBC driver class
+    url: ${SPRING_DATA_SOURCE_URL}                                          # JDBC URL for the database connection
+    username: ${SPRING_DATA_SOURCE_USERNAME}                                # Database username
+    password: ${SPRING_DATA_SOURCE_PASSWORD}                                # Database password
+    driver-class-name: ${SPRING_DATA_SOURCE_DRIVER_CLASSNAME}               # JDBC driver class
   api:
-    prefix: /api/v1                             # Base path for all REST API endpoints
+    prefix: /api/v1                                                         # Base path for all REST API endpoints
   jwt:
     rsa:
-      private-key: ${PRIVATE_KEY}               # RSA private key for signing JWTs
-      public-key: ${PUBLIC_KEY}                 # RSA public key for verifying JWTs
+      private-key: ${PRIVATE_KEY}                                           # RSA private key for signing JWTs
+      public-key: ${PUBLIC_KEY}                                             # RSA public key for verifying JWTs
     access-token:
-      expire-time: ${ACCESS_TOKEN_EXPIRES_TIME} # Expiration time for access tokens
+      expire-time: ${ACCESS_TOKEN_EXPIRES_TIME}                             # Expiration time for access tokens
     refresh-token:
-      expire-time: ${REFRESH_TOKEN_EXPIRES_TIME}# Expiration time for refresh tokens
+      expire-time: ${REFRESH_TOKEN_EXPIRES_TIME}                            # Expiration time for refresh tokens
 
   cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME}        # Cloudinary account identifier
-    api-key: ${CLOUDINARY_API_KEY}              # Cloudinary API key
-    api-secret: ${CLOUDINARY_API_SECRET}        # Cloudinary API secret
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}                                    # Cloudinary account identifier
+    api-key: ${CLOUDINARY_API_KEY}                                          # Cloudinary API key
+    api-secret: ${CLOUDINARY_API_SECRET}                                    # Cloudinary API secret
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}      # OAuth2 Client ID for Google
-            client-secret: ${GOOGLE_CLIENT_SECRET}# OAuth2 Client Secret for Google
-            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"  # OAuth2 redirect URI template
+            client-id: ${GOOGLE_CLIENT_ID}                                  # OAuth2 Client ID for Google
+            client-secret: ${GOOGLE_CLIENT_SECRET}                          # OAuth2 Client Secret for Google
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"      # OAuth2 redirect URI template
             scope:
-              - email                           # Request access to user's email
-              - profile                         # Request access to user's profile information
+              - email                                                       # Request access to user's email
+              - profile                                                     # Request access to user's profile information
 
 server:
-  port: ${SPRING_APPLICATION_PORT:8080}         # Server port, defaults to 8080 if not set
-  url: ${SERVER_URL}                            # Base URL of the server (used for generating links)
+  port: ${SPRING_APPLICATION_PORT:8080}                                     # Server port, defaults to 8080 if not set
+  url: ${SERVER_URL}                                                        # Base URL of the server (used for generating links)
 
 client:
-  url: ${CLIENT_URL:https://codingforum.trinhhoctuan.io.vn}  # URL of the front-end client application
+  url: ${CLIENT_URL:https://codingforum.trinhhoctuan.io.vn}                 # URL of the front-end client application
 
 judge0:
-  url: ${JUDGE0_URL}                            # Judge0 API endpoint for code execution
-  judge0_auth_token: ${JUDGE0_AUTH_TOKEN}       # Authentication token for Judge0
-  max_cpu_time_limit: ${MAX_CPU_TIME_LIMIT:15}  # Max CPU time per submission (seconds)
-  max_cpu_extra_time: ${MAX_CPU_EXTRA_TIME:2}   # Additional CPU time (seconds)
-  max_wall_time_limit: ${MAX_WALL_TIME_LIMIT:20}# Wall-clock time limit (seconds)
-  max_memory_limit: ${MAX_MEMORY_LIMIT:256000}  # Memory limit (kilobytes)
-  max_stack_limit: ${MAX_STACK_LIMIT:128000}    # Stack limit (kilobytes)
+  url: ${JUDGE0_URL}                                                        # Judge0 API endpoint for code execution
+  judge0_auth_token: ${JUDGE0_AUTH_TOKEN}                                   # Authentication token for Judge0
+  max_cpu_time_limit: ${MAX_CPU_TIME_LIMIT:15}                              # Max CPU time per submission (seconds)
+  max_cpu_extra_time: ${MAX_CPU_EXTRA_TIME:2}                               # Additional CPU time (seconds)
+  max_wall_time_limit: ${MAX_WALL_TIME_LIMIT:20}                            # Wall-clock time limit (seconds)
+  max_memory_limit: ${MAX_MEMORY_LIMIT:256000}                              # Memory limit (kilobytes)
+  max_stack_limit: ${MAX_STACK_LIMIT:128000}                                # Stack limit (kilobytes)
   max_max_processes_and_or_threads: ${MAX_MAX_PROCESSES_AND_OR_THREADS:120}  # Max processes/threads
   allow_enable_per_process_and_thread_time_limit: ${ALLOW_ENABLE_PER_PROCESS_AND_THREAD_TIME_LIMIT:true}  # Allow per-process time limits
   allow_enable_per_process_and_thread_memory_limit: ${ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT:true} # Allow per-process memory limits
-  max_max_file_size: ${MAX_MAX_FILE_SIZE:4096}  # Max uploaded file size (kilobytes)
-  max_number_of_runs: ${MAX_NUMBER_OF_RUNS:20}  # Max number of submissions per request
+  max_max_file_size: ${MAX_MAX_FILE_SIZE:4096}                              # Max uploaded file size (kilobytes)
+  max_number_of_runs: ${MAX_NUMBER_OF_RUNS:20}                              # Max number of submissions per request
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html                      # Path to Swagger UI
+    path: /swagger-ui.html                                                  # Path to Swagger UI
 
 open:
   api:
-    title: StudentCodeHub API Document         # Title for OpenAPI documentation
-    version: 0.0.1                              # Version of the API docs
-    description: StudentCodeHub API Document    # Brief description of the API
-    local-server-url: ${OPEN_API_LOCAL_SERVER_URL} # Local server URL for docs
-    host-server-url: ${OPEN_API_HOST_SERVER_URL}   # Host server URL for docs
+    title: StudentCodeHub API Document                                      # Title for OpenAPI documentation
+    version: 0.0.1                                                          # Version of the API docs
+    description: StudentCodeHub API Document                                # Brief description of the API
+    local-server-url: ${OPEN_API_LOCAL_SERVER_URL}                          # Local server URL for docs
+    host-server-url: ${OPEN_API_HOST_SERVER_URL}                            # Host server URL for docs
 
 logging:
   level:
-    root: INFO                                  # Default logging level
+    root: INFO                                                              # Default logging level
 
 bcrypt:
-  log-rounds: 10                               # Cost factor for BCrypt password hashing
+  log-rounds: 10                                                            # Cost factor for BCrypt password hashing

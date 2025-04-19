@@ -23,8 +23,9 @@ public enum ErrorCode {
     NOT_ACCEPTABLE("Your account has been denied access.", HttpStatus.NOT_ACCEPTABLE),
     IS_DELETED_ACCOUNT("Your account has been deleted.", HttpStatus.BAD_REQUEST),
     IS_NOT_ACTIVE_ACCOUNT("Your account has not been activated.", HttpStatus.BAD_REQUEST),
-    UNSUPPORTED_FILE_TYPE("Unsupported file type.", HttpStatus.BAD_REQUEST);
-
+    UNSUPPORTED_FILE_TYPE("Unsupported file type.", HttpStatus.BAD_REQUEST),
+    DUPLICATE_TOPIC_NAME("Duplicate Topic's name.", HttpStatus.BAD_REQUEST);
+    
     private final String message;
     private final HttpStatus httpStatus;
 

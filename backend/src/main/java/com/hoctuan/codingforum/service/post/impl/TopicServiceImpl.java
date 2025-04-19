@@ -3,12 +3,16 @@ package com.hoctuan.codingforum.service.post.impl;
 import org.springframework.stereotype.Service;
 
 import com.hoctuan.codingforum.common.BaseServiceImpl;
+import com.hoctuan.codingforum.constant.ErrorCode;
+import com.hoctuan.codingforum.exception.CustomException;
 import com.hoctuan.codingforum.model.dto.post.TopicRequestDTO;
 import com.hoctuan.codingforum.model.dto.post.TopicResponseDTO;
 import com.hoctuan.codingforum.model.entity.post.Topic;
 import com.hoctuan.codingforum.model.mapper.TopicMapper;
 import com.hoctuan.codingforum.repository.post.TopicRepository;
 import com.hoctuan.codingforum.service.post.TopicService;
+
+import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 
@@ -22,5 +26,18 @@ public class TopicServiceImpl extends BaseServiceImpl<Topic, TopicResponseDTO, T
         super(topicRepository, topicMapper, Topic.class);
         this.topicRepository = topicRepository;
         this.topicMapper = topicMapper;
+    }
+
+    @Override
+    @Transactional
+    public TopicResponseDTO save(TopicRequestDTO dto) {
+        if (isDuplicateTopic(dto.getName())) {
+            throw new CustomException(ErrorCode.DUPLICATE_TOPIC_NAME);
+        }
+        return super.save(dto);
+    }
+
+    private boolean isDuplicateTopic(String topicName) {
+        return topicRepository.findByName(topicName).isPresent();
     }
 }

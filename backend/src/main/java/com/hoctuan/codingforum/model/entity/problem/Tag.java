@@ -27,7 +27,7 @@ public class Tag extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "problems")
+    @ManyToMany(mappedBy = "tags")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Problem> problems = new HashSet<>();
 }
