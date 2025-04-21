@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { AuthContext } from "./AuthContextProvider"
-import { User } from "@/libs/types"
+import { User } from "@/libs/constant/types"
 
 export default function ReactQueryProvider({
     children

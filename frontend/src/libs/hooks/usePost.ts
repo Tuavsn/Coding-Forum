@@ -1,7 +1,7 @@
 import { AuthContext } from "@/context/AuthContextProvider";
-import { createPost, deletePost, dislikePost, likeComment, likePost, updatePost } from "@/libs/actions/post.acttion";
-import { ReactionType } from "@/libs/enum";
-import { Post, PostImage, Topic } from "@/libs/types";
+import { createPost, deletePost, dislikePost, likeComment, likePost, updatePost } from "@/libs/service/post.service";
+import { ReactionType } from "@/libs/constant/enum";
+import { Post, PostImage, Topic } from "@/libs/constant/types";
 import { stringToSlug } from "@/libs/utils";
 import { message, UploadFile } from "antd";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,5 @@
-import { getPostDetail } from "@/libs/actions/post.acttion";
-import { Post } from "@/libs/types";
+import { getPostDetail } from "@/libs/service/post.service";
+import { Post } from "@/libs/constant/types";
 import { formatDate } from "@/libs/utils";
 import { 
     ClockCircleOutlined, 

@@ -3,7 +3,7 @@
 import Loading from "@/components/common/Loading"
 import { AuthContext } from "@/context/AuthContextProvider"
 import useAuth from "@/hooks/useAuth"
-import { register } from "@/libs/actions/user.actions"
+import { register } from "@/libs/service/user.service"
 import { isValidEmail } from "@/libs/utils"
 import { message } from "antd"
 import { useRouter } from "next/navigation"

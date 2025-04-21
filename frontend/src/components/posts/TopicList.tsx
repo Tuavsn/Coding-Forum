@@ -1,6 +1,6 @@
 import React from "react";
-import { getTopic } from "@/libs/actions/post.acttion";
-import { Topic } from "@/libs/types";
+import { getTopic } from "@/libs/service/post.service";
+import { Topic } from "@/libs/constant/types";
 import PostFilter from "./PostFilter";
 
 export default async function TopicList() {

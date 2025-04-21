@@ -1,6 +1,6 @@
 // File: pages/TopicList.tsx
 import List from "@/components/common/List";
-import { getTopic } from "@/libs/actions/post.acttion";
+import { getTopic } from "@/libs/service/post.service";
 import React from "react";
 
 interface Topic {

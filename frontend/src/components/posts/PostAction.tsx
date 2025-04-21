@@ -1,7 +1,7 @@
 'use client'
 
 import usePost from "@/hooks/usePost";
-import { Post } from "@/libs/types";
+import { Post } from "@/libs/constant/types";
 import { DeleteOutlined, DislikeFilled, DislikeOutlined, EditOutlined, LikeFilled, LikeOutlined, MessageFilled, MessageOutlined } from "@ant-design/icons";
 import { Button, Divider, Popconfirm, Space, Tooltip } from "antd";
 import PostModal from "./PostModal";

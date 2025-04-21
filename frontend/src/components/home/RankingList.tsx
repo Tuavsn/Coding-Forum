@@ -1,7 +1,7 @@
 'use client';
 
-import { getUserRanking } from "@/libs/actions/user.actions";
-import { User } from "@/libs/types";
+import { getUserRanking } from "@/libs/service/user.service";
+import { User } from "@/libs/constant/types";
 import { FireFilled, UserOutlined, TrophyOutlined, SafetyCertificateOutlined, SlidersOutlined, FireOutlined, CrownOutlined } from "@ant-design/icons";
 import { List, Skeleton, Avatar, Tag, Pagination, Flex } from "antd";
 import Link from "next/link";

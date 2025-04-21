@@ -4,8 +4,8 @@ import HomeWelcomeCard from "@/components/home/HomeWelcomeCard";
 import CommonStatistics from "@/components/posts/CommonStatistics";
 import PostList from "@/components/posts/PostList";
 import TopicList from "@/components/posts/TopicList";
-import { getPost } from "@/libs/actions/post.acttion";
-import { PageableInfo, PageableRequest, Post, ResponseData } from "@/libs/types";
+import { getPost } from "@/libs/service/post.service";
+import { PageableInfo, PageableRequest, Post, ResponseData } from "@/libs/constant/types";
 import { Divider } from "antd";
 
 type Params = Promise<{ slug: string }>

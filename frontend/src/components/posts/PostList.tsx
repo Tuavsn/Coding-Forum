@@ -1,5 +1,5 @@
 'use client'
-import { PageableInfo, Post } from "@/libs/types";
+import { PageableInfo, Post } from "@/libs/constant/types";
 import { formatDate, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, TagsOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Card, Divider, Pagination, Tag, Typography } from "antd";

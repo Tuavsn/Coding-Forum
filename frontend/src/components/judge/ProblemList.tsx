@@ -4,12 +4,12 @@ import { Avatar, Button, Card, Col, Divider, Drawer, Form, Input, List, message,
 import React, { useContext, useEffect, useState } from "react";
 import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlined, PlusOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { FileType, Problem } from "@/libs/types";
+import { FileType, Problem } from "@/libs/constant/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/actions/problem.actions";
+import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/service/problem.service";
 import { formatDate, getBase64 } from "@/libs/utils";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
-import { ProblemType } from "@/libs/enum";
+import { ProblemType } from "@/libs/constant/enum";
 import { AuthContext } from "@/context/AuthContextProvider";
 import TextEditor from "../common/TextEditor";
 import UploadButton from "../common/UploadButton";

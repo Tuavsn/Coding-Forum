@@ -2,9 +2,9 @@
 import { Button, Col, Form, Input, Modal, Row, Select, Upload, UploadFile, UploadProps } from "antd";
 import TextEditor from "../common/TextEditor";
 import { getBase64 } from "@/libs/utils";
-import { FileType, PostImage, Topic } from "@/libs/types";
+import { FileType, PostImage, Topic } from "@/libs/constant/types";
 import UploadButton from "../common/UploadButton";
-import { getTopic } from "@/libs/actions/post.acttion";
+import { getTopic } from "@/libs/service/post.service";
 import { useQuery } from "react-query";
 
 interface PostContent {

@@ -1,4 +1,4 @@
-import { User } from "@/libs/types";
+import { User } from "@/libs/constant/types";
 import { createContext } from "react";
 
 export const AuthContext = createContext<{

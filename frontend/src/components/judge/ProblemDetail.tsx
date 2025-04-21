@@ -7,9 +7,9 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AuthContext } from "@/context/AuthContextProvider";
 import { useMutation, useQuery } from "react-query";
-import { getProblemDetail, getSubmission, runSolution, submitSolution } from "@/libs/actions/problem.actions";
-import { Problem, ProblemSubmission, SubmissionResult } from "@/libs/types";
-import { ProblemSubmissionLanguageType, ProblemType } from "@/libs/enum";
+import { getProblemDetail, getSubmission, runSolution, submitSolution } from "@/libs/service/problem.service";
+import { Problem, ProblemSubmission, SubmissionResult } from "@/libs/constant/types";
+import { ProblemSubmissionLanguageType, ProblemType } from "@/libs/constant/enum";
 import ThemeMenu from "./ThemeMenu";
 
 function getTopicColor(str: string): string {

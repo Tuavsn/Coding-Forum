@@ -1,14 +1,14 @@
 'use client'
 
-import { getPersonalPosts, getUserProfile, updateProfile } from "@/libs/actions/user.actions"
-import { Post, User } from "@/libs/types"
+import { getPersonalPosts, getUserProfile, updateProfile } from "@/libs/service/user.service"
+import { Post, User } from "@/libs/constant/types"
 import { Avatar, Button, List, Space, Spin, Tag } from "antd"
 import React from "react"
 import { useQuery, useQueryClient } from "react-query"
 import Link from "next/link"
 import { formatDate, stringToSlug } from "@/libs/utils"
 import { AimOutlined, ClockCircleOutlined, DislikeFilled, DislikeOutlined, FireOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MailOutlined, MessageFilled, MessageOutlined, PhoneOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons"
-import { ReactionType } from "@/libs/enum"
+import { ReactionType } from "@/libs/constant/enum"
 import { useSearchParams } from "next/navigation"
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (

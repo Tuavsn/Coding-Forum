@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons"
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getInfo, logout } from "@/libs/actions/user.actions";
+import { getInfo, logout } from "@/libs/service/user.service";
 import { AuthContext } from "@/context/AuthContextProvider";
 import { useQuery } from "react-query";
 import Logo from "../../assets/images/logo.png";

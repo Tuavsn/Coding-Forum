@@ -1,15 +1,15 @@
 'use client'
 
 import { AuthContext } from "@/context/AuthContextProvider"
-import { getPersonalPosts, updateProfile } from "@/libs/actions/user.actions"
-import { FileType, Post } from "@/libs/types"
+import { getPersonalPosts, updateProfile } from "@/libs/service/user.service"
+import { FileType, Post } from "@/libs/constant/types"
 import { Avatar, Button, Col, Drawer, Form, Input, List, message, Radio, RadioChangeEvent, Row, Space, Spin, Tag, Upload, UploadFile, UploadProps } from "antd"
 import React, { useContext, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import Link from "next/link"
 import { formatDate, getBase64, stringToSlug } from "@/libs/utils"
 import { AimOutlined, ClockCircleOutlined, DislikeFilled, DislikeOutlined, FireOutlined, LikeFilled, LikeOutlined, LoadingOutlined, MailOutlined, MessageFilled, MessageOutlined, PhoneOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons"
-import { Gender, ReactionType } from "@/libs/enum"
+import { Gender, ReactionType } from "@/libs/constant/enum"
 import UploadButton from "../common/UploadButton"
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (

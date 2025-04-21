@@ -1,9 +1,9 @@
 'use client'
 
 import { AuthContext } from "@/context/AuthContextProvider";
-import { createComment, deleteComment, dislikeComment, likeComment, updateComment } from "@/libs/actions/post.acttion";
-import { ReactionType } from "@/libs/enum";
-import { Post, PostComment } from "@/libs/types";
+import { createComment, deleteComment, dislikeComment, likeComment, updateComment } from "@/libs/service/post.service";
+import { ReactionType } from "@/libs/constant/enum";
+import { Post, PostComment } from "@/libs/constant/types";
 import { formatDate } from "@/libs/utils";
 import { 
     ClockCircleOutlined,

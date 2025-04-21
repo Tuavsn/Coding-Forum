@@ -1,5 +1,5 @@
 import { AuthContext } from "@/context/AuthContextProvider";
-import { login, register } from "@/libs/actions/user.actions";
+import { login, register } from "@/libs/service/user.service";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react"
