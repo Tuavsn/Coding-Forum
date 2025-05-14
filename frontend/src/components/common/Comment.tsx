@@ -1,10 +1,7 @@
 'use client'
 
-import { AuthContext } from "@/context/AuthContextProvider";
-import { createComment, deleteComment, dislikeComment, likeComment, updateComment } from "@/libs/service/post.service";
 import { ReactionType } from "@/libs/constant/enum";
 import { Post, PostComment } from "@/libs/constant/types";
-import { formatDate } from "@/libs/utils";
 import { 
     ClockCircleOutlined,
     DislikeFilled,
@@ -22,6 +19,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import TextEditor from "./TextEditor";
 import { useRouter } from "next/navigation";
+import { AuthContext } from "@/libs/context/AuthContextProvider";
+import { formatDate } from "@/libs/utils/formatDate";
+import { PostService } from "@/libs/service/post.service";
 
 const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; text: string }) => (
     <Space>
@@ -31,7 +31,7 @@ const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; te
 );
 
 export default function Comment({post}:{post: Post}) {
-    const {auth, setAuth} = useContext(AuthContext)
+    const { auth } = useContext(AuthContext)
 
     const router = useRouter();
 
@@ -52,7 +52,7 @@ export default function Comment({post}:{post: Post}) {
     const [commentContent, setCommentContent] = useState('')
 
     // create Comment
-    const createCommentMutation = useMutation(createComment, {
+    const createCommentMutation = useMutation(PostService.createComment, {
         onMutate: () => {
             setCreateCommentLoading(true)
         },
@@ -81,7 +81,7 @@ export default function Comment({post}:{post: Post}) {
     }
 
     // update Comment
-    const updateCommentMutation = useMutation(updateComment, {
+    const updateCommentMutation = useMutation(PostService.updateComment, {
         onMutate: () => {
             setUpdateCommentLoading(true)
         },
@@ -115,7 +115,7 @@ export default function Comment({post}:{post: Post}) {
 
     // delete Comment
 
-    const deleteCommentMutation = useMutation(deleteComment, {
+    const deleteCommentMutation = useMutation(PostService.deleteComment, {
         onMutate: () => {
             setDeleteCommetLoading(true)
         },
@@ -135,7 +135,7 @@ export default function Comment({post}:{post: Post}) {
     }
 
     // like Comment
-    const commentLikeMutation = useMutation(likeComment, {
+    const commentLikeMutation = useMutation(PostService.likeComment, {
         onSuccess: (data) => {
             queryClient.invalidateQueries('getPostDetail')
             message.success(data.Message)
@@ -147,7 +147,7 @@ export default function Comment({post}:{post: Post}) {
     }
 
     // dislike Comment
-    const commentDislikeMutation = useMutation(dislikeComment, {
+    const commentDislikeMutation = useMutation(PostService.dislikeComment, {
         onSuccess: (data) => {
             queryClient.invalidateQueries('getPostDetail')
             message.success(data.Message)

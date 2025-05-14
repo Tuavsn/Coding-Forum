@@ -1,6 +1,6 @@
 // File: pages/TopicList.tsx
 import List from "@/components/common/List";
-import { getTopic } from "@/libs/service/post.service";
+import { PostService } from "@/libs/service/post.service";
 import React from "react";
 
 interface Topic {
@@ -36,7 +36,7 @@ export default async function TopicPage() {
   /**
      * Fetch topic from server
      */
-  const topics = await getTopic();
+  const topics = await PostService.getTopics();
 
   return (
     <div className="max-w-4xl mx-auto p-6">

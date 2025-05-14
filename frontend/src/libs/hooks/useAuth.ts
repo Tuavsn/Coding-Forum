@@ -1,9 +1,10 @@
-import { AuthContext } from "@/context/AuthContextProvider";
-import { login, register } from "@/libs/service/user.service";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react"
 import { useMutation } from "react-query";
+import { AuthContext } from "../context/AuthContextProvider";
+import { OAUTH2URL } from "../constant/constant";
+import { UserService } from "../service/user.service";
 
 interface AuthForm {
     email: string;
@@ -25,7 +26,7 @@ export default function useAuth() {
         password: ''
     })
 
-    const oauth2Url = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorize/google` || 'http://localhost:8080/oauth2/authorize/google'
+    const oauth2Url = `${OAUTH2URL}`
 
     /**
      * Update the specific field of Auth Form (email, username and password)
@@ -76,7 +77,7 @@ export default function useAuth() {
     /**
      * Login Mutation
      */
-    const loginMutation = useMutation(login, {
+    const loginMutation = useMutation(UserService.login, {
         onMutate: () => {
             setIsLoading(true);
         },
@@ -106,7 +107,7 @@ export default function useAuth() {
     /**
      * Register Mutation
      */
-    const registerMutation = useMutation(register, {
+    const registerMutation = useMutation(UserService.register, {
         onMutate: () => {
             setIsLoading(true);
         },

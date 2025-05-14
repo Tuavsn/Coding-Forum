@@ -1,6 +1,5 @@
 'use client'
 import { PageableInfo, Post } from "@/libs/constant/types";
-import { formatDate, stringToSlug } from "@/libs/utils";
 import { ClockCircleOutlined, TagsOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Card, Divider, Pagination, Tag, Typography } from "antd";
 import type { PaginationProps } from "antd";
@@ -8,6 +7,8 @@ import Link from "next/link";
 import List from "../common/List";
 import PostAction from "./PostAction";
 import { useRouter } from "next/navigation";
+import { stringToSlug } from "@/libs/utils/convertStringToSlug";
+import { formatDate } from "@/libs/utils/formatDate";
 
 
 interface Props {

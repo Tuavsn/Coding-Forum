@@ -10,13 +10,11 @@ export const PostService = {
         return result.Data;
     },
     // Post
-    getPosts: async(): Promise<Post[]> => {
-        const result = await ApiUtil.getPublicData(ApiEndPoint.POST);
-        return result.Data;
+    getPosts: async(pageable: PageableRequest): Promise<ResponseData> => {
+        const params = new URLSearchParams(pageable as any).toString();
+        const result = await ApiUtil.getPublicData(`${ApiEndPoint.POST}/all?${params}`);
+        return result;
     },
-    // getPost: async(pageable: PageableRequest): Promise<ResponseData> => {
-
-    // },
     getPostDetail: async(postId: string | null): Promise<Post> => {
         const result = await ApiUtil.getPublicData(`${ApiEndPoint.POST}/${postId}`);
         return result.Data;

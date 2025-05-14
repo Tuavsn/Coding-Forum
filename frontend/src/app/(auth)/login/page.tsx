@@ -1,7 +1,7 @@
 'use client'
 
 import Loading from "@/components/common/Loading"
-import useAuth from "@/hooks/useAuth"
+import useAuth from "@/libs/hooks/useAuth";
 import { Image } from "antd"
 
 export default function LoginPage() {

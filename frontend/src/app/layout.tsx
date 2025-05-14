@@ -1,11 +1,11 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ReactQueryProvider from "../context/ReactQueryProvider";
 import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import CustomHeader from "@/components/layout/Header";
 import CustomFooter from "@/components/layout/Footer";
+import ReactQueryProvider from "@/libs/context/ReactQueryProvider";
 
 const inter = Inter({ subsets: ["vietnamese"] });
 

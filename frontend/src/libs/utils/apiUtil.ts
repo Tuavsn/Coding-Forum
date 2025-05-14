@@ -1,4 +1,5 @@
 export const ApiUtil = {
+    // GET
     getPublicData: async (url: string) => {
         const headers = {
             'Content-Type': 'application/json'
@@ -20,6 +21,7 @@ export const ApiUtil = {
         });
         return results.json();
     },
+    // POST
     postData: async (url: string, post: Object) => {
         const token = localStorage.getItem('accessToken') || undefined;
         const headers = {
@@ -33,6 +35,7 @@ export const ApiUtil = {
         });
         return results.json();
     },
+    // PUT
     putData: async (url: string, put: Object) => {
         const token = localStorage.getItem('accessToken') || undefined;
         const headers = {
@@ -46,6 +49,7 @@ export const ApiUtil = {
         })
         return results.json();
     },
+    // PATCH
     patchData: async (url: string, patch: Object) => {
         const token = localStorage.getItem('accessToken') || undefined;
         const headers = {
@@ -59,6 +63,7 @@ export const ApiUtil = {
         })
         return results.json();
     },
+    // DELETE
     deleteData: async (url: string) => {
         const token = localStorage.getItem('accessToken') || undefined;
         const headers = {

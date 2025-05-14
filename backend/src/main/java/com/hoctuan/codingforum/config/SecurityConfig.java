@@ -24,13 +24,15 @@ public class SecurityConfig {
     private final AppConstant appConstant;
     private final OAuth2SuccessHandler successHandler;
     private final OAuth2FailureHandler failureHandler;
-    // private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
+    // private final DelegatedAuthenticationEntryPoint
+    // delegatedAuthenticationEntryPoint;
     private final CorsConfigurationSource corsConfigurationSource;
     @Value("${spring.api.prefix}")
     private String apiPrefix;
 
     public SecurityConfig(AppConstant appConstant, OAuth2SuccessHandler successHandler,
-            // OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint,
+            // OAuth2FailureHandler failureHandler, DelegatedAuthenticationEntryPoint
+            // delegatedAuthenticationEntryPoint,
             OAuth2FailureHandler failureHandler,
             CorsConfigurationSource corsConfigurationSource) {
         this.appConstant = appConstant;
@@ -42,29 +44,29 @@ public class SecurityConfig {
 
     private String[] whiteList() {
         return new String[] {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            apiPrefix + "/auth/**",
-            apiPrefix + "/oauth2/**",
-            "/oauth2/**",
-            apiPrefix + "/problem/*/run"
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                apiPrefix + "/auth/**",
+                apiPrefix + "/oauth2/**",
+                "/oauth2/**",
+                apiPrefix + "/problem/*/run"
         };
     };
 
     private String[] getWhiteList() {
         return new String[] {
-            apiPrefix + "/topic/**",
-            apiPrefix + "/post/**",
-            apiPrefix + "/comment/**",
-            apiPrefix + "/user/**",
-            apiPrefix + "/problem/**"
+                apiPrefix + "/topic/**",
+                apiPrefix + "/post/**",
+                apiPrefix + "/comment/**",
+                apiPrefix + "/user/**",
+                apiPrefix + "/problem/**"
         };
     };
 
     private String[] postWhiteList() {
         return new String[] {
-            apiPrefix + "/post/search",
+                apiPrefix + "/post/search",
         };
     };
 
@@ -100,7 +102,8 @@ public class SecurityConfig {
                             // .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
                             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()));
                 })
-                // .exceptionHandling(handler -> handler.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
+                // .exceptionHandling(handler ->
+                // handler.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 import BreadCrumb from "@/components/common/BreadCrumb";
 import TopicList from "@/components/posts/TopicList";
-import { Divider, Empty } from "antd";
+import { Divider } from "antd";
 
 export default function PostPage() {
     return (

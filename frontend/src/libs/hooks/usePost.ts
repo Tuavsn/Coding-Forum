@@ -1,12 +1,12 @@
-import { AuthContext } from "@/context/AuthContextProvider";
-import { createPost, deletePost, dislikePost, likeComment, likePost, updatePost } from "@/libs/service/post.service";
 import { ReactionType } from "@/libs/constant/enum";
 import { Post, PostImage, Topic } from "@/libs/constant/types";
-import { stringToSlug } from "@/libs/utils";
 import { message, UploadFile } from "antd";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { AuthContext } from "../context/AuthContextProvider";
+import { PostService } from "../service/post.service";
+import { stringToSlug } from "../utils/convertStringToSlug";
 
 interface UsePostProps {
     post?: Post;
@@ -83,7 +83,7 @@ export default function usePost(props: UsePostProps) {
     /**
      * Post Like Mutation
      */
-    const postLikeMutation = useMutation(likePost, {
+    const postLikeMutation = useMutation(PostService.likePost, {
         onSuccess: (data) => {
             router.refresh();
         }
@@ -99,7 +99,7 @@ export default function usePost(props: UsePostProps) {
     /**
      * Post Dislike Mutation
      */
-    const postDislikeMutation = useMutation(dislikePost, {
+    const postDislikeMutation = useMutation(PostService.dislikePost, {
         onSuccess: (data) => {
             router.refresh();
         }
@@ -122,7 +122,7 @@ export default function usePost(props: UsePostProps) {
     /**
      * Post Create Mutation
      */
-    const postCreateMutation = useMutation(createPost, {
+    const postCreateMutation = useMutation(PostService.createPost, {
         onMutate: () => {
             setPostCreateLoading(true);
         },
@@ -165,7 +165,7 @@ export default function usePost(props: UsePostProps) {
     /**
      * Post Update Mutation
      */
-    const postUpdateMutation = useMutation(updatePost, {
+    const postUpdateMutation = useMutation(PostService.updatePost, {
         onMutate: () => {
             setPostUpdateLoading(true);
         },
@@ -200,7 +200,7 @@ export default function usePost(props: UsePostProps) {
     /**
      * Post Delete Mutation
      */
-    const postDeleteMutation = useMutation(deletePost, {
+    const postDeleteMutation = useMutation(PostService.deletePost, {
         onMutate: () => {
             setPostDeleteLoading(true);
         },

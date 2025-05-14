@@ -3,9 +3,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import { FloatButton } from "antd";
 import { usePathname } from "next/navigation";
 import PostModal from "../posts/PostModal";
-import usePost from "@/hooks/usePost";
 import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContextProvider";
+import { AuthContext } from "@/libs/context/AuthContextProvider";
+import usePost from "@/libs/hooks/usePost";
 
 export default function GroupFloatButton() {
 
@@ -32,7 +32,7 @@ export default function GroupFloatButton() {
                         onClick={() => toggleModal('create')}
                     />
                 )}
-                {path === '/problem' && auth && (
+                {path === '/problem' && auth && auth.role === 'SYS_ADMIN' && (
                     <FloatButton
                         icon={<PlusOutlined />}
                         tooltip={<div>Tạo Problem</div>}

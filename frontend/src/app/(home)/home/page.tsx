@@ -4,8 +4,8 @@ import HomeWelcomeCard from "@/components/home/HomeWelcomeCard";
 import CommonStatistics from "@/components/posts/CommonStatistics";
 import PostList from "@/components/posts/PostList";
 import TopicList from "@/components/posts/TopicList";
-import { getPost } from "@/libs/service/post.service";
 import { PageableInfo, PageableRequest, Post, ResponseData } from "@/libs/constant/types";
+import { PostService } from "@/libs/service/post.service";
 import { Divider } from "antd";
 
 type Params = Promise<{ slug: string }>
@@ -28,7 +28,7 @@ export default async function HomePage(props: {
     /**
      * Fetch post from server
      */
-    const data = (await getPost(pageable)).Data;
+    const data = (await PostService.getPosts(pageable)).Data;
 
     const posts: Post[] = data.content;
 

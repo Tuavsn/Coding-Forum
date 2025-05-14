@@ -5,12 +5,12 @@ import LanguageMenu from "./LanguageMenu";
 import MonacoEditor from "./MonacoEditor";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AuthContext } from "@/context/AuthContextProvider";
 import { useMutation, useQuery } from "react-query";
-import { getProblemDetail, getSubmission, runSolution, submitSolution } from "@/libs/service/problem.service";
 import { Problem, ProblemSubmission, SubmissionResult } from "@/libs/constant/types";
 import { ProblemSubmissionLanguageType, ProblemType } from "@/libs/constant/enum";
 import ThemeMenu from "./ThemeMenu";
+import { AuthContext } from "@/libs/context/AuthContextProvider";
+import { ProblemService } from "@/libs/service/problem.service";
 
 function getTopicColor(str: string): string {
     switch(str) {
@@ -31,7 +31,7 @@ export default function ProblemDetail() {
     const problemId = useSearchParams().get('id');
 
     const { data, isLoading } = useQuery<Problem>(
-        ['getProblemDetail', problemId], () => getProblemDetail(problemId)
+        ['getProblemDetail', problemId], () => ProblemService.getProblemDetail(problemId)
     );
 
     const [runLoading, setRunLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function ProblemDetail() {
     const [textColor, setTextColor] = useState("white");
 
     // run solution
-    const runSolutionMutation = useMutation(runSolution, {
+    const runSolutionMutation = useMutation(ProblemService.runSolution, {
         onMutate: () => {
             setRunLoading(true);
         },
@@ -85,7 +85,7 @@ export default function ProblemDetail() {
     }
 
     // submit solution
-    const submitSolutionMutation = useMutation(submitSolution, {
+    const submitSolutionMutation = useMutation(ProblemService.submitSolution, {
         onMutate: () => {
             setSubmitLoading(true);
         },
@@ -116,7 +116,7 @@ export default function ProblemDetail() {
     };
 
     // get history
-    const getSubmissionMutation = useMutation(getSubmission, {
+    const getSubmissionMutation = useMutation(ProblemService.getSubmissions, {
         onMutate: () => {
             setHistoryLoading(true);
         },

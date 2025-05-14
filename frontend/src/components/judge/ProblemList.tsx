@@ -6,32 +6,15 @@ import { PlayCircleOutlined, MessageOutlined, ClockCircleOutlined, LoadingOutlin
 import Link from "next/link";
 import { FileType, Problem } from "@/libs/constant/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { createProblem, deleteProblem, getProblem, updateProblem } from "@/libs/service/problem.service";
-import { formatDate, getBase64 } from "@/libs/utils";
 import { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
 import { ProblemType } from "@/libs/constant/enum";
-import { AuthContext } from "@/context/AuthContextProvider";
 import TextEditor from "../common/TextEditor";
 import UploadButton from "../common/UploadButton";
-
-function stringToSlug(str: string) {
-   // Chuyển tất cả các ký tự thành chữ thường
-   str = str.toLowerCase();
-
-   // Thay thế các ký tự đặc biệt tiếng Việt
-   str = str.replace(/đ/g, 'd');
-
-   // Loại bỏ dấu tiếng Việt
-   str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-   // Thay thế các ký tự không phải chữ cái hoặc số bằng dấu gạch ngang
-   str = str.replace(/[^a-z0-9\s-]/g, '');
-
-   // Thay thế khoảng trắng hoặc dấu gạch ngang liên tiếp bằng một dấu gạch ngang
-   str = str.trim().replace(/\s+/g, '-').replace(/-+/g, '-');
-
-   return str;
-}
+import { AuthContext } from "@/libs/context/AuthContextProvider";
+import { ProblemService } from "@/libs/service/problem.service";
+import { getBase64 } from "@/libs/utils/getBase64";
+import { stringToSlug } from "@/libs/utils/convertStringToSlug";
+import { formatDate } from "@/libs/utils/formatDate";
 
 function getTopicColor(str: string): string {
     switch(str) {
@@ -54,7 +37,7 @@ const IconText = ({ icon, text }: { icon: React.ComponentType<AntdIconProps>; te
 export default function ProblemList() {
     const {auth, setAuth} = useContext(AuthContext);
 
-    const { data, isLoading } = useQuery<Problem[]>('getProblem', getProblem);
+    const { data, isLoading } = useQuery<Problem[]>('getProblem', ProblemService.getProblem);
 
     const queryClient = useQueryClient();
 
@@ -89,7 +72,7 @@ export default function ProblemList() {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     // create problem
-    const problemCreateMutation = useMutation(createProblem, {
+    const problemCreateMutation = useMutation(ProblemService.createProblem, {
         onMutate: () => {
             setProblemCreateLoading(true);
         },
@@ -129,7 +112,7 @@ export default function ProblemList() {
     }
 
     // update problem
-    const problemUpdateMutation = useMutation(updateProblem, {
+    const problemUpdateMutation = useMutation(ProblemService.updateProblem, {
         onMutate: () => {
             setProblemUpdateLoading(true);
         },
@@ -172,7 +155,7 @@ export default function ProblemList() {
     }
 
     // delete problem
-    const problemDeleteMutation = useMutation(deleteProblem, {
+    const problemDeleteMutation = useMutation(ProblemService.deleteProblem, {
         onMutate: () => {
             setProblemDeleteLoading(true);
         },

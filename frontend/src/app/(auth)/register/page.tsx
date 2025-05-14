@@ -1,14 +1,7 @@
 'use client'
 
 import Loading from "@/components/common/Loading"
-import { AuthContext } from "@/context/AuthContextProvider"
-import useAuth from "@/hooks/useAuth"
-import { register } from "@/libs/service/user.service"
-import { isValidEmail } from "@/libs/utils"
-import { message } from "antd"
-import { useRouter } from "next/navigation"
-import { useContext, useEffect, useState } from "react"
-import { useMutation } from "react-query"
+import useAuth from "@/libs/hooks/useAuth";
 
 export default function RegisterPage() {
 
@@ -19,72 +12,10 @@ export default function RegisterPage() {
         isLoading
     } = useAuth();
 
-    // const {auth, setAuth} = useContext(AuthContext)
-
-    // const router = useRouter()
-
-    // const [isLoading, setIsloading] = useState(true)
-
-    // const [email, setEmail] = useState<string>('')
-
-    // const [username, setUsername] = useState<string>('')
-
-    // const [password, setPassword] = useState<string>('')
-
-    // const handleSetEmail = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setEmail(e.target.value)
-    // }
-
-    // const handleSetUsername = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setUsername(e.target.value)
-    // }
-
-    // const handleSetPassword = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setPassword(e.target.value)
-    // }
-
-    // const registerMutation = useMutation(() => register({email: email, username: username, password: password}), {
-    //     onMutate: () => {
-    //         setIsloading(true)
-    //     },
-
-    //     onSuccess: (data) => {
-    //         message.success(data.Message)
-    //         router.push('/login')
-    //         setIsloading(false)
-    //     },
-
-    //     onError: (error) => {
-    //         setIsloading(false)
-    //         if (error instanceof Error) {
-    //             message.error(error.message);
-    //         } else {
-    //             message.error('Có lỗi xảy ra');
-    //         }
-    //     },
-    // })
-
-    // const handleRegister = async (e: React.FormEvent) => {
-    //     e.preventDefault()
-    //     if(isValidEmail(email)) {
-    //         registerMutation.mutate()
-    //     } else {
-    //         message.error("Email không hợp lệ")
-    //     }
-    // }
-
-    // // Login route guard
-    // useEffect(() => {
-    //     if(auth) {
-    //         router.push('/home')
-    //     } else {
-    //         setIsloading(false)
-    //     }
-    // }, [])
-
     if(isLoading) {
         return (<Loading />)
     }
+    
     return <>
         <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
             <h1 className="text-center text-4xl font-medium">Đăng ký</h1>
